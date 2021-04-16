@@ -9,13 +9,16 @@ project:
   - us-east-1
   template: templates/aerospike-cluster-entrypoint-new-vpc.template.yaml
   parameters:
+    AvailabilityZones: $[taskcat_genaz_3]
+    AccessCIDR: 10.0.0.0/24
+    KeyPairName: cikeys
     QSS3BucketName: $[taskcat_autobucket]
     QSS3BucketRegion: $[taskcat_current_region]
     QSS3KeyPrefix: quickstart-aerospike-cluster/
 tests:
   single-region:
     regions:
-      us-east-1
+    - us-east-1
     parameters:
       placeholder: somevalue
   
