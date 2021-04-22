@@ -25,15 +25,8 @@ Metadata:
        Parameters:
          - NamespaceFile
          - FeatureKeyFile
-     - Label:
-        default: AWS Quick Start configuration
-       Parameters:
-        - QSS3BucketName
-        - QSS3KeyPrefix
-        - QSS3BucketRegion
+
    ParameterLabels:
-     AvailabilityZones:
-        default: Availability Zones
      KeyPairName:
        default: EC2 key pair
      VPC: 
@@ -56,13 +49,7 @@ Metadata:
        default: Location of namespace definition
      FeatureKeyFile:
        default: Feature key file value encoded in base64
-     QSS3BucketName:
-       default: Quick Start S3 bucket name
-     QSS3KeyPrefix:
-       default: Quick Start S3 object key prefix
-     QSS3BucketRegion:
-       default: Quick Start S3 bucket Region
- 
+
 Parameters:
   KeyPairName:
     Description: Name of the KeyPair that would be used to ssh into the instances
@@ -199,29 +186,6 @@ Parameters:
     Type: String
     Default: >-
       IyBnZW5lcmF0ZWQgMjAyMS0wMy0xMCAwNDowNDoyOAoKZmVhdHVyZS1rZXktdmVyc2lvbiAgICAgICAgICAgICAgICAgIDIKc2VyaWFsLW51bWJlciAgICAgICAgICAgICAgICAgICAgICAgIDU2ODk1MzA1OAoKYWNjb3VudC1uYW1lICAgICAgICAgICAgICAgICAgICAgRXZhbHVhdGlvbl9MaWNlbnNlCgphY2NvdW50LUlEICAgICAgICAgICAgICAgICAgICAgICBBZXJvc3Bpa2VfXzQzNTcxMTM3NAoKYXNkYi1jaGFuZ2Utbm90aWZpY2F0aW9uICAgICAgICAgdHJ1ZQphc2RiLWNsdXN0ZXItbm9kZXMtbGltaXQgICAgICAgICAxCmFzZGItY29tcHJlc3Npb24gICAgICAgICAgICAgICAgIHRydWUKYXNkYi1lbmNyeXB0aW9uLWF0LXJlc3QgICAgICAgICAgdHJ1ZQphc2RiLWxkYXAgICAgICAgICAgICAgICAgICAgICAgICB0cnVlCmFzZGItcG1lbSAgICAgICAgICAgICAgICAgICAgICAgIHRydWUKYXNkYi1zdHJvbmctY29uc2lzdGVuY3kgICAgICAgICAgdHJ1ZQptZXNnLWptcy1jb25uZWN0b3IgICAgICAgICAgICAgICB0cnVlCm1lc2cta2Fma2EtY29ubmVjdG9yICAgICAgICAgICAgIHRydWUKcHJlc3RvLWNvbm5lY3RvciAgICAgICAgICAgICAgICAgdHJ1ZQpyYWYtcmVhbHRpbWUtYW5hbHlzaXMtZnJhbWV3b3JrICB0cnVlCgotLS0tLSBTSUdOQVRVUkUgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCk1FVUNJRXhGN3VSYzBZdURvb3J6ZkNUR2NhdGgrQVB6U0doUi94M21pN0RuRFB6a0FpRUF1cjkzRVcwb2tlNVoKUWZ5c1l4dzZCb0tKRUI1STVlV2xXdDU2UzlxeGNySWsKLS0tLS0gRU5EIE9GIFNJR05BVFVSRSAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo=
-  QSS3BucketName:
-    AllowedPattern: "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$"
-    ConstraintDescription: Quick Start bucket name can include numbers, lowercase
-      letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
-      (-).
-    Default: aws-quickstart
-    Description: S3 bucket name for the Quick Start assets. The Quick Start bucket name
-      can include numbers, lowercase letters, uppercase letters, and hyphens (-).
-      It cannot start or end with a hyphen (-).
-    Type: String
-  QSS3BucketRegion:
-    Default: 'us-east-1'
-    Description: 'AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value.'
-    Type: String
-  QSS3KeyPrefix:
-    AllowedPattern: "^[0-9a-zA-Z-/]*$"
-    ConstraintDescription: Quick Start key prefix can include numbers, lowercase letters,
-      uppercase letters, hyphens (-), and a forward slash (/).
-    Default: quickstart-aerospike-cluster/
-    Description: S3 key prefix for the Quick Start assets. The prefix
-      can include numbers, lowercase letters, uppercase letters, hyphens (-), and
-      a forward slash (/).
-    Type: String
 
 Mappings:
   RegionMap:
@@ -349,7 +313,7 @@ Resources:
       Tags:
         - Key: StackID
           Value: !Ref 'AWS::StackId'
-          PropagateAtLaunch: 'true'
+          PropagateAtLaunch: "true"
         - Key: Name
           Value: !Ref 'AWS::StackName'
           PropagateAtLaunch: 'true'
