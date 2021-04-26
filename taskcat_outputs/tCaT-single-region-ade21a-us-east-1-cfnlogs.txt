@@ -1,0 +1,135 @@
+-----------------------------------------------------------------------------
+Region: us-east-1
+StackName: tCaT-single-region-ade21a
+*****************************************************************************
+ResourceStatusReason:  
+Stack launch was successful
+*****************************************************************************
+*****************************************************************************
+Events:  
+TimeStamp                         ResourceStatus      ResourceType                LogicalResourceId          ResourceStatusReason
+--------------------------------  ------------------  --------------------------  -------------------------  ---------------------------
+2021-04-25 02:47:32.711000+00:00  CREATE_COMPLETE     AWS::CloudFormation::Stack  tCaT-single-region-ade21a
+2021-04-25 02:47:31.227000+00:00  CREATE_COMPLETE     AWS::CloudFormation::Stack  VPCStack
+2021-04-25 02:43:59.257000+00:00  CREATE_IN_PROGRESS  AWS::CloudFormation::Stack  VPCStack                   Resource creation Initiated
+2021-04-25 02:43:57.723000+00:00  CREATE_IN_PROGRESS  AWS::CloudFormation::Stack  VPCStack
+2021-04-25 02:43:52.155000+00:00  CREATE_IN_PROGRESS  AWS::CloudFormation::Stack  tCaT-single-region-ade21a  User Initiated
+*****************************************************************************
+-----------------------------------------------------------------------------
+Tested on: Saturday, 24. April 2021 07:47PM
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+Region: us-east-1
+StackName: tCaT-single-region-ade21a-VPCStack-1DQ12SGSCQIZ5
+*****************************************************************************
+ResourceStatusReason:  
+Stack launch was successful
+*****************************************************************************
+*****************************************************************************
+Events:  
+TimeStamp                         ResourceStatus      ResourceType                           LogicalResourceId                                 ResourceStatusReason
+--------------------------------  ------------------  -------------------------------------  ------------------------------------------------  ---------------------------
+2021-04-25 02:47:11.047000+00:00  CREATE_COMPLETE     AWS::CloudFormation::Stack             tCaT-single-region-ade21a-VPCStack-1DQ12SGSCQIZ5
+2021-04-25 02:47:04.913000+00:00  CREATE_COMPLETE     AWS::EC2::Route                        PrivateSubnet1ARoute
+2021-04-25 02:46:49.401000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Route                        PrivateSubnet1ARoute                              Resource creation Initiated
+2021-04-25 02:46:49.241000+00:00  CREATE_COMPLETE     AWS::EC2::Route                        PrivateSubnet2ARoute
+2021-04-25 02:46:48.659000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Route                        PrivateSubnet1ARoute
+2021-04-25 02:46:44.788000+00:00  CREATE_COMPLETE     AWS::EC2::Route                        PrivateSubnet3ARoute
+2021-04-25 02:46:44.229000+00:00  CREATE_COMPLETE     AWS::EC2::NatGateway                   NATGateway1
+2021-04-25 02:46:33.907000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Route                        PrivateSubnet2ARoute                              Resource creation Initiated
+2021-04-25 02:46:33.144000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Route                        PrivateSubnet2ARoute
+2021-04-25 02:46:29.322000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Route                        PrivateSubnet3ARoute                              Resource creation Initiated
+2021-04-25 02:46:29.017000+00:00  CREATE_COMPLETE     AWS::EC2::NatGateway                   NATGateway2
+2021-04-25 02:46:28.528000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Route                        PrivateSubnet3ARoute
+2021-04-25 02:46:24.246000+00:00  CREATE_COMPLETE     AWS::EC2::NatGateway                   NATGateway3
+2021-04-25 02:45:11.937000+00:00  CREATE_IN_PROGRESS  AWS::EC2::NatGateway                   NATGateway1                                       Resource creation Initiated
+2021-04-25 02:45:11.721000+00:00  CREATE_IN_PROGRESS  AWS::EC2::NatGateway                   NATGateway2                                       Resource creation Initiated
+2021-04-25 02:45:11.368000+00:00  CREATE_IN_PROGRESS  AWS::EC2::NatGateway                   NATGateway1
+2021-04-25 02:45:11.154000+00:00  CREATE_IN_PROGRESS  AWS::EC2::NatGateway                   NATGateway2
+2021-04-25 02:45:07.503000+00:00  CREATE_COMPLETE     AWS::EC2::EIP                          NAT1EIP
+2021-04-25 02:45:07.054000+00:00  CREATE_COMPLETE     AWS::EC2::EIP                          NAT2EIP
+2021-04-25 02:45:07.031000+00:00  CREATE_COMPLETE     AWS::EC2::SubnetRouteTableAssociation  PublicSubnet3RouteTableAssociation
+2021-04-25 02:45:06.919000+00:00  CREATE_COMPLETE     AWS::EC2::SubnetRouteTableAssociation  PublicSubnet2RouteTableAssociation
+2021-04-25 02:45:06.882000+00:00  CREATE_COMPLETE     AWS::EC2::SubnetRouteTableAssociation  PrivateSubnet3ARouteTableAssociation
+2021-04-25 02:45:06.285000+00:00  CREATE_COMPLETE     AWS::EC2::SubnetRouteTableAssociation  PublicSubnet1RouteTableAssociation
+2021-04-25 02:45:06.044000+00:00  CREATE_COMPLETE     AWS::EC2::SubnetRouteTableAssociation  PrivateSubnet1ARouteTableAssociation
+2021-04-25 02:45:06.040000+00:00  CREATE_COMPLETE     AWS::EC2::SubnetRouteTableAssociation  PrivateSubnet2ARouteTableAssociation
+2021-04-25 02:45:05.439000+00:00  CREATE_COMPLETE     AWS::EC2::Route                        PublicSubnetRoute
+2021-04-25 02:44:51.695000+00:00  CREATE_IN_PROGRESS  AWS::EC2::SubnetRouteTableAssociation  PublicSubnet3RouteTableAssociation                Resource creation Initiated
+2021-04-25 02:44:51.617000+00:00  CREATE_IN_PROGRESS  AWS::EC2::SubnetRouteTableAssociation  PublicSubnet2RouteTableAssociation                Resource creation Initiated
+2021-04-25 02:44:51.572000+00:00  CREATE_IN_PROGRESS  AWS::EC2::SubnetRouteTableAssociation  PrivateSubnet3ARouteTableAssociation              Resource creation Initiated
+2021-04-25 02:44:51.567000+00:00  CREATE_IN_PROGRESS  AWS::EC2::NatGateway                   NATGateway3                                       Resource creation Initiated
+2021-04-25 02:44:51.382000+00:00  CREATE_IN_PROGRESS  AWS::EC2::EIP                          NAT1EIP                                           Resource creation Initiated
+2021-04-25 02:44:50.977000+00:00  CREATE_IN_PROGRESS  AWS::EC2::EIP                          NAT2EIP                                           Resource creation Initiated
+2021-04-25 02:44:50.902000+00:00  CREATE_IN_PROGRESS  AWS::EC2::SubnetRouteTableAssociation  PublicSubnet3RouteTableAssociation
+2021-04-25 02:44:50.876000+00:00  CREATE_IN_PROGRESS  AWS::EC2::SubnetRouteTableAssociation  PublicSubnet1RouteTableAssociation                Resource creation Initiated
+2021-04-25 02:44:50.862000+00:00  CREATE_IN_PROGRESS  AWS::EC2::SubnetRouteTableAssociation  PrivateSubnet3ARouteTableAssociation
+2021-04-25 02:44:50.815000+00:00  CREATE_IN_PROGRESS  AWS::EC2::NatGateway                   NATGateway3
+2021-04-25 02:44:50.776000+00:00  CREATE_IN_PROGRESS  AWS::EC2::SubnetRouteTableAssociation  PublicSubnet2RouteTableAssociation
+2021-04-25 02:44:50.714000+00:00  CREATE_IN_PROGRESS  AWS::EC2::SubnetRouteTableAssociation  PrivateSubnet2ARouteTableAssociation              Resource creation Initiated
+2021-04-25 02:44:50.609000+00:00  CREATE_IN_PROGRESS  AWS::EC2::SubnetRouteTableAssociation  PrivateSubnet1ARouteTableAssociation              Resource creation Initiated
+2021-04-25 02:44:50.128000+00:00  CREATE_IN_PROGRESS  AWS::EC2::SubnetRouteTableAssociation  PublicSubnet1RouteTableAssociation
+2021-04-25 02:44:49.969000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Route                        PublicSubnetRoute                                 Resource creation Initiated
+2021-04-25 02:44:49.727000+00:00  CREATE_IN_PROGRESS  AWS::EC2::SubnetRouteTableAssociation  PrivateSubnet2ARouteTableAssociation
+2021-04-25 02:44:49.694000+00:00  CREATE_IN_PROGRESS  AWS::EC2::SubnetRouteTableAssociation  PrivateSubnet1ARouteTableAssociation
+2021-04-25 02:44:49.438000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Route                        PublicSubnetRoute
+2021-04-25 02:44:49.211000+00:00  CREATE_IN_PROGRESS  AWS::EC2::EIP                          NAT1EIP
+2021-04-25 02:44:48.770000+00:00  CREATE_IN_PROGRESS  AWS::EC2::EIP                          NAT2EIP
+2021-04-25 02:44:47.158000+00:00  CREATE_COMPLETE     AWS::EC2::Subnet                       PublicSubnet2
+2021-04-25 02:44:47.030000+00:00  CREATE_COMPLETE     AWS::EC2::Subnet                       PublicSubnet3
+2021-04-25 02:44:46.427000+00:00  CREATE_COMPLETE     AWS::EC2::Subnet                       PrivateSubnet3A
+2021-04-25 02:44:46.329000+00:00  CREATE_COMPLETE     AWS::EC2::Subnet                       PublicSubnet1
+2021-04-25 02:44:46.209000+00:00  CREATE_COMPLETE     AWS::EC2::Subnet                       PrivateSubnet1A
+2021-04-25 02:44:45.566000+00:00  CREATE_COMPLETE     AWS::EC2::Subnet                       PrivateSubnet2A
+2021-04-25 02:44:45.450000+00:00  CREATE_COMPLETE     AWS::EC2::VPCGatewayAttachment         VPCGatewayAttachment
+2021-04-25 02:44:35.620000+00:00  CREATE_COMPLETE     AWS::EC2::VPCEndpoint                  S3VPCEndpoint
+2021-04-25 02:44:35.331000+00:00  CREATE_IN_PROGRESS  AWS::EC2::VPCEndpoint                  S3VPCEndpoint                                     Resource creation Initiated
+2021-04-25 02:44:34.463000+00:00  CREATE_IN_PROGRESS  AWS::EC2::VPCEndpoint                  S3VPCEndpoint
+2021-04-25 02:44:31.059000+00:00  CREATE_COMPLETE     AWS::EC2::RouteTable                   PrivateSubnet1ARouteTable
+2021-04-25 02:44:31.016000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Subnet                       PublicSubnet2                                     Resource creation Initiated
+2021-04-25 02:44:30.887000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Subnet                       PublicSubnet3                                     Resource creation Initiated
+2021-04-25 02:44:30.851000+00:00  CREATE_COMPLETE     AWS::EC2::RouteTable                   PrivateSubnet3ARouteTable
+2021-04-25 02:44:30.777000+00:00  CREATE_COMPLETE     AWS::EC2::RouteTable                   PublicSubnetRouteTable
+2021-04-25 02:44:30.702000+00:00  CREATE_COMPLETE     AWS::EC2::RouteTable                   PrivateSubnet2ARouteTable
+2021-04-25 02:44:30.540000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Subnet                       PublicSubnet2
+2021-04-25 02:44:30.485000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Subnet                       PublicSubnet3
+2021-04-25 02:44:30.351000+00:00  CREATE_COMPLETE     AWS::EC2::VPCDHCPOptionsAssociation    VPCDHCPOptionsAssociation
+2021-04-25 02:44:30.165000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Subnet                       PublicSubnet1                                     Resource creation Initiated
+2021-04-25 02:44:30.164000+00:00  CREATE_IN_PROGRESS  AWS::EC2::VPCDHCPOptionsAssociation    VPCDHCPOptionsAssociation                         Resource creation Initiated
+2021-04-25 02:44:30.158000+00:00  CREATE_IN_PROGRESS  AWS::EC2::RouteTable                   PrivateSubnet1ARouteTable                         Resource creation Initiated
+2021-04-25 02:44:30.153000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Subnet                       PrivateSubnet1A                                   Resource creation Initiated
+2021-04-25 02:44:30.150000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Subnet                       PrivateSubnet3A                                   Resource creation Initiated
+2021-04-25 02:44:30.115000+00:00  CREATE_IN_PROGRESS  AWS::EC2::VPCGatewayAttachment         VPCGatewayAttachment                              Resource creation Initiated
+2021-04-25 02:44:29.973000+00:00  CREATE_IN_PROGRESS  AWS::EC2::RouteTable                   PublicSubnetRouteTable                            Resource creation Initiated
+2021-04-25 02:44:29.746000+00:00  CREATE_IN_PROGRESS  AWS::EC2::VPCDHCPOptionsAssociation    VPCDHCPOptionsAssociation
+2021-04-25 02:44:29.735000+00:00  CREATE_IN_PROGRESS  AWS::EC2::RouteTable                   PrivateSubnet3ARouteTable                         Resource creation Initiated
+2021-04-25 02:44:29.731000+00:00  CREATE_IN_PROGRESS  AWS::EC2::VPCGatewayAttachment         VPCGatewayAttachment
+2021-04-25 02:44:29.709000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Subnet                       PublicSubnet1
+2021-04-25 02:44:29.702000+00:00  CREATE_IN_PROGRESS  AWS::EC2::RouteTable                   PrivateSubnet2ARouteTable                         Resource creation Initiated
+2021-04-25 02:44:29.690000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Subnet                       PrivateSubnet3A
+2021-04-25 02:44:29.651000+00:00  CREATE_IN_PROGRESS  AWS::EC2::RouteTable                   PrivateSubnet1ARouteTable
+2021-04-25 02:44:29.602000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Subnet                       PrivateSubnet1A
+2021-04-25 02:44:29.531000+00:00  CREATE_IN_PROGRESS  AWS::EC2::RouteTable                   PublicSubnetRouteTable
+2021-04-25 02:44:29.468000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Subnet                       PrivateSubnet2A                                   Resource creation Initiated
+2021-04-25 02:44:29.391000+00:00  CREATE_IN_PROGRESS  AWS::EC2::RouteTable                   PrivateSubnet3ARouteTable
+2021-04-25 02:44:29.375000+00:00  CREATE_IN_PROGRESS  AWS::EC2::RouteTable                   PrivateSubnet2ARouteTable
+2021-04-25 02:44:29.020000+00:00  CREATE_IN_PROGRESS  AWS::EC2::Subnet                       PrivateSubnet2A
+2021-04-25 02:44:26.754000+00:00  CREATE_COMPLETE     AWS::EC2::EIP                          NAT3EIP
+2021-04-25 02:44:25.720000+00:00  CREATE_COMPLETE     AWS::EC2::VPC                          VPC
+2021-04-25 02:44:24.059000+00:00  CREATE_COMPLETE     AWS::EC2::DHCPOptions                  DHCPOptions
+2021-04-25 02:44:23.972000+00:00  CREATE_COMPLETE     AWS::EC2::InternetGateway              InternetGateway
+2021-04-25 02:44:10.732000+00:00  CREATE_IN_PROGRESS  AWS::EC2::EIP                          NAT3EIP                                           Resource creation Initiated
+2021-04-25 02:44:08.944000+00:00  CREATE_IN_PROGRESS  AWS::EC2::VPC                          VPC                                               Resource creation Initiated
+2021-04-25 02:44:08.554000+00:00  CREATE_IN_PROGRESS  AWS::EC2::EIP                          NAT3EIP
+2021-04-25 02:44:08.474000+00:00  CREATE_IN_PROGRESS  AWS::EC2::VPC                          VPC
+2021-04-25 02:44:08.207000+00:00  CREATE_IN_PROGRESS  AWS::EC2::DHCPOptions                  DHCPOptions                                       Resource creation Initiated
+2021-04-25 02:44:08.037000+00:00  CREATE_IN_PROGRESS  AWS::EC2::InternetGateway              InternetGateway                                   Resource creation Initiated
+2021-04-25 02:44:07.870000+00:00  CREATE_IN_PROGRESS  AWS::EC2::DHCPOptions                  DHCPOptions
+2021-04-25 02:44:07.614000+00:00  CREATE_IN_PROGRESS  AWS::EC2::InternetGateway              InternetGateway
+2021-04-25 02:43:58.715000+00:00  CREATE_IN_PROGRESS  AWS::CloudFormation::Stack             tCaT-single-region-ade21a-VPCStack-1DQ12SGSCQIZ5  User Initiated
+*****************************************************************************
+-----------------------------------------------------------------------------
+Tested on: Saturday, 24. April 2021 07:47PM
+-----------------------------------------------------------------------------
+

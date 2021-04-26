@@ -6,6 +6,7 @@ Metadata:
     Order: Index a
   LintSpellExclude:
     - Aerospike
+    - tags
   AWS::CloudFormation::Interface:
     ParameterGroups:
     - Label:
@@ -20,12 +21,22 @@ Metadata:
       - PublicSubnet2CIDR
       - PublicSubnet3CIDR
       - AccessCIDR
+      - Tenancy
     - Label:
         default: AWS Quick Start configuration
       Parameters:
       - QSS3BucketName
       - QSS3KeyPrefix
       - QSS3BucketRegion
+    - Label:
+        default: Aerospike configuration
+      Parameters:
+      - NumberOfInstances
+      - Cloudwatch
+      - InstanceType
+      - EBS
+      - NamespaceFile
+      - FeatureKeyFile
     ParameterLabels:
       AvailabilityZones:
         default: Availability Zones
@@ -58,9 +69,10 @@ Parameters:
     Description: "List of Availability Zones to use for the VPC subnets. Three Availability Zones are used for this deployment."
     Type: List<AWS::EC2::AvailabilityZone::Name>
   NumberOfAZs:
-    AllowedValues:
-      - '2'
-      - '3'
+    Type: String
+    AllowedValues: ["2", "3"]
+    Default: "3"
+    Description: Number of Availability Zones to use in the VPC. This must match the value entered for the AvailabilityZones parameter.
   KeyPairName:
     Description: Key pair to securely connect to your instance.
       after it launches.
@@ -124,6 +136,11 @@ Parameters:
     Default: 10.0.0.0/16
     Description: CIDR block for the VPC.
     Type: String
+  AccessCIDR:
+    AllowedPattern: "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$"
+    Description: "CIDR IP range permitted to access Aerospike. A value
+      of 0.0.0.0/0 allows access from any IP address."
+    Type: String
   Tenancy:
     Description: The tenancy of your instance
     Type: String
@@ -146,11 +163,6 @@ Parameters:
     AllowedValues:
       - 'yes'
       - 'no'
-  AccessCIDR:
-    AllowedPattern: "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$"
-    Description: "CIDR IP range permitted to access Vault. A value
-      of 0.0.0.0/0 allows access from any IP address."
-    Type: String
   InstanceType:
     Description: Type of EC2 instance to launch.
     Type: String
@@ -250,16 +262,19 @@ Parameters:
     Default: >-
       IyBnZW5lcmF0ZWQgMjAyMS0wMy0xMCAwNDowNDoyOAoKZmVhdHVyZS1rZXktdmVyc2lvbiAgICAgICAgICAgICAgICAgIDIKc2VyaWFsLW51bWJlciAgICAgICAgICAgICAgICAgICAgICAgIDU2ODk1MzA1OAoKYWNjb3VudC1uYW1lICAgICAgICAgICAgICAgICAgICAgRXZhbHVhdGlvbl9MaWNlbnNlCgphY2NvdW50LUlEICAgICAgICAgICAgICAgICAgICAgICBBZXJvc3Bpa2VfXzQzNTcxMTM3NAoKYXNkYi1jaGFuZ2Utbm90aWZpY2F0aW9uICAgICAgICAgdHJ1ZQphc2RiLWNsdXN0ZXItbm9kZXMtbGltaXQgICAgICAgICAxCmFzZGItY29tcHJlc3Npb24gICAgICAgICAgICAgICAgIHRydWUKYXNkYi1lbmNyeXB0aW9uLWF0LXJlc3QgICAgICAgICAgdHJ1ZQphc2RiLWxkYXAgICAgICAgICAgICAgICAgICAgICAgICB0cnVlCmFzZGItcG1lbSAgICAgICAgICAgICAgICAgICAgICAgIHRydWUKYXNkYi1zdHJvbmctY29uc2lzdGVuY3kgICAgICAgICAgdHJ1ZQptZXNnLWptcy1jb25uZWN0b3IgICAgICAgICAgICAgICB0cnVlCm1lc2cta2Fma2EtY29ubmVjdG9yICAgICAgICAgICAgIHRydWUKcHJlc3RvLWNvbm5lY3RvciAgICAgICAgICAgICAgICAgdHJ1ZQpyYWYtcmVhbHRpbWUtYW5hbHlzaXMtZnJhbWV3b3JrICB0cnVlCgotLS0tLSBTSUdOQVRVUkUgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCk1FVUNJRXhGN3VSYzBZdURvb3J6ZkNUR2NhdGgrQVB6U0doUi94M21pN0RuRFB6a0FpRUF1cjkzRVcwb2tlNVoKUWZ5c1l4dzZCb0tKRUI1STVlV2xXdDU2UzlxeGNySWsKLS0tLS0gRU5EIE9GIFNJR05BVFVSRSAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo=
 
+Conditions:
+  UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
+  3AZDeployment: !Equals [!Ref NumberOfAZs, "3"]
+  2AZDeployment: !Or
+    - !Equals [!Ref NumberOfAZs, "2"]
+    - !Equals [!Ref NumberOfAZs, "3"]
 Resources:
   VPCStack:
     Type: AWS::CloudFormation::Stack
     Metadata:
       cfn-lint: { config: { ignore_checks: [ W9901 ] } }
     Properties:
-      TemplateURL: !Sub
-        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-aws-vpc/templates/aws-vpc.template'
-        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
-          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+      TemplateURL: https://aws-quickstart.s3.amazonaws.com/quickstart-aws-vpc/templates/aws-vpc.template.yaml
       Parameters:
         AvailabilityZones: !Join [ ',', !Ref 'AvailabilityZones' ]
         KeyPairName: !Ref 'KeyPairName'
@@ -271,30 +286,35 @@ Resources:
         PublicSubnet2CIDR: !Ref 'PublicSubnet2CIDR'
         PublicSubnet3CIDR: !Ref 'PublicSubnet3CIDR'
         VPCCIDR: !Ref 'VPCCIDR'
-
-  WorkloadStack:
-    Type: AWS::CloudFormation::Stack
-    Metadata:
-      cfn-lint: { config: { ignore_checks: [ W9901 ] } }
+  
+  AerospikeServerStack:
+    Type: 'AWS::CloudFormation::Stack'
     Properties:
       TemplateURL: !Sub
-        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/aerospike-cluster-workload.template.yaml'
-        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
-          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+        - >-
+          https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/aerospike-cluster-workload.template.yaml
+        - S3Bucket: !If
+            - UsingDefaultBucket
+            - !Sub '${QSS3BucketName}-${AWS::Region}'
+            - !Ref QSS3BucketName
+          S3Region: !If
+            - UsingDefaultBucket
+            - !Ref 'AWS::Region'
+            - !Ref QSS3BucketRegion
       Parameters:
-        AvailabilityZones: !Join [ ',', !Ref 'AvailabilityZones' ]
-        KeyPairName: !Ref 'KeyPairName'
-        NumberOfAZs: !Ref 'NumberOfAZs'
-        PrivateSubnet1ACIDR: !Ref 'PrivateSubnet1CIDR'
-        PrivateSubnet2ACIDR: !Ref 'PrivateSubnet2CIDR'
-        PrivateSubnet3ACIDR: !Ref 'PrivateSubnet3CIDR'
-        PublicSubnet1CIDR: !Ref 'PublicSubnet1CIDR'
-        PublicSubnet2CIDR: !Ref 'PublicSubnet2CIDR'
-        PublicSubnet3CIDR: !Ref 'PublicSubnet3CIDR'
-        Tenancy: !Ref 'Tenancy'
-        NumberOfInstances: !Ref 'NumberOfInstances'
-        Cloudwatch: !Ref 'Cloudwatch'
-        InstanceType: !Ref 'InstanceType'
-        EBS: !Ref 'EBS'
-        NamespaceFile: !Ref 'NamespaceFile'
-        FeatureKeyFile: !Ref 'FeatureKeyFile'
+        VPCCIDR: !Ref VPCCIDR
+        VPCID: !GetAtt VPCStack.Outputs.VPCID
+        KeyPairName: !Ref KeyPairName
+        VPCSubnet: !Join
+          - ','
+          - - !GetAtt VPCStack.Outputs.PublicSubnet1ID
+            - !GetAtt VPCStack.Outputs.PublicSubnet2ID
+            - !If [ 3AZDeployment, !GetAtt VPCStack.Outputs.PublicSubnet3ID, !Ref "AWS::NoValue" ]
+        InstanceType: !Ref InstanceType
+        Tenancy: !Ref Tenancy
+        NumberOfInstances: !Ref NumberOfInstances
+        Cloudwatch: !Ref Cloudwatch
+        EBS: !Ref EBS
+        NamespaceFile: !Ref NamespaceFile
+        FeatureKeyFile: !Ref FeatureKeyFile
+        AccessCIDR: !Ref AccessCIDR

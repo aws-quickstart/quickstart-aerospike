@@ -58,6 +58,12 @@ Parameters:
   VPC:
     Description: Choose which VPC this cluster should be deployed to
     Type: 'AWS::EC2::VPC::Id'
+  VPCCIDR:
+    Description: VPC CIDR block, in format x.x.0.0/16.
+    Type: String
+    Default: 10.0.0.0/16
+    ConstraintDescription: Must be in format x.x.0.0/16.
+    AllowedPattern: '^([0-9]{1,3}\.){2}([0]{1}.)[0]{1}(\/[16]{2})$'
   VPCSubnet:
     Description: 'List of subnet IDs, this will link instance in the VPC selected above'
     Type: 'List<AWS::EC2::Subnet::Id>'
@@ -741,11 +747,11 @@ Resources:
         - IpProtocol: tcp
           FromPort: '3000'
           ToPort: '3000'
-          CidrIp: 0.0.0.0/0
+          CidrIp: !Ref VPCCIDR
         - IpProtocol: tcp
           FromPort: '8081'
           ToPort: '8081'
-          CidrIp: 0.0.0.0/0
+          CidrIp: !Ref VPCCIDR
         - IpProtocol: tcp
           FromPort: '22'
           ToPort: '22'
@@ -753,7 +759,7 @@ Resources:
         - IpProtocol: icmp
           FromPort: '-1'
           ToPort: '-1'
-          CidrIp: 0.0.0.0/0
+          CidrIp: !Ref VPCCIDR
       Tags:
         - Key: StackID
           Value: !Ref 'AWS::StackId'
