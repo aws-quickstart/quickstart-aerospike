@@ -23,8 +23,8 @@ tests:
       AvailabilityZones: $[taskcat_genaz_3]
       AccessCIDR: 10.0.0.0/0
       KeyPairName: cikeys
-      QSS3BucketName: $[taskcat_autobucket]
-      QSS3BucketRegion: $[taskcat_current_region]
+      QSS3BucketName: tcat-quickstart-aerospike-cluster-8szrnhms
+      QSS3BucketRegion: us-east-1
       QSS3KeyPrefix: quickstart-aerospike-cluster/
     template: templates/aerospike-cluster-entrypoint-new-vpc.template.yaml
   
