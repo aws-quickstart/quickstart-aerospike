@@ -20,6 +20,7 @@ Metadata:
          - AccessCIDR
          - InstanceType
          - EBS
+         - BastionSecurityGroupID
      - Label: 
          default: Aerospike configuration
        Parameters:
@@ -27,6 +28,8 @@ Metadata:
          - FeatureKeyFile
 
    ParameterLabels:
+     BastionSecurityGroupID:
+        default: Bastion Security Group ID
      KeyPairName:
        default: EC2 key pair
      VPC: 
@@ -51,11 +54,14 @@ Metadata:
        default: Feature key file value encoded in base64
 
 Parameters:
+  BastionSecurityGroupID:
+    Description: 'ID of the Bastion Security Group (e.g., sg-7f16e910)'
+    Type: 'AWS::EC2::SecurityGroup::Id'
   KeyPairName:
     Description: Name of the KeyPair that would be used to ssh into the instances
     Type: 'AWS::EC2::KeyPair::KeyName'
     ConstraintDescription: Please specify the name of the keypair that you use to login
-  VPC:
+  VPCID:
     Description: Choose which VPC this cluster should be deployed to
     Type: 'AWS::EC2::VPC::Id'
   VPCCIDR:
@@ -187,6 +193,7 @@ Parameters:
       (Optional) Location of your namespace definition. Must be publically
       downloadable. Will append file directly to end of aerospike.conf
     Type: String
+    Default: ''
   FeatureKeyFile:
     Description: Base64 decode of feature-key-file
     Type: String
@@ -319,10 +326,10 @@ Resources:
       Tags:
         - Key: StackID
           Value: !Ref 'AWS::StackId'
-          PropagateAtLaunch: "true"
+          PropagateAtLaunch: true
         - Key: Name
           Value: !Ref 'AWS::StackName'
-          PropagateAtLaunch: 'true'
+          PropagateAtLaunch: true
   LaunchConfig:
     Type: 'AWS::AutoScaling::LaunchConfiguration'
     Metadata:
@@ -369,7 +376,7 @@ Resources:
                   - |2
                       ###Point to all instances using the mesh-address config option
                   - '  HOSTNAMES=$(aws ec2 describe-vpc-attribute --vpc-id='
-                  - !Ref VPC
+                  - !Ref VPCID
                   - |2
                      --region=$REGION --attribute=enableDnsHostnames --output=text | grep ENABLEDNSHOSTNAMES | awk '{print $2}')
                   - |2
@@ -553,7 +560,7 @@ Resources:
                   - |
                     '    # CFT
                   - HOSTNAMES=$(aws ec2 describe-vpc-attribute --vpc-id=
-                  - !Ref VPC
+                  - !Ref VPCID
                   - |2
                      --region=$REGION --attribute=enableDnsHostnames --output=text | grep ENABLEDNSHOSTNAMES | awk '{print $2}')
                   - |
@@ -707,7 +714,7 @@ Resources:
         - RegionMap
         - !Ref 'AWS::Region'
         - name
-      AssociatePublicIpAddress: 'true'
+      AssociatePublicIpAddress: true
       PlacementTenancy: !Ref Tenancy
       SecurityGroups:
         - !GetAtt 
@@ -742,23 +749,23 @@ Resources:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
       GroupDescription: Enable ports to access Aerospike
-      VpcId: !Ref VPC
+      VpcId: !Ref VPCID
       SecurityGroupIngress:
         - IpProtocol: tcp
-          FromPort: '3000'
-          ToPort: '3000'
+          FromPort: 3000
+          ToPort: 3000
           CidrIp: !Ref VPCCIDR
         - IpProtocol: tcp
-          FromPort: '8081'
-          ToPort: '8081'
+          FromPort: 8081
+          ToPort: 8081
           CidrIp: !Ref VPCCIDR
         - IpProtocol: tcp
-          FromPort: '22'
-          ToPort: '22'
-          CidrIp: !Ref AccessCIDR
+          FromPort: 22
+          ToPort: 22
+          SourceSecurityGroupId: !Ref BastionSecurityGroupID
         - IpProtocol: icmp
-          FromPort: '-1'
-          ToPort: '-1'
+          FromPort: -1
+          ToPort: -1
           CidrIp: !Ref VPCCIDR
       Tags:
         - Key: StackID
@@ -770,8 +777,8 @@ Resources:
         - InstanceSecurityGroup
         - GroupId
       IpProtocol: tcp
-      FromPort: '3001'
-      ToPort: '3004'
+      FromPort: 3001
+      ToPort: 3004
       SourceSecurityGroupId: !GetAtt 
         - InstanceSecurityGroup
         - GroupId

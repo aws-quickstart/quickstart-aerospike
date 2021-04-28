@@ -37,6 +37,16 @@ Metadata:
       - EBS
       - NamespaceFile
       - FeatureKeyFile
+    - Label:
+        default: Linux bastion configuration
+        Parameters:
+          - NumBastionHosts
+          - BastionHostName
+          - BastionTenancy
+          - EnableBanner
+          - BastionBanner
+          - EnableTCPForwarding
+          - EnableX11Forwarding
     ParameterLabels:
       AvailabilityZones:
         default: Availability Zones
@@ -73,6 +83,83 @@ Parameters:
     AllowedValues: ["2", "3"]
     Default: "3"
     Description: Number of Availability Zones to use in the VPC. This must match the value entered for the AvailabilityZones parameter.
+  BastionAMIOS:
+    AllowedValues:
+      - Amazon-Linux2-HVM
+      - CentOS-7-HVM
+      - Ubuntu-Server-20.04-LTS-HVM
+      - SUSE-SLES-15-HVM
+    Default: Amazon-Linux2-HVM
+    Description: The Linux distribution for the AMI to be used for the bastion instances.
+    Type: String
+  BastionHostName:
+    Default: LinuxBastion
+    Description: The value used for the name tag of the bastion host.
+    Type: String
+  BastionBanner:
+    Default: ''
+    Description: Banner text to display upon login.
+    Type: String
+  BastionTenancy:
+    Description: Bastion VPC tenancy (dedicated or default).
+    Type: String
+    Default: default
+    AllowedValues:
+      - dedicated
+      - default
+  BastionInstanceType:
+    Description: Amazon EC2 instance type for the bastion instances.
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+      - t2.nano
+      - t2.micro
+      - t2.small
+      - t2.medium
+      - t2.large
+      - t3.micro
+      - t3.small
+      - t3.medium
+      - t3.large
+      - t3.xlarge
+      - t3.2xlarge
+      - m3.large
+      - m3.xlarge
+      - m3.2xlarge
+      - m4.large
+      - m4.xlarge
+      - m4.2xlarge
+      - m4.4xlarge
+  EnableBanner:
+    AllowedValues:
+      - 'true'
+      - 'false'
+    Default: 'false'
+    Description: Choose *true* to display a banner when connecting via SSH to the bastion.
+    Type: String
+  EnableTCPForwarding:
+    Type: String
+    Description: 'To enable TCP forwarding, choose *true*.'
+    Default: 'false'
+    AllowedValues:
+      - 'true'
+      - 'false'
+  EnableX11Forwarding:
+    Type: String
+    Description: 'To enable X11 forwarding, choose *true*.'
+    Default: 'false'
+    AllowedValues:
+      - 'true'
+      - 'false'
+  NumBastionHosts:
+    AllowedValues:
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+    Default: '1'
+    Description: The number of bastion hosts to create. The maximum number is four.
+    Type: String
   KeyPairName:
     Description: Key pair to securely connect to your instance.
       after it launches.
@@ -256,6 +343,7 @@ Parameters:
       (Optional) Location of your namespace definition. Must be publically
       downloadable. Will append file directly to end of aerospike.conf
     Type: String
+    Default: ''
   FeatureKeyFile:
     Description: Base64 decode of feature-key-file
     Type: String
@@ -274,13 +362,12 @@ Resources:
     Metadata:
       cfn-lint: { config: { ignore_checks: [ W9901 ] } }
     Properties:
-      TemplateURL: !Sub
-        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-aws-vpc/templates/aws-vpc.template'
-        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+      TemplateURL: !Sub	
+        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-aws-vpc/templates/aws-vpc.template'	
+        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]	
           S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
         AvailabilityZones: !Join [ ',', !Ref 'AvailabilityZones' ]
-        KeyPairName: !Ref 'KeyPairName'
         NumberOfAZs: !Ref 'NumberOfAZs'
         PrivateSubnet1ACIDR: !Ref 'PrivateSubnet1CIDR'
         PrivateSubnet2ACIDR: !Ref 'PrivateSubnet2CIDR'
@@ -289,22 +376,56 @@ Resources:
         PublicSubnet2CIDR: !Ref 'PublicSubnet2CIDR'
         PublicSubnet3CIDR: !Ref 'PublicSubnet3CIDR'
         VPCCIDR: !Ref 'VPCCIDR'
-  
-  AerospikeServerStack:
+  BastionStack:
     Type: 'AWS::CloudFormation::Stack'
     Properties:
-      TemplateURL: !Sub
+      TemplateURL: !Sub 
         - >-
-          https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/aerospike-cluster-workload.template.yaml
-        - S3Bucket: !If
-            - UsingDefaultBucket
-            - !Sub '${QSS3BucketName}-${AWS::Region}'
-            - !Ref QSS3BucketName
-          S3Region: !If
+          https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-linux-bastion/templates/linux-bastion.template
+        - S3Region: !If 
             - UsingDefaultBucket
             - !Ref 'AWS::Region'
             - !Ref QSS3BucketRegion
+          S3Bucket: !If 
+            - UsingDefaultBucket
+            - !Sub '${QSS3BucketName}-${AWS::Region}'
+            - !Ref QSS3BucketName
       Parameters:
+        BastionAMIOS: !Ref BastionAMIOS
+        BastionHostName: !Ref BastionHostName
+        BastionBanner: !Ref BastionBanner
+        BastionInstanceType: !Ref BastionInstanceType
+        BastionTenancy: !Ref BastionTenancy
+        EnableBanner: !Ref EnableBanner
+        EnableTCPForwarding: !Ref EnableTCPForwarding
+        EnableX11Forwarding: !Ref EnableX11Forwarding
+        KeyPairName: !Ref KeyPairName
+        NumBastionHosts: !Ref NumBastionHosts
+        PublicSubnet1ID: !GetAtt 
+          - VPCStack
+          - Outputs.PublicSubnet1ID
+        PublicSubnet2ID: !GetAtt 
+          - VPCStack
+          - Outputs.PublicSubnet2ID
+        QSS3BucketRegion: !Ref QSS3BucketRegion
+        QSS3BucketName: !Ref QSS3BucketName
+        QSS3KeyPrefix: !Ref QSS3KeyPrefix
+        RemoteAccessCIDR: !Ref AccessCIDR
+        VPCID: !GetAtt 
+          - VPCStack
+          - Outputs.VPCID
+
+  AerospikeServerStack:
+    Type: 'AWS::CloudFormation::Stack'
+    Properties:
+      TemplateURL: !Sub	
+        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/aerospike-cluster-workload.template.yaml'
+        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]	
+          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+      Parameters:
+        BastionSecurityGroupID: !GetAtt 
+          - BastionStack
+          - Outputs.BastionSecurityGroupID
         VPCCIDR: !Ref VPCCIDR
         VPCID: !GetAtt VPCStack.Outputs.VPCID
         KeyPairName: !Ref KeyPairName
