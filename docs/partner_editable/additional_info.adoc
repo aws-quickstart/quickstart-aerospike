@@ -5,7 +5,7 @@
 // If steps are required to test the deployment, add them here. If not, remove the heading
 After the AWS CloudFormation stack is complete, you can test the deployment by checking whether the instances were properly enrolled with your {partner-product-short-name} project.
 
-You can use the https://docs.aerospike.com/docs/client/java/benchmarks.html[benchmark] tool to exercise and demo load on the new Aerospike cluster, otherwise you can 
+You can use the https://docs.aerospike.com/docs/client/java/benchmarks.html[benchmark] tool to exercise and demo load on the new Aerospike cluster, otherwise you can check out https://docs.aerospike.com/docs/guide/query.html[Query] for information on querying the {partner-product-short-name} and https://docs.aerospike.com/docs/connect/index.html[here] to checkout {partner-product-short-name} how to set up and use connectors to stream data into your new cluster.
 
 == Post-deployment steps
 // If post-deployment steps are required, add them here. If not, remove the heading
@@ -17,6 +17,7 @@ After your deployment is up and ready, you can read more on
  - https://docs.aerospike.com/docs/operations/monitor/index.html[Monitoring]
  - https://docs.aerospike.com/docs/operations/troubleshoot/index.html[Troubleshooting]
  - https://docs.aerospike.com/docs/architecture/clients.html[Clients]
+ - https://docs.aerospike.com/docs/connect/index.html[Connectors]
 
 
 == Best practices for using {partner-product-short-name} on AWS
