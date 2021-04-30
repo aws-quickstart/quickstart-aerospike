@@ -3,21 +3,39 @@
 
 == Test the deployment
 // If steps are required to test the deployment, add them here. If not, remove the heading
+After the AWS CloudFormation stack is complete, you can test the deployment by checking whether the instances were properly enrolled with your {partner-product-short-name} project.
+
+You can use the https://docs.aerospike.com/docs/client/java/benchmarks.html[benchmark] tool to exercise and demo load on the new Aerospike cluster, otherwise you can 
 
 == Post-deployment steps
 // If post-deployment steps are required, add them here. If not, remove the heading
 
+After your deployment is up and ready, you can read more on 
+
+ - https://docs.aerospike.com/docs/operations/configure/index.html[Configuring]
+ - https://docs.aerospike.com/docs/operations/manage/index.html[Manageing]
+ - https://docs.aerospike.com/docs/operations/monitor/index.html[Monitoring]
+ - https://docs.aerospike.com/docs/operations/troubleshoot/index.html[Troubleshooting]
+ - https://docs.aerospike.com/docs/architecture/clients.html[Clients]
+
+
 == Best practices for using {partner-product-short-name} on AWS
 // Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
 
-_Add any best practices for using the software._
+https://docs.aerospike.com/docs/deploy_guides/aws/recommendations/index.html[best practices] contains a lot of information on best practices for running {partner-product-short-name} in AWS.
 
 == Security
 // Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
 
-_Add any security-related information._
+When running {partner-product-short-name} in production it's important to review and ensure security best practices are understood and followed.
+
+When it comes to backing up and restoring your data, There are many ways to accomplish this task depending on your needs. Check out the {partner-product-short-name} AWS https://docs.aerospike.com/docs/deploy_guides/aws/backup/index.html[docs] for more information to empowering what way is best for you on AWS.
+
+Check out https://docs.aerospike.com/docs/deploy_guides/aws/recommendations/index.html[best practices] for security and other best practices when running {partner-product-short-name} in production.
 
 == Other useful information
 //Provide any other information of interest to users, especially focusing on areas where AWS or cloud usage differs from on-premises usage.
 
-_Add any other details that will help the customer use the software on AWS._
+Additional information can be found on the Aerospike https://docs.aerospike.com/docs/architecture/index.html[Architecture] as well as extra information on https://docs.aerospike.com/docs/operations/index.html[operations]
+
+The ability to monitor the stack is provided by our https://docs.aerospike.com/docs/tools/monitorstack/index.html[Monitoring Stack]
