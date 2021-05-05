@@ -1,0 +1,29 @@
+project:
+  name: quickstart-aerospike-cluster
+  owner: quickstart-eng@amazon.com
+  package_lambda: true
+  shorten_stack_name: true
+  lambda_source_path: functions/source
+  lambda_zip_path: functions/packages
+  regions:
+  - us-east-1
+  template: templates/aerospike-cluster-entrypoint-new-vpc.template.yaml
+  parameters:
+    AvailabilityZones: $[taskcat_genaz_2]
+    AccessCIDR: 10.0.0.0/0
+    KeyPairName: cikeys
+    QSS3BucketName: $[taskcat_autobucket]
+    QSS3BucketRegion: $[taskcat_current_region]
+    QSS3KeyPrefix: quickstart-aerospike-cluster/
+tests:
+  single-region:
+    regions:
+    - us-east-1
+    parameters:
+      AvailabilityZones: $[taskcat_genaz_2]
+      AccessCIDR: 10.0.0.0/0
+      KeyPairName: cikeys
+      QSS3BucketName: $[taskcat_autobucket]
+      QSS3BucketRegion: $[taskcat_current_region]
+      QSS3KeyPrefix: quickstart-aerospike-cluster/
+    template: templates/aerospike-cluster-entrypoint-new-vpc.template.yaml
