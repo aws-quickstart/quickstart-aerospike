@@ -13,6 +13,7 @@ Metadata:
         default: VPC network configuration
       Parameters:
       - AvailabilityZones
+      - NumberOfAZs
       - VPCCIDR
       - PrivateSubnet1CIDR
       - PrivateSubnet2CIDR
@@ -21,15 +22,37 @@ Metadata:
       - PublicSubnet2CIDR
       - PublicSubnet3CIDR
       - AccessCIDR
+      - Tenancy
     - Label:
         default: AWS Quick Start configuration
       Parameters:
       - QSS3BucketName
       - QSS3KeyPrefix
       - QSS3BucketRegion
+    - Label:
+        default: Aerospike configuration
+      Parameters:
+      - NumberOfInstances
+      - Cloudwatch
+      - InstanceType
+      - EBS
+      - NamespaceFile
+      - FeatureKeyFile
+    - Label:
+        default: Linux bastion configuration
+        Parameters:
+          - BastionAMIOS
+          - BastionInstanceType
+          - NumBastionHosts
     ParameterLabels:
       AvailabilityZones:
         default: Availability Zones
+      BastionAMIOS:
+        default: Bastion AMI Operating System
+      BastionInstanceType:
+        default: Bastion Instance Type
+      NumBastionHosts:
+        default: Number of Bastion Hosts
       KeyPairName:
         default: EC2 key pair
       PrivateSubnet1CIDR:
@@ -51,21 +74,57 @@ Metadata:
       QSS3BucketRegion:
         default: Quick Start S3 bucket Region
       AccessCIDR:
-        default: Permitted IP range
+        default: Allowed Bastion External Access CIDR
       VPCCIDR:
         default: VPC CIDR
+
 Parameters:
   AvailabilityZones:
-    Description: "List of Availability Zones to use for the VPC subnets. Three Availability Zones are used for this deployment."
+    Description: "List of Availability Zones to use for the VPC subnets. Minimum two Availability Zones are required."
     Type: List<AWS::EC2::AvailabilityZone::Name>
   NumberOfAZs:
     Type: String
     AllowedValues: ["2", "3"]
     Default: "3"
     Description: Number of Availability Zones to use in the VPC. This must match the value entered for the AvailabilityZones parameter.
+  BastionInstanceType:
+    Default: t3.micro
+    Type: String
+    Description: Amazon EC2 instance type for the bastion instances.
+    AllowedValues:
+      - t2.nano
+      - t2.micro
+      - t2.small
+      - t2.medium
+      - t2.large
+      - t3.micro
+      - t3.small
+      - t3.medium
+      - t3.large
+      - m3.large
+      - m3.xlarge
+      - m3.2xlarge
+      - m4.large
+      - m4.xlarge
+      - m4.2xlarge
+      - m4.4xlarge
+  NumBastionHosts:
+    AllowedValues:
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+    Default: '1'
+    Description: Enter the number of bastion hosts to create
+    Type: String
+  BastionAMIOS:
+    AllowedValues:
+      - Amazon-Linux2-HVM
+    Default: Amazon-Linux2-HVM
+    Description: The Linux distribution for the AMI to be used for the bastion instances
+    Type: String
   KeyPairName:
-    Description: Key pair to securely connect to your instance.
-      after it launches.
+    Description: Key pair to securely connect to your instance after it launches.
     Type: AWS::EC2::KeyPair::KeyName
   PrivateSubnet1CIDR:
     AllowedPattern: "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$"
@@ -131,12 +190,132 @@ Parameters:
     Description: "CIDR IP range permitted to access Aerospike. A value
       of 0.0.0.0/0 allows access from any IP address."
     Type: String
+  Tenancy:
+    Description: The tenancy of your instance
+    Type: String
+    Default: default
+    AllowedValues:
+      - default
+      - dedicated
+  NumberOfInstances:
+    Description: Number of instances in the cluster
+    Type: Number
+    Default: '1'
+    MinValue: '1'
+    MaxValue: '15'
+  Cloudwatch:
+    Description: >-
+      Add basic Aerospike metrics to Cloudwatch. Will incur Cloudwatch expenses
+      ~ $24/mo/instance
+    Type: String
+    Default: 'no'
+    AllowedValues:
+      - 'yes'
+      - 'no'
+  InstanceType:
+    Description: Type of EC2 instance to launch.
+    Type: String
+    Default: t2.large
+    AllowedValues:
+      - t2.micro
+      - t2.small
+      - t2.medium
+      - t2.large
+      - t3.micro
+      - t3.small
+      - t3.medium
+      - t3.large
+      - t3.xlarge
+      - t3.2xlarge
+      - m3.medium
+      - m3.large
+      - m3.xlarge
+      - m3.2xlarge
+      - m4.large
+      - m4.xlarge
+      - m4.2xlarge
+      - m4.4xlarge
+      - m4.10xlarge
+      - m4.16xlarge
+      - m5.large
+      - m5.xlarge
+      - m5.2xlarge
+      - m5.4xlarge
+      - m5.12xlarge
+      - m5.24xlarge
+      - c3.large
+      - c3.xlarge
+      - c3.2xlarge
+      - c3.4xlarge
+      - c3.8xlarge
+      - c4.large
+      - c4.xlarge
+      - c4.2xlarge
+      - c4.4xlarge
+      - c4.8xlarge
+      - c5.large
+      - c5.xlarge
+      - c5.2xlarge
+      - c5.4xlarge
+      - c5.9xlarge
+      - c5.18xlarge
+      - r3.large
+      - r3.xlarge
+      - r3.2xlarge
+      - r3.4xlarge
+      - r3.8xlarge
+      - r4.large
+      - r4.xlarge
+      - r4.2xlarge
+      - r4.4xlarge
+      - r4.8xlarge
+      - r4.16xlarge
+      - r5.large
+      - r5.xlarge
+      - r5.2xlarge
+      - r5.4xlarge
+      - r5.12xlarge
+      - r5.24xlarge
+      - r5d.large
+      - r5d.xlarge
+      - r5d.2xlarge
+      - r5d.4xlarge
+      - r5d.12xlarge
+      - r5d.24xlarge
+      - i2.xlarge
+      - i2.2xlarge
+      - i2.4xlarge
+      - i2.8xlarge
+      - i3.large
+      - i3.xlarge
+      - i3.2xlarge
+      - i3.4xlarge
+      - i3.8xlarge
+      - i3.16xlarge
+  EBS:
+    Description: >-
+      Size of EBS SSD volume in GB. The volume will attach under /dev/sdg. Limit
+      of 16000. Enter 0 to not use EBS.
+    Type: Number
+    Default: '50'
+    MinValue: '0'
+    MaxValue: '16000'
+  NamespaceFile:
+    Description: >-
+      (Optional) Location of your namespace definition. Must be publically
+      downloadable. Will append file directly to end of aerospike.conf
+    Type: String
+    Default: ''
+  FeatureKeyFile:
+    Description: Base64 encoding of feature-key-file. Default key works only for 1 node cluster.
+    Type: String
+    Default: >-
+      IyBnZW5lcmF0ZWQgMjAyMS0wMy0xMCAwNDowNDoyOAoKZmVhdHVyZS1rZXktdmVyc2lvbiAgICAgICAgICAgICAgICAgIDIKc2VyaWFsLW51bWJlciAgICAgICAgICAgICAgICAgICAgICAgIDU2ODk1MzA1OAoKYWNjb3VudC1uYW1lICAgICAgICAgICAgICAgICAgICAgRXZhbHVhdGlvbl9MaWNlbnNlCgphY2NvdW50LUlEICAgICAgICAgICAgICAgICAgICAgICBBZXJvc3Bpa2VfXzQzNTcxMTM3NAoKYXNkYi1jaGFuZ2Utbm90aWZpY2F0aW9uICAgICAgICAgdHJ1ZQphc2RiLWNsdXN0ZXItbm9kZXMtbGltaXQgICAgICAgICAxCmFzZGItY29tcHJlc3Npb24gICAgICAgICAgICAgICAgIHRydWUKYXNkYi1lbmNyeXB0aW9uLWF0LXJlc3QgICAgICAgICAgdHJ1ZQphc2RiLWxkYXAgICAgICAgICAgICAgICAgICAgICAgICB0cnVlCmFzZGItcG1lbSAgICAgICAgICAgICAgICAgICAgICAgIHRydWUKYXNkYi1zdHJvbmctY29uc2lzdGVuY3kgICAgICAgICAgdHJ1ZQptZXNnLWptcy1jb25uZWN0b3IgICAgICAgICAgICAgICB0cnVlCm1lc2cta2Fma2EtY29ubmVjdG9yICAgICAgICAgICAgIHRydWUKcHJlc3RvLWNvbm5lY3RvciAgICAgICAgICAgICAgICAgdHJ1ZQpyYWYtcmVhbHRpbWUtYW5hbHlzaXMtZnJhbWV3b3JrICB0cnVlCgotLS0tLSBTSUdOQVRVUkUgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCk1FVUNJRXhGN3VSYzBZdURvb3J6ZkNUR2NhdGgrQVB6U0doUi94M21pN0RuRFB6a0FpRUF1cjkzRVcwb2tlNVoKUWZ5c1l4dzZCb0tKRUI1STVlV2xXdDU2UzlxeGNySWsKLS0tLS0gRU5EIE9GIFNJR05BVFVSRSAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo=
+
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
   3AZDeployment: !Equals [!Ref NumberOfAZs, "3"]
-  2AZDeployment: !Or
-    - !Equals [!Ref NumberOfAZs, "2"]
-    - !Equals [!Ref NumberOfAZs, "3"]
+
 Resources:
   VPCStack:
     Type: AWS::CloudFormation::Stack
@@ -144,18 +323,85 @@ Resources:
       cfn-lint: { config: { ignore_checks: [ W9901 ] } }
     Properties:
       TemplateURL: !Sub
-        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-aws-vpc/templates/aws-vpc.template'
+        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-aws-vpc/templates/aws-vpc.template.yaml'
         - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
           S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
         AvailabilityZones: !Join [ ',', !Ref 'AvailabilityZones' ]
-        KeyPairName: !Ref 'KeyPairName'
         NumberOfAZs: !Ref 'NumberOfAZs'
         PrivateSubnet1ACIDR: !Ref 'PrivateSubnet1CIDR'
         PrivateSubnet2ACIDR: !Ref 'PrivateSubnet2CIDR'
         PrivateSubnet3ACIDR: !Ref 'PrivateSubnet3CIDR'
-        PrivateSubnetATag2: "kubernetes.io/role/internal-elb="
         PublicSubnet1CIDR: !Ref 'PublicSubnet1CIDR'
         PublicSubnet2CIDR: !Ref 'PublicSubnet2CIDR'
         PublicSubnet3CIDR: !Ref 'PublicSubnet3CIDR'
         VPCCIDR: !Ref 'VPCCIDR'
+
+  BastionStack:
+    Type: 'AWS::CloudFormation::Stack'
+    Properties:
+      TemplateURL: !Sub 
+        - >-
+          https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-linux-bastion/templates/linux-bastion.template
+        - S3Region: !If 
+            - UsingDefaultBucket
+            - !Ref 'AWS::Region'
+            - !Ref QSS3BucketRegion
+          S3Bucket: !If 
+            - UsingDefaultBucket
+            - !Sub '${QSS3BucketName}-${AWS::Region}'
+            - !Ref QSS3BucketName
+      Parameters:
+        BastionInstanceType: !Ref BastionInstanceType
+        NumBastionHosts: !Ref NumBastionHosts
+        BastionAMIOS: !Ref BastionAMIOS
+        EnableTCPForwarding: 'true'
+        KeyPairName: !Ref KeyPairName
+        PublicSubnet1ID: !GetAtt
+          - VPCStack
+          - Outputs.PublicSubnet1ID
+        PublicSubnet2ID: !GetAtt
+          - VPCStack
+          - Outputs.PublicSubnet2ID
+        QSS3BucketName: !Ref QSS3BucketName
+        QSS3KeyPrefix: !Sub '${QSS3KeyPrefix}submodules/quickstart-linux-bastion/'
+        QSS3BucketRegion: !Ref QSS3BucketRegion
+        RemoteAccessCIDR: !Ref AccessCIDR
+        VPCID: !GetAtt 
+          - VPCStack
+          - Outputs.VPCID
+
+  AerospikeServerStack:
+    Type: 'AWS::CloudFormation::Stack'
+    Properties:
+      TemplateURL: !Sub
+        - >-
+          https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/aerospike-cluster-workload.template.yaml
+        - S3Bucket: !If
+            - UsingDefaultBucket
+            - !Sub '${QSS3BucketName}-${AWS::Region}'
+            - !Ref QSS3BucketName
+          S3Region: !If
+            - UsingDefaultBucket
+            - !Ref 'AWS::Region'
+            - !Ref QSS3BucketRegion
+      Parameters:
+        BastionSecurityGroupID: !GetAtt
+          - BastionStack
+          - Outputs.BastionSecurityGroupID
+        VPCCIDR: !Ref VPCCIDR
+        VPCID: !GetAtt VPCStack.Outputs.VPCID
+        KeyPairName: !Ref KeyPairName
+        VPCSubnet: !Join
+          - ','
+          - - !GetAtt VPCStack.Outputs.PrivateSubnet1AID
+            - !GetAtt VPCStack.Outputs.PrivateSubnet2AID
+            - !If [ 3AZDeployment, !GetAtt VPCStack.Outputs.PrivateSubnet3AID, !Ref "AWS::NoValue" ]
+        InstanceType: !Ref InstanceType
+        Tenancy: !Ref Tenancy
+        NumberOfInstances: !Ref NumberOfInstances
+        Cloudwatch: !Ref Cloudwatch
+        EBS: !Ref EBS
+        NamespaceFile: !Ref NamespaceFile
+        FeatureKeyFile: !Ref FeatureKeyFile
+        AccessCIDR: !Ref AccessCIDR
