@@ -10,6 +10,7 @@ project:
   template: templates/aerospike-cluster-entrypoint-new-vpc.template.yaml
   parameters:
     AvailabilityZones: $[taskcat_genaz_2]
+    NumberOfAZs: 2
     AccessCIDR: 10.0.0.0/0
     KeyPairName: cikeys
     QSS3BucketName: $[taskcat_autobucket]
@@ -21,6 +22,7 @@ tests:
     - us-east-1
     parameters:
       AvailabilityZones: $[taskcat_genaz_2]
+      NumberOfAZs: 2
       AccessCIDR: 10.0.0.0/0
       KeyPairName: cikeys
       QSS3BucketName: $[taskcat_autobucket]
