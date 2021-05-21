@@ -29,3 +29,18 @@ tests:
       QSS3BucketRegion: $[taskcat_current_region]
       QSS3KeyPrefix: quickstart-aerospike-cluster/
     template: templates/aerospike-cluster-entrypoint-new-vpc.template.yaml
+  multi-region:
+    regions:
+    - us-east-1
+    - us-east-2
+    - us-west-1
+    - eu-central-1
+    parameters:
+      AvailabilityZones: $[taskcat_genaz_3]
+      NumberOfAZs: 2
+      AccessCIDR: 10.0.0.0/0
+      KeyPairName: cikeys
+      QSS3BucketName: $[taskcat_autobucket]
+      QSS3BucketRegion: $[taskcat_current_region]
+      QSS3KeyPrefix: quickstart-aerospike-cluster/
+    template: templates/aerospike-cluster-entrypoint-new-vpc.template.yaml

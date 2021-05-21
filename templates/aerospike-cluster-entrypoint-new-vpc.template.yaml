@@ -405,3 +405,8 @@ Resources:
         NamespaceFile: !Ref NamespaceFile
         FeatureKeyFile: !Ref FeatureKeyFile
         AccessCIDR: !Ref AccessCIDR
+
+Outputs:
+  BastionHostIP:
+    Description: IP for bastion host.
+    Value: !GetAtt "BastionStack.Outputs.EIP1"
