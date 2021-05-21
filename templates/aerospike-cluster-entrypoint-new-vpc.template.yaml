@@ -6,7 +6,10 @@ Metadata:
     Order: Index a
   LintSpellExclude:
     - Aerospike
+    - Linux
     - tags
+    - EBS
+    - sdg
   AWS::CloudFormation::Interface:
     ParameterGroups:
     - Label:
@@ -33,7 +36,8 @@ Metadata:
         default: Aerospike configuration
       Parameters:
       - NumberOfInstances
-      - Cloudwatch
+      - Tenancy
+      - EnableCloudWatch
       - InstanceType
       - EBS
       - NamespaceFile
@@ -47,12 +51,28 @@ Metadata:
     ParameterLabels:
       AvailabilityZones:
         default: Availability Zones
+      NumberOfAZs:
+        default: Number of Availability Zones
+      NumberOfInstances:
+        default: Number of instances to provision for the Aerospike cluster
+      Tenancy:
+        default: Are the instances for the Aerospike instances on shared or dedicated host
+      EnableCloudWatch:
+        default: Enable CloudWatch logging for the Aerospike cluster
+      InstanceType:
+        default: Which instance type to deploy for the Aerospike cluster
+      FeatureKeyFile:
+        default: Aerospike key to use for this deployment
+      NamespaceFile:
+        default: "TODO: Partner to advise"
+      EBS:
+        default: "TODO: Partner to advise"
       BastionAMIOS:
-        default: Bastion AMI Operating System
+        default: Bastion AMI operating system
       BastionInstanceType:
-        default: Bastion Instance Type
+        default: Bastion instance type
       NumBastionHosts:
-        default: Number of Bastion Hosts
+        default: Number of bastion hosts
       KeyPairName:
         default: EC2 key pair
       PrivateSubnet1CIDR:
@@ -74,10 +94,9 @@ Metadata:
       QSS3BucketRegion:
         default: Quick Start S3 bucket Region
       AccessCIDR:
-        default: Allowed Bastion External Access CIDR
+        default: Allowed bastion external access CIDR
       VPCCIDR:
         default: VPC CIDR
-
 Parameters:
   AvailabilityZones:
     Description: "List of Availability Zones to use for the VPC subnets. Minimum two Availability Zones are required."
@@ -115,13 +134,13 @@ Parameters:
       - '3'
       - '4'
     Default: '1'
-    Description: Enter the number of bastion hosts to create
+    Description: Enter the number of bastion hosts to create.
     Type: String
   BastionAMIOS:
     AllowedValues:
       - Amazon-Linux2-HVM
     Default: Amazon-Linux2-HVM
-    Description: The Linux distribution for the AMI to be used for the bastion instances
+    Description: The Linux distribution for the AMI to be used for the bastion instances.
     Type: String
   KeyPairName:
     Description: Key pair to securely connect to your instance after it launches.
@@ -190,23 +209,23 @@ Parameters:
     Description: "CIDR IP range permitted to access Aerospike. A value
       of 0.0.0.0/0 allows access from any IP address."
     Type: String
+    Default: 0.0.0.0/0
   Tenancy:
-    Description: The tenancy of your instance
+    Description: The tenancy of your instance.
     Type: String
     Default: default
     AllowedValues:
       - default
       - dedicated
   NumberOfInstances:
-    Description: Number of instances in the cluster
+    Description: Number of instances in the Aerospike cluster.
     Type: Number
     Default: '1'
     MinValue: '1'
     MaxValue: '15'
-  Cloudwatch:
-    Description: >-
-      Add basic Aerospike metrics to Cloudwatch. Will incur Cloudwatch expenses
-      ~ $24/mo/instance
+  EnableCloudWatch:
+    Description: |
+      Add basic Aerospike metrics to CloudWatch. Enabling this will incur CloudWatch expenses.
     Type: String
     Default: 'no'
     AllowedValues:
@@ -215,7 +234,7 @@ Parameters:
   InstanceType:
     Description: Type of EC2 instance to launch.
     Type: String
-    Default: t2.large
+    Default: m5.large
     AllowedValues:
       - t2.micro
       - t2.small
@@ -293,7 +312,7 @@ Parameters:
       - i3.8xlarge
       - i3.16xlarge
   EBS:
-    Description: >-
+    Description: |
       Size of EBS SSD volume in GB. The volume will attach under /dev/sdg. Limit
       of 16000. Enter 0 to not use EBS.
     Type: Number
@@ -301,7 +320,7 @@ Parameters:
     MinValue: '0'
     MaxValue: '16000'
   NamespaceFile:
-    Description: >-
+    Description: |
       (Optional) Location of your namespace definition. Must be publically
       downloadable. Will append file directly to end of aerospike.conf
     Type: String
@@ -338,6 +357,7 @@ Resources:
         VPCCIDR: !Ref 'VPCCIDR'
 
   BastionStack:
+    Metadata: { cfn-lint: { config: { ignore_checks: [ W9901 ] } } }
     Type: 'AWS::CloudFormation::Stack'
     Properties:
       TemplateURL: !Sub 
@@ -400,11 +420,10 @@ Resources:
         InstanceType: !Ref InstanceType
         Tenancy: !Ref Tenancy
         NumberOfInstances: !Ref NumberOfInstances
-        Cloudwatch: !Ref Cloudwatch
+        EnableCloudWatch: !Ref EnableCloudWatch
         EBS: !Ref EBS
         NamespaceFile: !Ref NamespaceFile
         FeatureKeyFile: !Ref FeatureKeyFile
-        AccessCIDR: !Ref AccessCIDR
 
 Outputs:
   BastionHostIP:
