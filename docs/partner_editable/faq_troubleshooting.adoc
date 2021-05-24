@@ -18,7 +18,7 @@ For more information, see https://docs.aws.amazon.com/AWSCloudFormation/latest/U
 
 *Q.* I created a cluster of 3 machines but they do not seem to be clustering
 
-*A.* Most likely you did not get a production licence, You can ether re-run the quickstart guide ensuring you apply your production license or if you don't have a license you can obtain one https://aerospike.com/lp/try-now/[here]. 
+*A.* Most likely you did not get a production license, You can either re-run the quickstart guide ensuring you apply your production license or if you don't have a license you can obtain one https://aerospike.com/lp/try-now/[here]. 
 == Troubleshooting
 
 <Steps for troubleshooting the deployment.>
