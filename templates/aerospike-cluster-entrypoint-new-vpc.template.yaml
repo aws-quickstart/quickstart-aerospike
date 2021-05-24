@@ -64,9 +64,9 @@ Metadata:
       FeatureKeyFile:
         default: Aerospike key to use for this deployment
       NamespaceFile:
-        default: "TODO: Partner to advise"
+        default: "(Optional) Location of your namespace definition. Must be publically downloadable. Will append file directly to end of aerospike.conf"
       EBS:
-        default: "TODO: Partner to advise"
+        default: "Size of EBS SSD volume in GB. The volume will attach under /dev/sdg. Limit of 16000. Enter 0 to not use EBS."
       BastionAMIOS:
         default: Bastion AMI operating system
       BastionInstanceType:
