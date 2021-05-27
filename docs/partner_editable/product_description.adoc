@@ -2,4 +2,8 @@
 // Briefly describe the software. Use consistent and clear branding. 
 // Include the benefits of using the software on AWS, and provide details on usage scenarios.
 
-<Describe how the software works on AWS.>
+{partner-product-short-name} is a real-time NoSQL database that provides a key-value store with a flexible data model that enables you to manage real-time data at petabyte scale with microsecond latency.  It supports a Hybrid Memory Architecture™ where indexes, including the primary index and optional secondary indexes, are stored by default in DRAM for ultra-fast access. The primary index can also be configured to be stored in an NVMe flash device. Data can be stored either in DRAM or more cost-effectively on SSDs. With {partner-product-short-name} you can configure each namespace separately, so small namespaces can take advantage of DRAM and larger ones gain the cost benefits of SSDs.  
+
+{partner-product-short-name} is frequently used for data-intensive, geo-distributed applications delivering the performance of a cache with the persistence of a NoSQL database. It provides a rich set of enterprise features which include Multi-site clustering, Cross Datacenter Replication™ (XDR), Fast Restarts, Rapid Rebalance, and TLS Security.
+
+AWS enables you to set up the cloud infrastructure to support {partner-product-short-name} deployments in a scalable and cost-effective way on AWS EC2.  This reference deployment will help you build an {partner-product-short-name} cluster by automating deployment tasks to quickly install an {partner-product-short-name} instance with a limited single node-license, or bring your own license to quickly stand up an {partner-product-short-name} clusters using the {partner-product-short-name} Cloud Formation Template (CFT) across multiple availability zones.

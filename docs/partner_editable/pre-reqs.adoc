@@ -10,4 +10,4 @@ _Describe any setup required in the partner portal/account prior to template lau
 
 ==== Prepare for the deployment
 
-_Describe any preparation required to complete the product build, such as obtaining licenses or placing files in S3_
+If you want to run more than a single node, you will need to bring your own license. Please obtain this from Aerospike before continuing. If a single node is acceptable, a trial license is provided that brings all the enterprise features to a single node.
