@@ -13,7 +13,7 @@ You can use the https://docs.aerospike.com/docs/client/java/benchmarks.html[benc
 After your deployment is up and ready, you can read more on 
 
  - https://docs.aerospike.com/docs/operations/configure/index.html[Configuring]
- - https://docs.aerospike.com/docs/operations/manage/index.html[Manageing]
+ - https://docs.aerospike.com/docs/operations/manage/index.html[Managing]
  - https://docs.aerospike.com/docs/operations/monitor/index.html[Monitoring]
  - https://docs.aerospike.com/docs/operations/troubleshoot/index.html[Troubleshooting]
  - https://docs.aerospike.com/docs/architecture/clients.html[Clients]
