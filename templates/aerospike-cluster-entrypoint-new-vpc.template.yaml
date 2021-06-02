@@ -193,7 +193,7 @@ Parameters:
     AllowedPattern: "^[0-9a-zA-Z-/]*$"
     ConstraintDescription: Quick Start key prefix can include numbers, lowercase letters,
       uppercase letters, hyphens (-), and a forward slash (/).
-    Default: quickstart-aerospike-cluster/
+    Default: quickstart-aerospike/
     Description: S3 key prefix for the Quick Start assets. The prefix
       can include numbers, lowercase letters, uppercase letters, hyphens (-), and
       a forward slash (/).
