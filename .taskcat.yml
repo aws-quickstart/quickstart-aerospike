@@ -1,5 +1,5 @@
 project:
-  name: quickstart-aerospike-cluster
+  name: quickstart-aerospike
   owner: quickstart-eng@amazon.com
   package_lambda: true
   shorten_stack_name: true
@@ -15,7 +15,7 @@ project:
     KeyPairName: --overridden--
     QSS3BucketName: $[taskcat_autobucket]
     QSS3BucketRegion: $[taskcat_current_region]
-    QSS3KeyPrefix: quickstart-aerospike-cluster/
+    QSS3KeyPrefix: quickstart-aerospike/
 tests:
   aerospike-single-region:
     parameters:
