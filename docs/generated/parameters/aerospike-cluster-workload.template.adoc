@@ -1,0 +1,31 @@
+
+.VPC network configuration
+[width="100%",cols="16%,11%,73%",options="header",]
+|===
+|Parameter label (name) |Default value|Description|EC2 key pair
+(`KeyPairName`)|`**__Requires input__**`|Name of the EC2 keypair that would be used to ssh into the instances.|VPC ID
+(`VPCID`)|`**__Requires input__**`|Choose which VPC this cluster should be deployed into.|CIDR for the VPC
+(`VPCCIDR`)|`10.0.0.0/16`|VPC CIDR block, in format x.x.0.0/16.|List of subnet
+(`VPCSubnet`)|`**__Requires input__**`|List of subnet IDs, this will link instance in the VPC selected above.|Tenancy of instance
+(`Tenancy`)|`default`|The tenancy of your instance.
+|===
+.Aerospike configuration
+[width="100%",cols="16%,11%,73%",options="header",]
+|===
+|Parameter label (name) |Default value|Description|Location of namespace definition
+(`NamespaceFile`)|`**__Blank string__**`|(Optional) Location of your namespace definition. Must be publicly downloadable. Will append file directly to end of aerospike.conf.|Feature key file value encoded in base64
+(`FeatureKeyFile`)|`IyBnZW5lcmF0ZWQgMjAyMS0wMy0xMCAwNDowNDoyOAoKZmVhdHVyZS1rZXktdmVyc2lvbiAgICAgICAgICAgICAgICAgIDIKc2VyaWFsLW51bWJlciAgICAgICAgICAgICAgICAgICAgICAgIDU2ODk1MzA1OAoKYWNjb3VudC1uYW1lICAgICAgICAgICAgICAgICAgICAgRXZhbHVhdGlvbl9MaWNlbnNlCgphY2NvdW50LUlEICAgICAgICAgICAgICAgICAgICAgICBBZXJvc3Bpa2VfXzQzNTcxMTM3NAoKYXNkYi1jaGFuZ2Utbm90aWZpY2F0aW9uICAgICAgICAgdHJ1ZQphc2RiLWNsdXN0ZXItbm9kZXMtbGltaXQgICAgICAgICAxCmFzZGItY29tcHJlc3Npb24gICAgICAgICAgICAgICAgIHRydWUKYXNkYi1lbmNyeXB0aW9uLWF0LXJlc3QgICAgICAgICAgdHJ1ZQphc2RiLWxkYXAgICAgICAgICAgICAgICAgICAgICAgICB0cnVlCmFzZGItcG1lbSAgICAgICAgICAgICAgICAgICAgICAgIHRydWUKYXNkYi1zdHJvbmctY29uc2lzdGVuY3kgICAgICAgICAgdHJ1ZQptZXNnLWptcy1jb25uZWN0b3IgICAgICAgICAgICAgICB0cnVlCm1lc2cta2Fma2EtY29ubmVjdG9yICAgICAgICAgICAgIHRydWUKcHJlc3RvLWNvbm5lY3RvciAgICAgICAgICAgICAgICAgdHJ1ZQpyYWYtcmVhbHRpbWUtYW5hbHlzaXMtZnJhbWV3b3JrICB0cnVlCgotLS0tLSBTSUdOQVRVUkUgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCk1FVUNJRXhGN3VSYzBZdURvb3J6ZkNUR2NhdGgrQVB6U0doUi94M21pN0RuRFB6a0FpRUF1cjkzRVcwb2tlNVoKUWZ5c1l4dzZCb0tKRUI1STVlV2xXdDU2UzlxeGNySWsKLS0tLS0gRU5EIE9GIFNJR05BVFVSRSAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo=
+`|Base64 encoding of feature-key-file. Default key works only for 1 node cluster.|Number of instances in the cluster
+(`NumberOfInstances`)|`1`|Number of instances in the cluster.|Enable CloudWatch for the Aerospike cluster
+(`EnableCloudWatch`)|`no`|Add basic Aerospike metrics to CloudWatch. Will incur CloudWatch expenses.|Type of EC2 instance
+(`InstanceType`)|`m5.large`|Type of EC2 instance to launch.|Size of EBS volume
+(`EBS`)|`50`|Size of EBS SSD volume in GB. The volume will attach under /dev/sdg. Limit
+of 16000. Enter 0 to not use EBS.
+
+|===
+.Linux bastion configuration
+[width="100%",cols="16%,11%,73%",options="header",]
+|===
+|Parameter label (name) |Default value|Description|Bastion Security Group ID
+(`BastionSecurityGroupID`)|`**__Requires input__**`|ID of the bastion host Security Group (e.g., sg-7f16e910).
+|===

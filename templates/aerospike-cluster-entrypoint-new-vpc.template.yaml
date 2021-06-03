@@ -44,10 +44,10 @@ Metadata:
       - FeatureKeyFile
     - Label:
         default: Linux bastion configuration
-        Parameters:
-          - BastionAMIOS
-          - BastionInstanceType
-          - NumBastionHosts
+      Parameters:
+        - BastionAMIOS
+        - BastionInstanceType
+        - NumBastionHosts
     ParameterLabels:
       AvailabilityZones:
         default: Availability Zones
