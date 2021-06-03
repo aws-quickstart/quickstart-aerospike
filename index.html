@@ -851,8 +851,8 @@ p.footer-text a{color:#d7d8d8}
 <li><a href="#_faq">FAQ</a></li>
 <li><a href="#_parameter_reference">Parameter reference</a>
 <ul class="sectlevel2">
-<li><a href="#_launch_into_a_existing_vpc">Launch into a existing VPC</a></li>
 <li><a href="#_launch_into_a_new_vpc">Launch into a new VPC</a></li>
+<li><a href="#_launch_into_a_existing_vpc">Launch into a existing VPC</a></li>
 </ul>
 </li>
 <li><a href="#_send_us_feedback">Send us feedback</a></li>
@@ -1328,11 +1328,11 @@ If you’re deploying Aerospike Database into an existing VPC, make sure that yo
 </colgroup>
 <tbody>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="http://qs_launch_permalink" target="_blank" rel="noopener">Deploy Aerospike Database into a new VPC on AWS</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://fwd.aws/d6nX8?" target="_blank" rel="noopener">Deploy Aerospike Database into a new VPC on AWS</a></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><a href="http://qs_template_permalink" target="_blank" rel="noopener">View template</a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="http://qs_launch_permalink" target="_blank" rel="noopener">Deploy Aerospike Database into an existing VPC on AWS</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="http://https://fwd.aws/d6nX8?" target="_blank" rel="noopener">Deploy Aerospike Database into an existing VPC on AWS</a></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><a href="http://qs_template_permalink" target="_blank" rel="noopener">View template</a></p></td>
 </tr>
 </tbody>
@@ -1499,137 +1499,9 @@ Unless you are customizing the Quick Start templates for your own deployment pro
 </table>
 </div>
 <div class="sect2">
-<h3 id="_launch_into_a_existing_vpc">Launch into a existing VPC</h3>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. VPC network configuration</caption>
-<colgroup>
-<col style="width: 16%;">
-<col style="width: 11%;">
-<col style="width: 73%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter label (name)</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">EC2 key pair
-(<code>KeyPairName</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the EC2 keypair that would be used to ssh into the instances.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">VPC ID
-(<code>VPCID</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Choose which VPC this cluster should be deployed into.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">CIDR for the VPC
-(<code>VPCCIDR</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10.0.0.0/16</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">VPC CIDR block, in format x.x.0.0/16.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">List of subnet
-(<code>VPCSubnet</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">List of subnet IDs, this will link instance in the VPC selected above.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Tenancy of instance
-(<code>Tenancy</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>default</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The tenancy of your instance.</p></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. Aerospike configuration</caption>
-<colgroup>
-<col style="width: 16%;">
-<col style="width: 11%;">
-<col style="width: 73%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter label (name)</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Location of namespace definition
-(<code>NamespaceFile</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Location of your namespace definition. Must be publicly downloadable. Will append file directly to end of aerospike.conf.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Feature key file value encoded in base64
-(<code>FeatureKeyFile</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">`IyBnZW5lcmF0ZWQgMjAyMS0wMy0xMCAwNDowNDoyOAoKZmVhdHVyZS1rZXktdmVyc2lvbiAgICAgICAgICAgICAgICAgIDIKc2VyaWFsLW51bWJlciAgICAgICAgICAgICAgICAgICAgICAgIDU2ODk1MzA1OAoKYWNjb3VudC1uYW1lICAgICAgICAgICAgICAgICAgICAgRXZhbHVhdGlvbl9MaWNlbnNlCgphY2NvdW50LUlEICAgICAgICAgICAgICAgICAgICAgICBBZXJvc3Bpa2VfXzQzNTcxMTM3NAoKYXNkYi1jaGFuZ2Utbm90aWZpY2F0aW9uICAgICAgICAgdHJ1ZQphc2RiLWNsdXN0ZXItbm9kZXMtbGltaXQgICAgICAgICAxCmFzZGItY29tcHJlc3Npb24gICAgICAgICAgICAgICAgIHRydWUKYXNkYi1lbmNyeXB0aW9uLWF0LXJlc3QgICAgICAgICAgdHJ1ZQphc2RiLWxkYXAgICAgICAgICAgICAgICAgICAgICAgICB0cnVlCmFzZGItcG1lbSAgICAgICAgICAgICAgICAgICAgICAgIHRydWUKYXNkYi1zdHJvbmctY29uc2lzdGVuY3kgICAgICAgICAgdHJ1ZQptZXNnLWptcy1jb25uZWN0b3IgICAgICAgICAgICAgICB0cnVlCm1lc2cta2Fma2EtY29ubmVjdG9yICAgICAgICAgICAgIHRydWUKcHJlc3RvLWNvbm5lY3RvciAgICAgICAgICAgICAgICAgdHJ1ZQpyYWYtcmVhbHRpbWUtYW5hbHlzaXMtZnJhbWV3b3JrICB0cnVlCgotLS0tLSBTSUdOQVRVUkUgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCk1FVUNJRXhGN3VSYzBZdURvb3J6ZkNUR2NhdGgrQVB6U0doUi94M21pN0RuRFB6a0FpRUF1cjkzRVcwb2tlNVoKUWZ5c1l4dzZCb0tKRUI1STVlV2xXdDU2UzlxeGNySWsKLS0tLS0gRU5EIE9GIFNJR05BVFVSRSAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo=
-`</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Base64 encoding of feature-key-file. Default key works only for 1 node cluster.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Number of instances in the cluster
-(<code>NumberOfInstances</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Number of instances in the cluster.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enable CloudWatch for the Aerospike cluster
-(<code>EnableCloudWatch</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>no</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Add basic Aerospike metrics to CloudWatch. Will incur CloudWatch expenses.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Type of EC2 instance
-(<code>InstanceType</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>m5.large</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Type of EC2 instance to launch.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Size of EBS volume
-(<code>EBS</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>50</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Size of EBS SSD volume in GB. The volume will attach under /dev/sdg. Limit
-of 16000. Enter 0 to not use EBS.</p></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. Linux bastion configuration</caption>
-<colgroup>
-<col style="width: 16%;">
-<col style="width: 11%;">
-<col style="width: 73%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter label (name)</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Bastion Security Group ID
-(<code>BastionSecurityGroupID</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ID of the bastion host Security Group (e.g., sg-7f16e910).</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect2">
 <h3 id="_launch_into_a_new_vpc">Launch into a new VPC</h3>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. VPC network configuration</caption>
+<caption class="title">Table 1. VPC network configuration</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -1712,7 +1584,7 @@ of 16000. Enter 0 to not use EBS.</p></td>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. AWS Quick Start configuration</caption>
+<caption class="title">Table 2. AWS Quick Start configuration</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -1747,7 +1619,7 @@ of 16000. Enter 0 to not use EBS.</p></td>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. Aerospike configuration</caption>
+<caption class="title">Table 3. Aerospike configuration</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -1808,7 +1680,7 @@ downloadable. Will append file directly to end of aerospike.conf</p></td>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 7. Linux bastion configuration</caption>
+<caption class="title">Table 4. Linux bastion configuration</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -1839,6 +1711,134 @@ downloadable. Will append file directly to end of aerospike.conf</p></td>
 (<code>NumBastionHosts</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>1</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Enter the number of bastion hosts to create.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_launch_into_a_existing_vpc">Launch into a existing VPC</h3>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 5. VPC network configuration</caption>
+<colgroup>
+<col style="width: 16%;">
+<col style="width: 11%;">
+<col style="width: 73%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter label (name)</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EC2 key pair
+(<code>KeyPairName</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the EC2 keypair that would be used to ssh into the instances.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VPC ID
+(<code>VPCID</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Choose which VPC this cluster should be deployed into.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CIDR for the VPC
+(<code>VPCCIDR</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10.0.0.0/16</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VPC CIDR block, in format x.x.0.0/16.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List of subnet
+(<code>VPCSubnet</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List of subnet IDs, this will link instance in the VPC selected above.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tenancy of instance
+(<code>Tenancy</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>default</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The tenancy of your instance.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 6. Aerospike configuration</caption>
+<colgroup>
+<col style="width: 16%;">
+<col style="width: 11%;">
+<col style="width: 73%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter label (name)</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Location of namespace definition
+(<code>NamespaceFile</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Location of your namespace definition. Must be publicly downloadable. Will append file directly to end of aerospike.conf.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Feature key file value encoded in base64
+(<code>FeatureKeyFile</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">`IyBnZW5lcmF0ZWQgMjAyMS0wMy0xMCAwNDowNDoyOAoKZmVhdHVyZS1rZXktdmVyc2lvbiAgICAgICAgICAgICAgICAgIDIKc2VyaWFsLW51bWJlciAgICAgICAgICAgICAgICAgICAgICAgIDU2ODk1MzA1OAoKYWNjb3VudC1uYW1lICAgICAgICAgICAgICAgICAgICAgRXZhbHVhdGlvbl9MaWNlbnNlCgphY2NvdW50LUlEICAgICAgICAgICAgICAgICAgICAgICBBZXJvc3Bpa2VfXzQzNTcxMTM3NAoKYXNkYi1jaGFuZ2Utbm90aWZpY2F0aW9uICAgICAgICAgdHJ1ZQphc2RiLWNsdXN0ZXItbm9kZXMtbGltaXQgICAgICAgICAxCmFzZGItY29tcHJlc3Npb24gICAgICAgICAgICAgICAgIHRydWUKYXNkYi1lbmNyeXB0aW9uLWF0LXJlc3QgICAgICAgICAgdHJ1ZQphc2RiLWxkYXAgICAgICAgICAgICAgICAgICAgICAgICB0cnVlCmFzZGItcG1lbSAgICAgICAgICAgICAgICAgICAgICAgIHRydWUKYXNkYi1zdHJvbmctY29uc2lzdGVuY3kgICAgICAgICAgdHJ1ZQptZXNnLWptcy1jb25uZWN0b3IgICAgICAgICAgICAgICB0cnVlCm1lc2cta2Fma2EtY29ubmVjdG9yICAgICAgICAgICAgIHRydWUKcHJlc3RvLWNvbm5lY3RvciAgICAgICAgICAgICAgICAgdHJ1ZQpyYWYtcmVhbHRpbWUtYW5hbHlzaXMtZnJhbWV3b3JrICB0cnVlCgotLS0tLSBTSUdOQVRVUkUgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCk1FVUNJRXhGN3VSYzBZdURvb3J6ZkNUR2NhdGgrQVB6U0doUi94M21pN0RuRFB6a0FpRUF1cjkzRVcwb2tlNVoKUWZ5c1l4dzZCb0tKRUI1STVlV2xXdDU2UzlxeGNySWsKLS0tLS0gRU5EIE9GIFNJR05BVFVSRSAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo=
+`</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Base64 encoding of feature-key-file. Default key works only for 1 node cluster.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of instances in the cluster
+(<code>NumberOfInstances</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of instances in the cluster.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enable CloudWatch for the Aerospike cluster
+(<code>EnableCloudWatch</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>no</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Add basic Aerospike metrics to CloudWatch. Will incur CloudWatch expenses.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type of EC2 instance
+(<code>InstanceType</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>m5.large</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type of EC2 instance to launch.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Size of EBS volume
+(<code>EBS</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>50</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Size of EBS SSD volume in GB. The volume will attach under /dev/sdg. Limit
+of 16000. Enter 0 to not use EBS.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 7. Linux bastion configuration</caption>
+<colgroup>
+<col style="width: 16%;">
+<col style="width: 11%;">
+<col style="width: 73%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter label (name)</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bastion Security Group ID
+(<code>BastionSecurityGroupID</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ID of the bastion host Security Group (e.g., sg-7f16e910).</p></td>
 </tr>
 </tbody>
 </table>
@@ -1893,7 +1893,7 @@ and to share your customizations with others.</p>
 </html>
 <!--
 repo commit:
-2b853ab87548806eb86ec1219b9f124350894ad0
+c45385b97d2d7c06065a4e569d79417fa550baaa
 
 submodule config:
 +a9d6c5903745c1091793d3cd1f960948919c2c9f docs/boilerplate (heads/main)
