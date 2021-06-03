@@ -28,10 +28,10 @@ Each deployment takes about {deployment_time} to complete.
 +
 [cols="3,1"]
 |===
-^|http://qs_launch_permalink[Deploy {partner-product-short-name} into a new VPC on AWS^]
+^|https://fwd.aws/d6nX8?[Deploy {partner-product-short-name} into a new VPC on AWS^]
 ^|http://qs_template_permalink[View template^]
 
-^|http://qs_launch_permalink[Deploy {partner-product-short-name} into an existing VPC on AWS^]
+^|http://https://fwd.aws/d6nX8?[Deploy {partner-product-short-name} into an existing VPC on AWS^]
 ^|http://qs_template_permalink[View template^]
 |===
 +
