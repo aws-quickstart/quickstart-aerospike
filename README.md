@@ -9,7 +9,7 @@
 [Launch into an existing VPC](https://fwd.aws/vM8jA?)
 //-->
 
-For architectural details, step-by-step instructions, and customization options, see the [deployment guide](https://aws-quickstart.github.io/quickstart-aerospike-cluster/).
+For architectural details, step-by-step instructions, and customization options, see the [deployment guide](https://aws-quickstart.github.io/quickstart-aerospike/).
 
 To post feedback, submit feature ideas, or report bugs, use the **Issues** section of this GitHub repo. 
 
