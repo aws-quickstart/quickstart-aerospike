@@ -2,11 +2,7 @@
 
 ==== Prepare your AWS account
 
-_Describe any setup required in the AWS account prior to template launch_
-
-==== Prepare your {partner-company-name} account
-
-_Describe any setup required in the partner portal/account prior to template launch_
+Ensure your account has permissions required to create the infrastructure listed in Resource Quotas.
 
 ==== Prepare for the deployment
 
