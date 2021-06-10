@@ -408,7 +408,7 @@ Resources:
                     (crontab -l 2>/dev/null; echo '*/5 * * * *
                     /opt/aerospike/poll_sqs') | crontab -
                   - '  if [[ "'
-                  - !Ref Cloudwatch
+                  - !Ref EnableCloudWatch
                   - |
                     " == "yes" ]]; then
                   - |2
