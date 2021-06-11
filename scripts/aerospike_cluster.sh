@@ -13,14 +13,14 @@ sed -i '/.*mesh-seed-address-port/d' $CONF
 for i in $PRIVATEIP; do
     sed -i \"/interval/i \\\t\tmesh-seed-address-port $i 3002\" $CONF
 done
-CODE=$(curl -Is $2 | head -n 1 | cut -d$' ' -f2)
+CODE=$(curl -Is $3 | head -n 1 | cut -d$' ' -f2)
 if [ "$CODE" != "200" ]; then echo 'Namespace File not found' >> /var/log/awsuserdatascript
 else sed -i '/namespace test/,$d' $CONF
-curl -s $2 >> $CONF; fi
+curl -s $3 >> $CONF; fi
 systemctl restart aerospike
 
 echo OtherInstancesScriptFinish >> /var/log/awsuserdatascript
 (crontab -l 2>/dev/null; echo '*/5 * * * * /opt/aerospike/poll_sqs') | crontab -
-if [[ "$3" == "yes" ]]; then
+if [[ "$2" == "yes" ]]; then
 (crontab -l 2>/dev/null; echo '*/5 * * * * /opt/aerospike/cloudwatch') | crontab -
 fi

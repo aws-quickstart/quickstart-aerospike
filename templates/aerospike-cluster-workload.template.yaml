@@ -393,7 +393,7 @@ Resources:
                   #!/bin/bash
                   aws s3 cp s3://${S3Bucket}/${QSS3KeyPrefix}scripts/aerospike_cluster.sh .
                   chmod +x aerospike_cluster.sh
-                  ./aerospike_cluster.sh ${REGION} ${NamespaceFile} ${EnableCloudWatch}
+                  ./aerospike_cluster.sh ${REGION} ${EnableCloudWatch}  ${NamespaceFile}
                 - REGION: !Sub "${AWS::Region}" 
                   S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
               mode: '000744'
