@@ -226,11 +226,6 @@ Parameters:
       can include numbers, lowercase letters, uppercase letters, hyphens (-), and
       a forward slash (/).
     Type: String
-  NumberOfAZs:
-    Type: String
-    AllowedValues: ["2", "3"]
-    Default: "3"
-    Description: Number of Availability Zones to use in the VPC. This must match the value entered for the AvailabilityZones parameter.
 Mappings:
   AWSAMIRegionMap:
     AMI:
@@ -271,13 +266,10 @@ Mappings:
       AEROSPIKEAMI: ami-0e85ec1cd8e86df3b
 
 Conditions:
+  UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
   NotUsingEBS: !Equals 
     - !Ref EBS
     - 0
-
-Conditions:
-  UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
-  3AZDeployment: !Equals [!Ref NumberOfAZs, "3"]
 
 Resources:
   ClusterRole:
@@ -327,6 +319,16 @@ Resources:
               - Effect: Allow
                 Action: 'autoscaling:*'
                 Resource: '*'
+        - PolicyName: FetchClusterScript
+          PolicyDocument: 
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action: s3:GetObject
+                Resource: !Sub
+                  - arn:${AWS::Partition}:s3:::${S3Bucket}/${QSS3KeyPrefix}*
+                  - S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+
   ClusterInstanceProfile:
     Type: 'AWS::IAM::InstanceProfile'
     Properties:
