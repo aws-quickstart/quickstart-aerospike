@@ -389,7 +389,7 @@ Resources:
               content: !Sub
                 - |
                   #!/bin/bash
-                  aws s3 cp https://s3.amazonaws.com/aerospike.cloud-templates.test/QSTemp/11jun/aerospike_cluster.sh .
+                  aws s3 cp s3://${S3Bucket}/${QSS3KeyPrefix}scripts/aerospike_cluster.sh .
                   chmod +x aerospike_cluster.sh
                   ./aerospike_cluster.sh ${REGION} ${NamespaceFile} ${EnableCloudWatch}
                 - REGION: !Sub "${AWS::Region}" 
