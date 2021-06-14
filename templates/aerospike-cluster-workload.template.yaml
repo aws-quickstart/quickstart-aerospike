@@ -393,7 +393,7 @@ Resources:
                   #!/bin/bash
                   aws s3 cp s3://${S3Bucket}/${QSS3KeyPrefix}scripts/aerospike_cluster.sh .
                   chmod +x aerospike_cluster.sh
-                  ./aerospike_cluster.sh ${REGION} ${EnableCloudWatch}  ${NamespaceFile}
+                  ./aerospike_cluster.sh ${REGION} ${EnableCloudWatch} ${AWS::StackId} ${NamespaceFile}
                 - REGION: !Sub "${AWS::Region}" 
                   S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
               mode: '000744'
@@ -541,7 +541,7 @@ Resources:
               command: /opt/aerospike/cft_scripts/aerospike_init
               cwd: /opt/aerospike/cft_scripts
             01_form_asd_cluster:
-              command: /opt/aerospike/cft_scripts/aerospike_cluster
+              command:  /opt/aerospike/cft_scripts/aerospike_cluster
               cwd: /opt/aerospike/cft_scripts
             02_aerospike_start:
               command: /opt/aerospike/cft_scripts/aerospike_start
