@@ -308,7 +308,12 @@ Resources:
             Version: 2012-10-17
             Statement:
               - Effect: Allow
-                Action: 'sqs:*'
+                Action: 
+                  - sqs:GetQueueAttributes
+                  - sqs:SendMessageBatch
+                  - sqs:SendMessage
+                  - sqs:SendMessageBatch
+                  - sqs:GetQueueUrl
                 Resource: !GetAtt 
                   - MigrationSQS
                   - Arn
