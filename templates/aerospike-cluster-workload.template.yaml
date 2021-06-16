@@ -348,15 +348,6 @@ Resources:
                 Resource: !Sub
                   - 'arn:${AWS::Partition}:autoscaling:${AWS::Region}:${AWS::AccountId}:autoScalingGroup:*:autoScalingGroupName/${AutoScalingGroupName}'
                   - AutoScalingGroupName: !Sub 'AerospikeCluster-${PsuedoRandom.GroupId}'
-        - PolicyName: FetchClusterScript
-          PolicyDocument: 
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Action: s3:GetObject
-                Resource: !Sub
-                  - arn:${AWS::Partition}:s3:::${S3Bucket}/${QSS3KeyPrefix}scripts/aerospike_cluster.sh
-                  - S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
 
   ClusterInstanceProfile:
     Type: 'AWS::IAM::InstanceProfile'
