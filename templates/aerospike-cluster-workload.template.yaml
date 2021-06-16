@@ -22,7 +22,6 @@ Metadata:
     - aerospike
     - configuration
     - .conf
-    - QSS3KeyPrefix
     - QSS3BucketRegion
     - QSS3BucketName
 
@@ -53,7 +52,6 @@ Metadata:
           default: AWS Quick Start configuration
         Parameters:
           - QSS3BucketName
-          - QSS3KeyPrefix
     ParameterLabels:
       BastionSecurityGroupID:
         default: Bastion Security Group ID
@@ -81,8 +79,6 @@ Metadata:
         default: Feature key file value encoded in base64
       QSS3BucketName:
         default: Quick Start S3 bucket name
-      QSS3KeyPrefix:
-        default: Quick Start S3 object key prefix
 Parameters:
   BastionSecurityGroupID:
     Description: ID of the bastion host Security Group (e.g., sg-7f16e910).
@@ -231,15 +227,6 @@ Parameters:
     Description: S3 bucket name for the Quick Start assets. The Quick Start bucket name
       can include numbers, lowercase letters, uppercase letters, and hyphens (-).
       It cannot start or end with a hyphen (-).
-    Type: String
-  QSS3KeyPrefix:
-    AllowedPattern: "^[0-9a-zA-Z-/]*$"
-    ConstraintDescription: Quick Start key prefix can include numbers, lowercase letters,
-      uppercase letters, hyphens (-), and a forward slash (/).
-    Default: quickstart-aerospike/
-    Description: S3 key prefix for the Quick Start assets. The prefix
-      can include numbers, lowercase letters, uppercase letters, hyphens (-), and
-      a forward slash (/).
     Type: String
 Mappings:
   AWSAMIRegionMap:
