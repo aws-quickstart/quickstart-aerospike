@@ -22,7 +22,6 @@ Metadata:
     - aerospike
     - configuration
     - .conf
-    - QSS3KeyPrefix
     - QSS3BucketRegion
     - QSS3BucketName
 
@@ -53,7 +52,6 @@ Metadata:
           default: AWS Quick Start configuration
         Parameters:
           - QSS3BucketName
-          - QSS3KeyPrefix
     ParameterLabels:
       BastionSecurityGroupID:
         default: Bastion Security Group ID
@@ -81,8 +79,6 @@ Metadata:
         default: Feature key file value encoded in base64
       QSS3BucketName:
         default: Quick Start S3 bucket name
-      QSS3KeyPrefix:
-        default: Quick Start S3 object key prefix
 Parameters:
   BastionSecurityGroupID:
     Description: ID of the bastion host Security Group (e.g., sg-7f16e910).
@@ -232,15 +228,6 @@ Parameters:
       can include numbers, lowercase letters, uppercase letters, and hyphens (-).
       It cannot start or end with a hyphen (-).
     Type: String
-  QSS3KeyPrefix:
-    AllowedPattern: "^[0-9a-zA-Z-/]*$"
-    ConstraintDescription: Quick Start key prefix can include numbers, lowercase letters,
-      uppercase letters, hyphens (-), and a forward slash (/).
-    Default: quickstart-aerospike/
-    Description: S3 key prefix for the Quick Start assets. The prefix
-      can include numbers, lowercase letters, uppercase letters, hyphens (-), and
-      a forward slash (/).
-    Type: String
 Mappings:
   AWSAMIRegionMap:
     AMI:
@@ -348,15 +335,6 @@ Resources:
                 Resource: !Sub
                   - 'arn:${AWS::Partition}:autoscaling:${AWS::Region}:${AWS::AccountId}:autoScalingGroup:*:autoScalingGroupName/${AutoScalingGroupName}'
                   - AutoScalingGroupName: !Sub 'AerospikeCluster-${PsuedoRandom.GroupId}'
-        - PolicyName: FetchClusterScript
-          PolicyDocument: 
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Action: s3:GetObject
-                Resource: !Sub
-                  - arn:${AWS::Partition}:s3:::${S3Bucket}/${QSS3KeyPrefix}scripts/aerospike_cluster.sh
-                  - S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
 
   ClusterInstanceProfile:
     Type: 'AWS::IAM::InstanceProfile'
@@ -422,9 +400,34 @@ Resources:
               content: !Sub
                 - |
                   #!/bin/bash
-                  aws s3 cp s3://${S3Bucket}/${QSS3KeyPrefix}scripts/aerospike_cluster.sh .
-                  chmod +x aerospike_cluster.sh
-                  ./aerospike_cluster.sh ${REGION} ${EnableCloudWatch} ${AWS::StackId} ${NamespaceFile}
+                  echo ClusterInstancesScriptStart > /var/log/awsuserdatascript
+                  PRIVATE_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
+                  CONF=/etc/aerospike/aerospike.conf
+                  sed -i "s/port 3000/port 3000\n\t\taccess-address $PRIVATE_IP virtual\n/g" $CONF
+
+
+                  ###Point to all instances using the mesh-address config option
+                  sleep 60 # wait for AWS to provision
+                  FILTER=Name=tag-key,Values=StackID
+                  PRIVATEIP=$(aws ec2 describe-instances --filter $FILTER  Name=tag-value,Values=${AWS::StackId} --output=text --region=${REGION} | grep PRIVATEIPADDRESSES | awk '{print $4}')
+                  echo $PRIVATEIP >> /var/log/awsuserdatascript
+                  sed -i '/.*mesh-seed-address-port/d' $CONF
+                  for i in $PRIVATEIP; do
+                      sed -i "/interval/i \\\t\tmesh-seed-address-port $i 3002\n" $CONF
+                  done
+
+                  # Check if namespace file in input
+                  CODE=$(curl -Is ${NamespaceFile} | head -n 1 | cut -d$' ' -f2)
+                  if [ "$CODE" != "200" ]; then echo 'Namespace File not found' >> /var/log/awsuserdatascript
+                  else sed -i '/namespace test/,$d' $CONF
+                  curl -s ${NamespaceFile} >> $CONF; fi
+                  systemctl restart aerospike
+
+                  echo OtherInstancesScriptFinish >> /var/log/awsuserdatascript
+                  (crontab -l 2>/dev/null; echo '*/5 * * * * /opt/aerospike/poll_sqs') | crontab -
+                  if [[ ${EnableCloudWatch} == "yes" ]]; then
+                  (crontab -l 2>/dev/null; echo '*/5 * * * * /opt/aerospike/cloudwatch') | crontab -
+                  fi
                 - REGION: !Sub "${AWS::Region}" 
                   S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
               mode: '000744'
