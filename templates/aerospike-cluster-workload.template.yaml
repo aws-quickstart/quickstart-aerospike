@@ -22,6 +22,10 @@ Metadata:
     - aerospike
     - configuration
     - .conf
+    - QSS3KeyPrefix
+    - QSS3BucketRegion
+    - QSS3BucketName
+
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:

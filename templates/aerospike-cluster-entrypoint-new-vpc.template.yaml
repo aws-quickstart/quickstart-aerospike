@@ -15,6 +15,9 @@ Metadata:
     - configuration
     - .conf
     - Location
+    - QSS3KeyPrefix
+    - QSS3BucketRegion
+    - QSS3BucketName
   AWS::CloudFormation::Interface:
     ParameterGroups:
     - Label:
@@ -343,7 +346,7 @@ Resources:
   VPCStack:
     Type: AWS::CloudFormation::Stack
     Metadata:
-      cfn-lint: { config: { ignore_checks: [ W9901, W9006, IAMPolicyActionWildcard ] } }
+      cfn-lint: { config: { ignore_checks: [ W9901 ] } }
     Properties:
       TemplateURL: !Sub
         - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-aws-vpc/templates/aws-vpc.template.yaml'
