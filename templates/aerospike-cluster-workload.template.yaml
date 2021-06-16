@@ -19,6 +19,9 @@ Metadata:
     - Location
     - "aerospike.conf"
     - cloudwatch
+    - aerospike
+    - configuration
+    - .conf
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
@@ -42,6 +45,11 @@ Metadata:
           default: Linux bastion configuration
         Parameters:
           - BastionSecurityGroupID
+      - Label:
+          default: AWS Quick Start configuration
+        Parameters:
+          - QSS3BucketName
+          - QSS3KeyPrefix
     ParameterLabels:
       BastionSecurityGroupID:
         default: Bastion Security Group ID
@@ -67,6 +75,10 @@ Metadata:
         default: Location of namespace definition
       FeatureKeyFile:
         default: Feature key file value encoded in base64
+      QSS3BucketName:
+        default: Quick Start S3 bucket name
+      QSS3KeyPrefix:
+        default: Quick Start S3 object key prefix
 Parameters:
   BastionSecurityGroupID:
     Description: ID of the bastion host Security Group (e.g., sg-7f16e910).
@@ -203,10 +215,9 @@ Parameters:
     Type: String
     Default: ''
   FeatureKeyFile:
-    Description: Base64 encoding of feature-key-file. Default key works only for 1 node cluster.
+    Description: Base64 encoding of feature-key-file. Leaving this blank works only for single node cluster.
     Type: String
-    Default: |
-      IyBnZW5lcmF0ZWQgMjAyMS0wMy0xMCAwNDowNDoyOAoKZmVhdHVyZS1rZXktdmVyc2lvbiAgICAgICAgICAgICAgICAgIDIKc2VyaWFsLW51bWJlciAgICAgICAgICAgICAgICAgICAgICAgIDU2ODk1MzA1OAoKYWNjb3VudC1uYW1lICAgICAgICAgICAgICAgICAgICAgRXZhbHVhdGlvbl9MaWNlbnNlCgphY2NvdW50LUlEICAgICAgICAgICAgICAgICAgICAgICBBZXJvc3Bpa2VfXzQzNTcxMTM3NAoKYXNkYi1jaGFuZ2Utbm90aWZpY2F0aW9uICAgICAgICAgdHJ1ZQphc2RiLWNsdXN0ZXItbm9kZXMtbGltaXQgICAgICAgICAxCmFzZGItY29tcHJlc3Npb24gICAgICAgICAgICAgICAgIHRydWUKYXNkYi1lbmNyeXB0aW9uLWF0LXJlc3QgICAgICAgICAgdHJ1ZQphc2RiLWxkYXAgICAgICAgICAgICAgICAgICAgICAgICB0cnVlCmFzZGItcG1lbSAgICAgICAgICAgICAgICAgICAgICAgIHRydWUKYXNkYi1zdHJvbmctY29uc2lzdGVuY3kgICAgICAgICAgdHJ1ZQptZXNnLWptcy1jb25uZWN0b3IgICAgICAgICAgICAgICB0cnVlCm1lc2cta2Fma2EtY29ubmVjdG9yICAgICAgICAgICAgIHRydWUKcHJlc3RvLWNvbm5lY3RvciAgICAgICAgICAgICAgICAgdHJ1ZQpyYWYtcmVhbHRpbWUtYW5hbHlzaXMtZnJhbWV3b3JrICB0cnVlCgotLS0tLSBTSUdOQVRVUkUgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCk1FVUNJRXhGN3VSYzBZdURvb3J6ZkNUR2NhdGgrQVB6U0doUi94M21pN0RuRFB6a0FpRUF1cjkzRVcwb2tlNVoKUWZ5c1l4dzZCb0tKRUI1STVlV2xXdDU2UzlxeGNySWsKLS0tLS0gRU5EIE9GIFNJR05BVFVSRSAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo=
+    Default: ""
   QSS3BucketName:
     AllowedPattern: "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$"
     ConstraintDescription: Quick Start bucket name can include numbers, lowercase
@@ -267,11 +278,16 @@ Mappings:
 
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
+  TrialLicense: !Equals [!Ref FeatureKeyFile, '']
   NotUsingEBS: !Equals 
     - !Ref EBS
     - 0
 
 Resources:
+  PsuedoRandom:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: 'Do NOT USE. Do NOT DELETE. Used for random name suffix for CFN circular dependency workaround.'
   ClusterRole:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -324,29 +340,10 @@ Resources:
               - Effect: Allow
                 Action:
                   - autoscaling:CompleteLifecycleAction
-                  - autoscaling:DeleteLifecycleHook
-                  - autoscaling:DescribeAutoScalingGroups
-                  - autoscaling:DescribeLifecycleHooks
-                  - autoscaling:PutLifecycleHook
                   - autoscaling:RecordLifecycleActionHeartbeat
-                  - autoscaling:CreateAutoScalingGroup
-                  - autoscaling:UpdateAutoScalingGroup
-                  - autoscaling:EnableMetricsCollection
-                  - autoscaling:DescribeAutoScalingGroups
-                  - autoscaling:DescribePolicies
-                  - autoscaling:DescribeScheduledActions
-                  - autoscaling:DescribeNotificationConfigurations
-                  - autoscaling:DescribeLifecycleHooks
-                  - autoscaling:SuspendProcesses
-                  - autoscaling:ResumeProcesses
-                  - autoscaling:AttachLoadBalancers
-                  - autoscaling:PutScalingPolicy
-                  - autoscaling:PutScheduledUpdateGroupAction
-                  - autoscaling:PutNotificationConfiguration
-                  - autoscaling:PutLifecycleHook
-                  - autoscaling:DescribeScalingActivities
-                  - autoscaling:DeleteAutoScalingGroup
-                Resource: '*'
+                Resource: !Sub
+                  - 'arn:${AWS::Partition}:autoscaling:${AWS::Region}:${AWS::AccountId}:autoScalingGroup:*:autoScalingGroupName/${AutoScalingGroupName}'
+                  - AutoScalingGroupName: !Sub 'AerospikeCluster-${PsuedoRandom.GroupId}'
         - PolicyName: FetchClusterScript
           PolicyDocument: 
             Version: 2012-10-17
@@ -381,6 +378,7 @@ Resources:
   ClusterGroup:
     Type: 'AWS::AutoScaling::AutoScalingGroup'
     Properties:
+      AutoScalingGroupName: !Sub 'AerospikeCluster-${PsuedoRandom.GroupId}'
       LaunchConfigurationName: !Ref LaunchConfig
       DesiredCapacity: !Ref NumberOfInstances
       MinSize: '1'
@@ -407,11 +405,12 @@ Resources:
                 - |
                   #!/bin/bash
                   # ${Stub}
-                  echo ${FeatureKeyFile} | base64 --decode > /etc/aerospike/features.conf
+                  echo ${FeatureKeyFileBase64} | base64 --decode > /etc/aerospike/features.conf
                   rm -rf /etc/aerospike/aerospike.conf
                   cp -r /opt/aerospike/cft_scripts/aerospike_mesh.conf /etc/aerospike
                   mv /etc/aerospike/aerospike_mesh.conf /etc/aerospike/aerospike.conf
                 - Stub: A
+                  FeatureKeyFileBase64: !If [ TrialLicense, "IyBnZW5lcmF0ZWQgMjAyMS0wMy0xMCAwNDowNDoyOAoKZmVhdHVyZS1rZXktdmVyc2lvbiAgICAgICAgICAgICAgICAgIDIKc2VyaWFsLW51bWJlciAgICAgICAgICAgICAgICAgICAgICAgIDU2ODk1MzA1OAoKYWNjb3VudC1uYW1lICAgICAgICAgICAgICAgICAgICAgRXZhbHVhdGlvbl9MaWNlbnNlCgphY2NvdW50LUlEICAgICAgICAgICAgICAgICAgICAgICBBZXJvc3Bpa2VfXzQzNTcxMTM3NAoKYXNkYi1jaGFuZ2Utbm90aWZpY2F0aW9uICAgICAgICAgdHJ1ZQphc2RiLWNsdXN0ZXItbm9kZXMtbGltaXQgICAgICAgICAxCmFzZGItY29tcHJlc3Npb24gICAgICAgICAgICAgICAgIHRydWUKYXNkYi1lbmNyeXB0aW9uLWF0LXJlc3QgICAgICAgICAgdHJ1ZQphc2RiLWxkYXAgICAgICAgICAgICAgICAgICAgICAgICB0cnVlCmFzZGItcG1lbSAgICAgICAgICAgICAgICAgICAgICAgIHRydWUKYXNkYi1zdHJvbmctY29uc2lzdGVuY3kgICAgICAgICAgdHJ1ZQptZXNnLWptcy1jb25uZWN0b3IgICAgICAgICAgICAgICB0cnVlCm1lc2cta2Fma2EtY29ubmVjdG9yICAgICAgICAgICAgIHRydWUKcHJlc3RvLWNvbm5lY3RvciAgICAgICAgICAgICAgICAgdHJ1ZQpyYWYtcmVhbHRpbWUtYW5hbHlzaXMtZnJhbWV3b3JrICB0cnVlCgotLS0tLSBTSUdOQVRVUkUgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCk1FVUNJRXhGN3VSYzBZdURvb3J6ZkNUR2NhdGgrQVB6U0doUi94M21pN0RuRFB6a0FpRUF1cjkzRVcwb2tlNVoKUWZ5c1l4dzZCb0tKRUI1STVlV2xXdDU2UzlxeGNySWsKLS0tLS0gRU5EIE9GIFNJR05BVFVSRSAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo=", !Ref FeatureKeyFile ]
               mode: '000744'
               owner: root
               group: root
@@ -647,3 +646,10 @@ Outputs:
   AutoscalingID:
     Description: The Autoscaling Group ID that is used to deploy your cluster
     Value: !Ref ClusterGroup
+Rules:
+  TrialSingleNode:
+    RuleCondition:
+      !Equals [ !Ref FeatureKeyFile, '' ]
+    Assertions:
+    - Assert: !Equals [!Ref NumberOfInstances, '1']
+      AssertDescription: "If you are not providing your own license you may only launch a single node."
