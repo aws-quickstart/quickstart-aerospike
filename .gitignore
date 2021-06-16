@@ -1,0 +1,16 @@
+
+.taskcat_overrides.yml
+.idea
+venv
+.venv
+.DS_Store
+.taskcat
+functions/packages
+output
+__pycache__
+docs/generated/
+index.html
+.python-version
+.idea
+taskcat_outputs
+venv

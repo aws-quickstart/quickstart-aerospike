@@ -424,6 +424,8 @@ Resources:
         EBS: !Ref EBS
         NamespaceFile: !Ref NamespaceFile
         FeatureKeyFile: !Ref FeatureKeyFile
+        QSS3BucketName: !Ref QSS3BucketName
+        QSS3KeyPrefix: !Ref QSS3KeyPrefix
 
 Outputs:
   BastionHostIP:

@@ -207,7 +207,25 @@ Parameters:
     Type: String
     Default: |
       IyBnZW5lcmF0ZWQgMjAyMS0wMy0xMCAwNDowNDoyOAoKZmVhdHVyZS1rZXktdmVyc2lvbiAgICAgICAgICAgICAgICAgIDIKc2VyaWFsLW51bWJlciAgICAgICAgICAgICAgICAgICAgICAgIDU2ODk1MzA1OAoKYWNjb3VudC1uYW1lICAgICAgICAgICAgICAgICAgICAgRXZhbHVhdGlvbl9MaWNlbnNlCgphY2NvdW50LUlEICAgICAgICAgICAgICAgICAgICAgICBBZXJvc3Bpa2VfXzQzNTcxMTM3NAoKYXNkYi1jaGFuZ2Utbm90aWZpY2F0aW9uICAgICAgICAgdHJ1ZQphc2RiLWNsdXN0ZXItbm9kZXMtbGltaXQgICAgICAgICAxCmFzZGItY29tcHJlc3Npb24gICAgICAgICAgICAgICAgIHRydWUKYXNkYi1lbmNyeXB0aW9uLWF0LXJlc3QgICAgICAgICAgdHJ1ZQphc2RiLWxkYXAgICAgICAgICAgICAgICAgICAgICAgICB0cnVlCmFzZGItcG1lbSAgICAgICAgICAgICAgICAgICAgICAgIHRydWUKYXNkYi1zdHJvbmctY29uc2lzdGVuY3kgICAgICAgICAgdHJ1ZQptZXNnLWptcy1jb25uZWN0b3IgICAgICAgICAgICAgICB0cnVlCm1lc2cta2Fma2EtY29ubmVjdG9yICAgICAgICAgICAgIHRydWUKcHJlc3RvLWNvbm5lY3RvciAgICAgICAgICAgICAgICAgdHJ1ZQpyYWYtcmVhbHRpbWUtYW5hbHlzaXMtZnJhbWV3b3JrICB0cnVlCgotLS0tLSBTSUdOQVRVUkUgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCk1FVUNJRXhGN3VSYzBZdURvb3J6ZkNUR2NhdGgrQVB6U0doUi94M21pN0RuRFB6a0FpRUF1cjkzRVcwb2tlNVoKUWZ5c1l4dzZCb0tKRUI1STVlV2xXdDU2UzlxeGNySWsKLS0tLS0gRU5EIE9GIFNJR05BVFVSRSAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo=
-
+  QSS3BucketName:
+    AllowedPattern: "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$"
+    ConstraintDescription: Quick Start bucket name can include numbers, lowercase
+      letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
+      (-).
+    Default: aws-quickstart
+    Description: S3 bucket name for the Quick Start assets. The Quick Start bucket name
+      can include numbers, lowercase letters, uppercase letters, and hyphens (-).
+      It cannot start or end with a hyphen (-).
+    Type: String
+  QSS3KeyPrefix:
+    AllowedPattern: "^[0-9a-zA-Z-/]*$"
+    ConstraintDescription: Quick Start key prefix can include numbers, lowercase letters,
+      uppercase letters, hyphens (-), and a forward slash (/).
+    Default: quickstart-aerospike/
+    Description: S3 key prefix for the Quick Start assets. The prefix
+      can include numbers, lowercase letters, uppercase letters, hyphens (-), and
+      a forward slash (/).
+    Type: String
 Mappings:
   AWSAMIRegionMap:
     AMI:
@@ -248,6 +266,7 @@ Mappings:
       AEROSPIKEAMI: ami-0e85ec1cd8e86df3b
 
 Conditions:
+  UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
   NotUsingEBS: !Equals 
     - !Ref EBS
     - 0
@@ -289,7 +308,12 @@ Resources:
             Version: 2012-10-17
             Statement:
               - Effect: Allow
-                Action: 'sqs:*'
+                Action: 
+                  - sqs:GetQueueAttributes
+                  - sqs:SendMessageBatch
+                  - sqs:SendMessage
+                  - sqs:SendMessageBatch
+                  - sqs:GetQueueUrl
                 Resource: !GetAtt 
                   - MigrationSQS
                   - Arn
@@ -298,8 +322,41 @@ Resources:
             Version: 2012-10-17
             Statement:
               - Effect: Allow
-                Action: 'autoscaling:*'
+                Action:
+                  - autoscaling:CompleteLifecycleAction
+                  - autoscaling:DeleteLifecycleHook
+                  - autoscaling:DescribeAutoScalingGroups
+                  - autoscaling:DescribeLifecycleHooks
+                  - autoscaling:PutLifecycleHook
+                  - autoscaling:RecordLifecycleActionHeartbeat
+                  - autoscaling:CreateAutoScalingGroup
+                  - autoscaling:UpdateAutoScalingGroup
+                  - autoscaling:EnableMetricsCollection
+                  - autoscaling:DescribeAutoScalingGroups
+                  - autoscaling:DescribePolicies
+                  - autoscaling:DescribeScheduledActions
+                  - autoscaling:DescribeNotificationConfigurations
+                  - autoscaling:DescribeLifecycleHooks
+                  - autoscaling:SuspendProcesses
+                  - autoscaling:ResumeProcesses
+                  - autoscaling:AttachLoadBalancers
+                  - autoscaling:PutScalingPolicy
+                  - autoscaling:PutScheduledUpdateGroupAction
+                  - autoscaling:PutNotificationConfiguration
+                  - autoscaling:PutLifecycleHook
+                  - autoscaling:DescribeScalingActivities
+                  - autoscaling:DeleteAutoScalingGroup
                 Resource: '*'
+        - PolicyName: FetchClusterScript
+          PolicyDocument: 
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action: s3:GetObject
+                Resource: !Sub
+                  - arn:${AWS::Partition}:s3:::${S3Bucket}/${QSS3KeyPrefix}scripts/aerospike_cluster.sh
+                  - S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+
   ClusterInstanceProfile:
     Type: 'AWS::IAM::InstanceProfile'
     Properties:
@@ -362,32 +419,11 @@ Resources:
               content: !Sub
                 - |
                   #!/bin/bash
-                  echo ClusterInstancesScriptStart > /var/log/awsuserdatascript
-                  PRIVATE_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
-                  CONF=/etc/aerospike/aerospike.conf
-                  sed -i \"/port 3000/a \\\t\taccess-address $PRIVATE_IP virtual\" $CONF\n"
-                  ###Point to all instances using the mesh-address config option
-                  sleep 60 # wait for AWS to provision
-                  FILTER=Name=tag-key,Values=StackID
-                  PRIVATEIP=$(aws ec2 describe-instances --filter $FILTER  Name=tag-value,Values='${AWS::StackId} --output=text --region=${REGION} | grep PRIVATEIPADDRESSES | awk '{print $4}')
-                  echo $PRIVATEIP >> /var/log/awsuserdatascript
-                  sed -i '/.*mesh-seed-address-port/d' $CONF
-                  for i in $PRIVATEIP; do
-                    sed -i \"/interval/i \\\t\tmesh-seed-address-port $i 3002\" $CONF
-                  done
-                  CODE=$(curl -Is ${NamespaceFile} | head -n 1 | cut -d$' ' -f2)
-                  if [ "$CODE" != "200" ]; then echo 'Namespace File not found' >> /var/log/awsuserdatascript
-                  else sed -i '/namespace test/,$d' $CONF
-                  curl -s ${NamespaceFile} >> $CONF; fi
-                  systemctl restart aerospike
-
-                  echo OtherInstancesScriptFinish >> /var/log/awsuserdatascript
-                  (crontab -l 2>/dev/null; echo '*/5 * * * * /opt/aerospike/poll_sqs') | crontab -
-
-                  if [[ "${EnableCloudWatch}" == "yes" ]]; then
-                    (crontab -l 2>/dev/null; echo '*/5 * * * * /opt/aerospike/cloudwatch') | crontab -
-                  fi
-                - REGION: !Sub "${AWS::Region}"
+                  aws s3 cp s3://${S3Bucket}/${QSS3KeyPrefix}scripts/aerospike_cluster.sh .
+                  chmod +x aerospike_cluster.sh
+                  ./aerospike_cluster.sh ${REGION} ${EnableCloudWatch} ${AWS::StackId} ${NamespaceFile}
+                - REGION: !Sub "${AWS::Region}" 
+                  S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
               mode: '000744'
               owner: root
               group: root
@@ -533,7 +569,7 @@ Resources:
               command: /opt/aerospike/cft_scripts/aerospike_init
               cwd: /opt/aerospike/cft_scripts
             01_form_asd_cluster:
-              command: /opt/aerospike/cft_scripts/aerospike_cluster
+              command:  /opt/aerospike/cft_scripts/aerospike_cluster
               cwd: /opt/aerospike/cft_scripts
             02_aerospike_start:
               command: /opt/aerospike/cft_scripts/aerospike_start

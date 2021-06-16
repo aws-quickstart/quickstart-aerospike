@@ -22,7 +22,7 @@ tests:
       AvailabilityZones: $[taskcat_genaz_2]
       NumberOfAZs: 2
     regions:
-    - eu-west-1
+    - us-east-1
   aerospike-multi-region:
     parameters:
       AvailabilityZones: $[taskcat_genaz_3]
