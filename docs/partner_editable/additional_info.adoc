@@ -10,6 +10,7 @@ To validate the system and verify the system configuration, follow these steps:
 ----
 $ ssh ec2-user@<aerospike-instance>
 ----
+
 2. Verify cluster information using `asadm` command. More information about asadm can be found https://docs.aerospike.com/docs/tools/asadm/[here]. For two node cluster output should look like this : 
 ----
 $ asadm
@@ -44,6 +45,7 @@ test     |    0|       0|8.000 GB|    0|   100|0.000 B |    0|     0|          2
 Number of rows: 2
 
 ----
+
 3. Insert record using https://docs.aerospike.com/docs/tools/aql/[aql]. Following commands inserts a record in test namespace with foo as set name and bar as bin name:
 ----
 $ aql
@@ -74,7 +76,7 @@ aql> select * from test.foo
 OK
 ----
 
-Fo additional information on testing you can use the https://docs.aerospike.com/docs/client/java/benchmarks.html[benchmark] tool to exercise and demo load on the new Aerospike cluster, otherwise you can check out https://docs.aerospike.com/docs/guide/query.html[Query] for information on querying the {partner-product-short-name} and https://docs.aerospike.com/docs/connect/index.html[here] to checkout {partner-product-short-name} how to set up and use connectors to stream data into your new cluster.
+For additional information on testing you can use the https://docs.aerospike.com/docs/client/java/benchmarks.html[benchmark] tool to exercise and demo load on the new Aerospike cluster, otherwise you can check out https://docs.aerospike.com/docs/guide/query.html[Query] for information on querying the {partner-product-short-name} and https://docs.aerospike.com/docs/connect/index.html[here] to checkout {partner-product-short-name} how to set up and use connectors to stream data into your new cluster.
 
 == Post-deployment steps
 // If post-deployment steps are required, add them here. If not, remove the heading
