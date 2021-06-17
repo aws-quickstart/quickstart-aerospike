@@ -5,13 +5,14 @@
 // If steps are required to test the deployment, add them here. If not, remove the heading
 After the AWS CloudFormation stack is complete, you can test the deployment by checking whether the instances were properly enrolled with your {partner-product-short-name} project.
 
-To validate the system and verify the system configuration, follow these steps: 
-1. From bastion host, use SSH to log in to one of the aerospike instance created by Quick Start template. It's recommended to use ssh key forwarding for security purpose. More info on ssh key forwarding can be found https://docs.github.com/en/developers/overview/using-ssh-agent-forwarding[here]
+To validate the system and verify the system configuration, follow these steps:
+
+From bastion host, use SSH to log in to one of the aerospike instance created by Quick Start template. It's recommended to use ssh key forwarding for security purpose. More info on ssh key forwarding can be found https://docs.github.com/en/developers/overview/using-ssh-agent-forwarding[here]
 ----
 $ ssh ec2-user@<aerospike-instance>
 ----
 
-2. Verify cluster information using `asadm` command. More information about asadm can be found https://docs.aerospike.com/docs/tools/asadm/[here]. For two node cluster output should look like this : 
+Verify cluster information using `asadm` command. More information about asadm can be found https://docs.aerospike.com/docs/tools/asadm/[here]. For two node cluster output should look like this : 
 ----
 $ asadm
 Seed:        [('127.0.0.1', 3000, None)]
@@ -46,7 +47,8 @@ Number of rows: 2
 
 ----
 
-3. Insert record using https://docs.aerospike.com/docs/tools/aql/[aql]. Following commands inserts a record in test namespace with foo as set name and bar as bin name:
+Insert record using https://docs.aerospike.com/docs/tools/aql/[aql]. Following commands inserts a record in test namespace with foo as set name and bar as bin name:
+
 ----
 $ aql
 Seed:         127.0.0.1
@@ -59,11 +61,6 @@ Copyright 2012-2020 Aerospike. All rights reserved.
 
 aql> insert into test.foo (PK, bar) values (123, 'you did it!')
 OK, 1 record affected.
-
-aql> select * from test.bar
-0 rows in set (0.023 secs)
-
-OK
 
 aql> select * from test.foo
 +---------------+
