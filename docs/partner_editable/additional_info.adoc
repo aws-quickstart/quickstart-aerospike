@@ -5,7 +5,75 @@
 // If steps are required to test the deployment, add them here. If not, remove the heading
 After the AWS CloudFormation stack is complete, you can test the deployment by checking whether the instances were properly enrolled with your {partner-product-short-name} project.
 
-You can use the https://docs.aerospike.com/docs/client/java/benchmarks.html[benchmark] tool to exercise and demo load on the new Aerospike cluster, otherwise you can check out https://docs.aerospike.com/docs/guide/query.html[Query] for information on querying the {partner-product-short-name} and https://docs.aerospike.com/docs/connect/index.html[here] to checkout {partner-product-short-name} how to set up and use connectors to stream data into your new cluster.
+To validate the system and verify the system configuration, follow these steps:
+
+From bastion host, use SSH to log in to one of the aerospike instance created by Quick Start template. It's recommended to use ssh key forwarding for security purpose. More info on ssh key forwarding can be found https://docs.github.com/en/developers/overview/using-ssh-agent-forwarding[here]
+----
+$ ssh ec2-user@<aerospike-instance>
+----
+
+Verify cluster information using `asadm` command. More information about asadm can be found https://docs.aerospike.com/docs/tools/asadm/[here]. For two node cluster output should look like this : 
+----
+$ asadm
+Seed:        [('127.0.0.1', 3000, None)]
+Config_file: /home/ec2-user/.aerospike/astools.conf, /etc/aerospike/astools.conf
+Aerospike Interactive Shell, version 2.0.1
+
+Found 2 nodes
+Online:  10.0.3.128:3000, 10.0.35.3:3000
+
+Admin> summary
+Cluster  (Migrations in Progress)
+=================================
+
+   1.   Server Version     :  E-5.5.0.4
+   2.   OS Version         :  Amazon Linux 2 (4.14.231-173.361.amzn2.x86_64)
+   3.   Cluster Size       :  2
+   4.   Devices            :  Total 0, per-node 0
+   5.   Memory             :  Total 16.000 GB, 0.00% used (0.000 B), 100.00% available (16.000 GB)
+   6.   Disk               :  Total 0.000 B, 0.00% used (0.000 B), 0.00% available contiguous space (0.000 B)
+   7.   Usage (Unique Data):  None
+   8.   Active Namespaces  :  0 of 2
+   9.   Features           :
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Namespaces~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Namespace|~~~Devices~~~~|~~~~~~~~Memory~~~~~~~|~~~~~~~~~Disk~~~~~~~~|Replication| Master|~~~~~~Usage~~~~~~~
+         |Total|Per-Node|   Total|Used%|Avail%|   Total|Used%|Avail%|    Factors|Objects|~~(Unique-Data)~~~
+         |     |        |        |     |      |        |     |      |           |       |In-Memory| On-Disk
+bar      |    0|       0|8.000 GB|    0|   100|0.000 B |    0|     0|          2|0.000  | 0.000 B |0.000 B
+test     |    0|       0|8.000 GB|    0|   100|0.000 B |    0|     0|          2|0.000  | 0.000 B |0.000 B
+Number of rows: 2
+
+----
+
+Insert record using https://docs.aerospike.com/docs/tools/aql/[aql]. Following commands inserts a record in test namespace with foo as set name and bar as bin name:
+
+----
+$ aql
+Seed:         127.0.0.1
+User:         None
+Config File:  /etc/aerospike/astools.conf /home/ec2-user/.aerospike/astools.conf
+Aerospike Query Client
+Version 5.0.1
+C Client Version 4.6.17
+Copyright 2012-2020 Aerospike. All rights reserved.
+
+aql> insert into test.foo (PK, bar) values (123, 'you did it!')
+OK, 1 record affected.
+
+aql> select * from test.foo
++---------------+
+| bar           |
++---------------+
+| "you did it!" |
++---------------+
+1 row in set (0.036 secs)
+
+OK
+----
+
+For additional information on testing you can use the https://docs.aerospike.com/docs/client/java/benchmarks.html[benchmark] tool to exercise and demo load on the new Aerospike cluster, otherwise you can check out https://docs.aerospike.com/docs/guide/query.html[Query] for information on querying the {partner-product-short-name} and https://docs.aerospike.com/docs/connect/index.html[here] to checkout {partner-product-short-name} how to set up and use connectors to stream data into your new cluster.
 
 == Post-deployment steps
 // If post-deployment steps are required, add them here. If not, remove the heading

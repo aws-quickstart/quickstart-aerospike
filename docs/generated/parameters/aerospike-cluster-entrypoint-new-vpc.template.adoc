@@ -15,18 +15,11 @@
 (`AccessCIDR`)|`0.0.0.0/0`|CIDR IP range permitted to access Aerospike. A value of 0.0.0.0/0 allows access from any IP address.|Are the instances for the Aerospike instances on shared or dedicated host
 (`Tenancy`)|`default`|The tenancy of your instance.
 |===
-.AWS Quick Start configuration
-[width="100%",cols="16%,11%,73%",options="header",]
-|===
-|Parameter label (name) |Default value|Description|Quick Start S3 bucket name
-(`QSS3BucketName`)|`aws-quickstart`|S3 bucket name for the Quick Start assets. The Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).|Quick Start S3 object key prefix
-(`QSS3KeyPrefix`)|`quickstart-aerospike/`|S3 key prefix for the Quick Start assets. The prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and a forward slash (/).|Quick Start S3 bucket Region
-(`QSS3BucketRegion`)|`us-east-1`|AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value.
-|===
 .Aerospike configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
-|Parameter label (name) |Default value|Description|Number of instances to provision for the Aerospike cluster
+|Parameter label (name) |Default value|Description|EC2 key pair
+(`KeyPairName`)|`**__Requires input__**`|Key pair to securely connect to your instance after it launches.|Number of instances to provision for the Aerospike cluster
 (`NumberOfInstances`)|`1`|Number of instances in the Aerospike cluster.|Are the instances for the Aerospike instances on shared or dedicated host
 (`Tenancy`)|`default`|The tenancy of your instance.|Enable CloudWatch logging for the Aerospike cluster
 (`EnableCloudWatch`)|`no`|Add basic Aerospike metrics to CloudWatch. Enabling this will incur CloudWatch expenses.
@@ -34,11 +27,11 @@
 (`InstanceType`)|`m5.large`|Type of EC2 instance to launch.|Size of EBS SSD volume in GB. The volume will attach under /dev/sdg. Limit of 16000. Enter 0 to not use EBS.
 (`EBS`)|`50`|Size of EBS SSD volume in GB. The volume will attach under /dev/sdg. Limit
 of 16000. Enter 0 to not use EBS.
-|(Optional) Location of your namespace definition. Must be publically downloadable. Will append file directly to end of aerospike.conf
+|(Optional) Location of your namespace definition. Must be publically downloadable. Will append file directly to end of aerospike.conf.
 (`NamespaceFile`)|`**__Blank string__**`|(Optional) Location of your namespace definition. Must be publically
-downloadable. Will append file directly to end of aerospike.conf
+downloadable. Will append file directly to end of aerospike.conf.
 |Aerospike key to use for this deployment
-(`FeatureKeyFile`)|`IyBnZW5lcmF0ZWQgMjAyMS0wMy0xMCAwNDowNDoyOAoKZmVhdHVyZS1rZXktdmVyc2lvbiAgICAgICAgICAgICAgICAgIDIKc2VyaWFsLW51bWJlciAgICAgICAgICAgICAgICAgICAgICAgIDU2ODk1MzA1OAoKYWNjb3VudC1uYW1lICAgICAgICAgICAgICAgICAgICAgRXZhbHVhdGlvbl9MaWNlbnNlCgphY2NvdW50LUlEICAgICAgICAgICAgICAgICAgICAgICBBZXJvc3Bpa2VfXzQzNTcxMTM3NAoKYXNkYi1jaGFuZ2Utbm90aWZpY2F0aW9uICAgICAgICAgdHJ1ZQphc2RiLWNsdXN0ZXItbm9kZXMtbGltaXQgICAgICAgICAxCmFzZGItY29tcHJlc3Npb24gICAgICAgICAgICAgICAgIHRydWUKYXNkYi1lbmNyeXB0aW9uLWF0LXJlc3QgICAgICAgICAgdHJ1ZQphc2RiLWxkYXAgICAgICAgICAgICAgICAgICAgICAgICB0cnVlCmFzZGItcG1lbSAgICAgICAgICAgICAgICAgICAgICAgIHRydWUKYXNkYi1zdHJvbmctY29uc2lzdGVuY3kgICAgICAgICAgdHJ1ZQptZXNnLWptcy1jb25uZWN0b3IgICAgICAgICAgICAgICB0cnVlCm1lc2cta2Fma2EtY29ubmVjdG9yICAgICAgICAgICAgIHRydWUKcHJlc3RvLWNvbm5lY3RvciAgICAgICAgICAgICAgICAgdHJ1ZQpyYWYtcmVhbHRpbWUtYW5hbHlzaXMtZnJhbWV3b3JrICB0cnVlCgotLS0tLSBTSUdOQVRVUkUgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCk1FVUNJRXhGN3VSYzBZdURvb3J6ZkNUR2NhdGgrQVB6U0doUi94M21pN0RuRFB6a0FpRUF1cjkzRVcwb2tlNVoKUWZ5c1l4dzZCb0tKRUI1STVlV2xXdDU2UzlxeGNySWsKLS0tLS0gRU5EIE9GIFNJR05BVFVSRSAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo=`|Base64 encoding of feature-key-file. Default key works only for 1 node cluster.
+(`FeatureKeyFile`)|`**__Blank string__**`|Base64 encoding of feature-key-file. Leaving this blank works only for a single node cluster.
 |===
 .Linux bastion configuration
 [width="100%",cols="16%,11%,73%",options="header",]
@@ -47,4 +40,12 @@ downloadable. Will append file directly to end of aerospike.conf
 (`BastionAMIOS`)|`Amazon-Linux2-HVM`|The Linux distribution for the AMI to be used for the bastion instances.|Bastion instance type
 (`BastionInstanceType`)|`t3.micro`|Amazon EC2 instance type for the bastion instances.|Number of bastion hosts
 (`NumBastionHosts`)|`1`|Enter the number of bastion hosts to create.
+|===
+.AWS Quick Start configuration
+[width="100%",cols="16%,11%,73%",options="header",]
+|===
+|Parameter label (name) |Default value|Description|Quick Start S3 bucket name
+(`QSS3BucketName`)|`aws-quickstart`|S3 bucket name for the Quick Start assets. The Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).|Quick Start S3 object key prefix
+(`QSS3KeyPrefix`)|`quickstart-aerospike/`|S3 key prefix for the Quick Start assets. The prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and a forward slash (/).|Quick Start S3 bucket Region
+(`QSS3BucketRegion`)|`us-east-1`|AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value.
 |===

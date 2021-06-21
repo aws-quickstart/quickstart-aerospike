@@ -851,8 +851,8 @@ p.footer-text a{color:#d7d8d8}
 <li><a href="#_faq">FAQ</a></li>
 <li><a href="#_parameter_reference">Parameter reference</a>
 <ul class="sectlevel2">
-<li><a href="#_launch_into_a_existing_vpc">Launch into a existing VPC</a></li>
 <li><a href="#_launch_into_a_new_vpc">Launch into a new VPC</a></li>
+<li><a href="#_launch_into_a_existing_vpc">Launch into a existing VPC</a></li>
 </ul>
 </li>
 <li><a href="#_send_us_feedback">Send us feedback</a></li>
@@ -934,13 +934,10 @@ Amazon may share user-deployment information with the AWS Partner that collabora
 <h2 id="_aerospike_database_enterprise_edition_on_aws">Aerospike Database Enterprise Edition on AWS</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Aerospike Database is a real-time NoSQL database that provides a key-value store with a flexible data model that enables you to manage real-time data at petabyte scale with microsecond latency.  It supports a Hybrid Memory Architecture™ where indexes, including the primary index and optional secondary indexes, are stored by default in DRAM for ultra-fast access. The primary index can also be configured to be stored in an NVMe flash device. Data can be stored either in DRAM or more cost-effectively on SSDs. With Aerospike Database you can configure each namespace separately, so small namespaces can take advantage of DRAM and larger ones gain the cost benefits of SSDs.</p>
+<p>Aerospike Database is a real-time data platform that delivers predictable performance at petabyte scale with microsecond latency across billions of transactions. Aerospike is frequently used for data-intensive, geo-distributed applications delivering the performance of a cache with the persistence of a NoSQL data platform. It provides a rich set of enterprise features which include Multi-site clustering, Cross Datacenter Replication™ (XDR), Fast Restarts, Rapid Rebalance, and TLS Security.  Aerospike features a Hybrid Memory Architecture™ where indexes, including the primary index and optional secondary indexes, are stored by default in DRAM for ultra-fast access. Data can be stored either in DRAM or more cost-effectively on SSDs by configuring each namespace separately, so small namespaces can take advantage of DRAM and larger ones gain the cost benefits of SSDs.</p>
 </div>
 <div class="paragraph">
-<p>Aerospike Database is frequently used for data-intensive, geo-distributed applications delivering the performance of a cache with the persistence of a NoSQL database. It provides a rich set of enterprise features which include Multi-site clustering, Cross Datacenter Replication™ (XDR), Fast Restarts, Rapid Rebalance, and TLS Security.</p>
-</div>
-<div class="paragraph">
-<p>AWS enables you to set up the cloud infrastructure to support Aerospike Database deployments in a scalable and cost-effective way on AWS EC2.  This reference deployment will help you build an Aerospike Database cluster by automating deployment tasks to quickly install an Aerospike Database instance with a limited single node-license, or bring your own license to quickly stand up an Aerospike Database clusters using the Aerospike Database Cloud Formation Template (CFT) across multiple availability zones.</p>
+<p>Quick Starts are automated reference deployments that use AWS CloudFormation templates to launch, configure and run the AWS compute, network, storage, and other services required to deploy a specific workload on AWS. This reference deployment will help you build an Aerospike Database cluster by automating deployment tasks to quickly install an Aerospike Database instance with a limited single node-license, or bring your own license to quickly stand up an Aerospike Database clusters using the Aerospike Database Cloud Formation Template (CFT) across multiple availability zones.</p>
 </div>
 </div>
 </div>
@@ -1091,35 +1088,27 @@ deploy, and operate your infrastructure and applications on the AWS Cloud.</p>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">VPCs</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;1&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Elastic IP addresses</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;3&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Security groups</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;2&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">AWS Identity and Access Management (IAM) roles</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;1&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Auto Scaling groups</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;2&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Application Load Balancers</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;1&gt;</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Network Load Balancers</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;1&gt;</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;type&gt; instances</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">&lt;16&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EC2 instances</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2-16</p></td>
 </tr>
 </tbody>
 </table>
@@ -1365,7 +1354,83 @@ If you’re deploying Aerospike Database into an existing VPC, make sure that yo
 <p>After the AWS CloudFormation stack is complete, you can test the deployment by checking whether the instances were properly enrolled with your Aerospike Database project.</p>
 </div>
 <div class="paragraph">
-<p>You can use the <a href="https://docs.aerospike.com/docs/client/java/benchmarks.html">benchmark</a> tool to exercise and demo load on the new Aerospike cluster, otherwise you can check out <a href="https://docs.aerospike.com/docs/guide/query.html">Query</a> for information on querying the Aerospike Database and <a href="https://docs.aerospike.com/docs/connect/index.html">here</a> to checkout Aerospike Database how to set up and use connectors to stream data into your new cluster.</p>
+<p>To validate the system and verify the system configuration, follow these steps:</p>
+</div>
+<div class="paragraph">
+<p>From bastion host, use SSH to log in to one of the aerospike instance created by Quick Start template. It&#8217;s recommended to use ssh key forwarding for security purpose. More info on ssh key forwarding can be found <a href="https://docs.github.com/en/developers/overview/using-ssh-agent-forwarding">here</a></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ ssh ec2-user@&lt;aerospike-instance&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Verify cluster information using <code>asadm</code> command. More information about asadm can be found <a href="https://docs.aerospike.com/docs/tools/asadm/">here</a>. For two node cluster output should look like this :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ asadm
+Seed:        [('127.0.0.1', 3000, None)]
+Config_file: /home/ec2-user/.aerospike/astools.conf, /etc/aerospike/astools.conf
+Aerospike Interactive Shell, version 2.0.1
+
+Found 2 nodes
+Online:  10.0.3.128:3000, 10.0.35.3:3000
+
+Admin&gt; summary
+Cluster  (Migrations in Progress)
+=================================
+
+   1.   Server Version     :  E-5.5.0.4
+   2.   OS Version         :  Amazon Linux 2 (4.14.231-173.361.amzn2.x86_64)
+   3.   Cluster Size       :  2
+   4.   Devices            :  Total 0, per-node 0
+   5.   Memory             :  Total 16.000 GB, 0.00% used (0.000 B), 100.00% available (16.000 GB)
+   6.   Disk               :  Total 0.000 B, 0.00% used (0.000 B), 0.00% available contiguous space (0.000 B)
+   7.   Usage (Unique Data):  None
+   8.   Active Namespaces  :  0 of 2
+   9.   Features           :
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Namespaces~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Namespace|~~~Devices~~~~|~~~~~~~~Memory~~~~~~~|~~~~~~~~~Disk~~~~~~~~|Replication| Master|~~~~~~Usage~~~~~~~
+         |Total|Per-Node|   Total|Used%|Avail%|   Total|Used%|Avail%|    Factors|Objects|~~(Unique-Data)~~~
+         |     |        |        |     |      |        |     |      |           |       |In-Memory| On-Disk
+bar      |    0|       0|8.000 GB|    0|   100|0.000 B |    0|     0|          2|0.000  | 0.000 B |0.000 B
+test     |    0|       0|8.000 GB|    0|   100|0.000 B |    0|     0|          2|0.000  | 0.000 B |0.000 B
+Number of rows: 2</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Insert record using <a href="https://docs.aerospike.com/docs/tools/aql/">aql</a>. Following commands inserts a record in test namespace with foo as set name and bar as bin name:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ aql
+Seed:         127.0.0.1
+User:         None
+Config File:  /etc/aerospike/astools.conf /home/ec2-user/.aerospike/astools.conf
+Aerospike Query Client
+Version 5.0.1
+C Client Version 4.6.17
+Copyright 2012-2020 Aerospike. All rights reserved.
+
+aql&gt; insert into test.foo (PK, bar) values (123, 'you did it!')
+OK, 1 record affected.
+
+aql&gt; select * from test.foo
++---------------+
+| bar           |
++---------------+
+| "you did it!" |
++---------------+
+1 row in set (0.036 secs)
+
+OK</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For additional information on testing you can use the <a href="https://docs.aerospike.com/docs/client/java/benchmarks.html">benchmark</a> tool to exercise and demo load on the new Aerospike cluster, otherwise you can check out <a href="https://docs.aerospike.com/docs/guide/query.html">Query</a> for information on querying the Aerospike Database and <a href="https://docs.aerospike.com/docs/connect/index.html">here</a> to checkout Aerospike Database how to set up and use connectors to stream data into your new cluster.</p>
 </div>
 </div>
 </div>
@@ -1490,137 +1555,9 @@ Unless you are customizing the Quick Start templates for your own deployment pro
 </table>
 </div>
 <div class="sect2">
-<h3 id="_launch_into_a_existing_vpc">Launch into a existing VPC</h3>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. VPC network configuration</caption>
-<colgroup>
-<col style="width: 16%;">
-<col style="width: 11%;">
-<col style="width: 73%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter label (name)</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">EC2 key pair
-(<code>KeyPairName</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the EC2 keypair that would be used to ssh into the instances.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">VPC ID
-(<code>VPCID</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Choose which VPC this cluster should be deployed into.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">CIDR for the VPC
-(<code>VPCCIDR</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10.0.0.0/16</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">VPC CIDR block, in format x.x.0.0/16.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">List of subnet
-(<code>VPCSubnet</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">List of subnet IDs, this will link instance in the VPC selected above.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Tenancy of instance
-(<code>Tenancy</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>default</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The tenancy of your instance.</p></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. Aerospike configuration</caption>
-<colgroup>
-<col style="width: 16%;">
-<col style="width: 11%;">
-<col style="width: 73%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter label (name)</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Location of namespace definition
-(<code>NamespaceFile</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Location of your namespace definition. Must be publicly downloadable. Will append file directly to end of aerospike.conf.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Feature key file value encoded in base64
-(<code>FeatureKeyFile</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">`IyBnZW5lcmF0ZWQgMjAyMS0wMy0xMCAwNDowNDoyOAoKZmVhdHVyZS1rZXktdmVyc2lvbiAgICAgICAgICAgICAgICAgIDIKc2VyaWFsLW51bWJlciAgICAgICAgICAgICAgICAgICAgICAgIDU2ODk1MzA1OAoKYWNjb3VudC1uYW1lICAgICAgICAgICAgICAgICAgICAgRXZhbHVhdGlvbl9MaWNlbnNlCgphY2NvdW50LUlEICAgICAgICAgICAgICAgICAgICAgICBBZXJvc3Bpa2VfXzQzNTcxMTM3NAoKYXNkYi1jaGFuZ2Utbm90aWZpY2F0aW9uICAgICAgICAgdHJ1ZQphc2RiLWNsdXN0ZXItbm9kZXMtbGltaXQgICAgICAgICAxCmFzZGItY29tcHJlc3Npb24gICAgICAgICAgICAgICAgIHRydWUKYXNkYi1lbmNyeXB0aW9uLWF0LXJlc3QgICAgICAgICAgdHJ1ZQphc2RiLWxkYXAgICAgICAgICAgICAgICAgICAgICAgICB0cnVlCmFzZGItcG1lbSAgICAgICAgICAgICAgICAgICAgICAgIHRydWUKYXNkYi1zdHJvbmctY29uc2lzdGVuY3kgICAgICAgICAgdHJ1ZQptZXNnLWptcy1jb25uZWN0b3IgICAgICAgICAgICAgICB0cnVlCm1lc2cta2Fma2EtY29ubmVjdG9yICAgICAgICAgICAgIHRydWUKcHJlc3RvLWNvbm5lY3RvciAgICAgICAgICAgICAgICAgdHJ1ZQpyYWYtcmVhbHRpbWUtYW5hbHlzaXMtZnJhbWV3b3JrICB0cnVlCgotLS0tLSBTSUdOQVRVUkUgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCk1FVUNJRXhGN3VSYzBZdURvb3J6ZkNUR2NhdGgrQVB6U0doUi94M21pN0RuRFB6a0FpRUF1cjkzRVcwb2tlNVoKUWZ5c1l4dzZCb0tKRUI1STVlV2xXdDU2UzlxeGNySWsKLS0tLS0gRU5EIE9GIFNJR05BVFVSRSAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo=
-`</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Base64 encoding of feature-key-file. Default key works only for 1 node cluster.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Number of instances in the cluster
-(<code>NumberOfInstances</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Number of instances in the cluster.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enable CloudWatch for the Aerospike cluster
-(<code>EnableCloudWatch</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>no</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Add basic Aerospike metrics to CloudWatch. Will incur CloudWatch expenses.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Type of EC2 instance
-(<code>InstanceType</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>m5.large</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Type of EC2 instance to launch.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Size of EBS volume
-(<code>EBS</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>50</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Size of EBS SSD volume in GB. The volume will attach under /dev/sdg. Limit
-of 16000. Enter 0 to not use EBS.</p></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. Linux bastion configuration</caption>
-<colgroup>
-<col style="width: 16%;">
-<col style="width: 11%;">
-<col style="width: 73%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter label (name)</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Bastion Security Group ID
-(<code>BastionSecurityGroupID</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ID of the bastion host Security Group (e.g., sg-7f16e910).</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect2">
 <h3 id="_launch_into_a_new_vpc">Launch into a new VPC</h3>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. VPC network configuration</caption>
+<caption class="title">Table 1. VPC network configuration</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -1703,7 +1640,109 @@ of 16000. Enter 0 to not use EBS.</p></td>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. AWS Quick Start configuration</caption>
+<caption class="title">Table 2. Aerospike configuration</caption>
+<colgroup>
+<col style="width: 16%;">
+<col style="width: 11%;">
+<col style="width: 73%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter label (name)</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EC2 key pair
+(<code>KeyPairName</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Key pair to securely connect to your instance after it launches.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of instances to provision for the Aerospike cluster
+(<code>NumberOfInstances</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of instances in the Aerospike cluster.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Are the instances for the Aerospike instances on shared or dedicated host
+(<code>Tenancy</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>default</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The tenancy of your instance.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enable CloudWatch logging for the Aerospike cluster
+(<code>EnableCloudWatch</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>no</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Add basic Aerospike metrics to CloudWatch. Enabling this will incur CloudWatch expenses.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Which instance type to deploy for the Aerospike cluster
+(<code>InstanceType</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>m5.large</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type of EC2 instance to launch.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Size of EBS SSD volume in GB. The volume will attach under /dev/sdg. Limit of 16000. Enter 0 to not use EBS.
+(<code>EBS</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>50</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Size of EBS SSD volume in GB. The volume will attach under /dev/sdg. Limit
+of 16000. Enter 0 to not use EBS.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Location of your namespace definition. Must be publically downloadable. Will append file directly to end of aerospike.conf.
+(<code>NamespaceFile</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Location of your namespace definition. Must be publically
+downloadable. Will append file directly to end of aerospike.conf.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Aerospike key to use for this deployment
+(<code>FeatureKeyFile</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Base64 encoding of feature-key-file. Leaving this blank works only for a single node cluster.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. Linux bastion configuration</caption>
+<colgroup>
+<col style="width: 16%;">
+<col style="width: 11%;">
+<col style="width: 73%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter label (name)</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bastion AMI operating system
+(<code>BastionAMIOS</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Amazon-Linux2-HVM</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Linux distribution for the AMI to be used for the bastion instances.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bastion instance type
+(<code>BastionInstanceType</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>t3.micro</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Amazon EC2 instance type for the bastion instances.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of bastion hosts
+(<code>NumBastionHosts</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enter the number of bastion hosts to create.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. AWS Quick Start configuration</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -1737,6 +1776,56 @@ of 16000. Enter 0 to not use EBS.</p></td>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sect2">
+<h3 id="_launch_into_a_existing_vpc">Launch into a existing VPC</h3>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 5. VPC network configuration</caption>
+<colgroup>
+<col style="width: 16%;">
+<col style="width: 11%;">
+<col style="width: 73%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter label (name)</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EC2 key pair
+(<code>KeyPairName</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the EC2 keypair that would be used to ssh into the instances.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VPC ID
+(<code>VPCID</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Choose which VPC this cluster should be deployed into.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CIDR for the VPC
+(<code>VPCCIDR</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10.0.0.0/16</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VPC CIDR block, in format x.x.0.0/16.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List of subnet
+(<code>VPCSubnet</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List of subnet IDs, this will link instance in the VPC selected above.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tenancy of instance
+(<code>Tenancy</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>default</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The tenancy of your instance.</p></td>
+</tr>
+</tbody>
+</table>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 6. Aerospike configuration</caption>
 <colgroup>
@@ -1753,48 +1842,41 @@ of 16000. Enter 0 to not use EBS.</p></td>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Number of instances to provision for the Aerospike cluster
+<td class="tableblock halign-left valign-top"><p class="tableblock">Location of namespace definition
+(<code>NamespaceFile</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Location of your namespace definition. Must be publicly downloadable. Will append file directly to end of aerospike.conf.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Feature key file value encoded in base64
+(<code>FeatureKeyFile</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Base64 encoding of feature-key-file. Leaving this blank works only for single node cluster.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of instances in the cluster
 (<code>NumberOfInstances</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>1</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Number of instances in the Aerospike cluster.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of instances in the cluster.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Are the instances for the Aerospike instances on shared or dedicated host
-(<code>Tenancy</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>default</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The tenancy of your instance.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enable CloudWatch logging for the Aerospike cluster
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enable CloudWatch for the Aerospike cluster
 (<code>EnableCloudWatch</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>no</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Add basic Aerospike metrics to CloudWatch. Enabling this will incur CloudWatch expenses.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Add basic Aerospike metrics to CloudWatch. Will incur CloudWatch expenses.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Which instance type to deploy for the Aerospike cluster
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type of EC2 instance
 (<code>InstanceType</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>m5.large</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Type of EC2 instance to launch.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Size of EBS SSD volume in GB. The volume will attach under /dev/sdg. Limit of 16000. Enter 0 to not use EBS.
+<td class="tableblock halign-left valign-top"><p class="tableblock">Size of EBS volume
 (<code>EBS</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>50</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Size of EBS SSD volume in GB. The volume will attach under /dev/sdg. Limit
 of 16000. Enter 0 to not use EBS.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Location of your namespace definition. Must be publically downloadable. Will append file directly to end of aerospike.conf
-(<code>NamespaceFile</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Location of your namespace definition. Must be publically
-downloadable. Will append file directly to end of aerospike.conf</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Aerospike key to use for this deployment
-(<code>FeatureKeyFile</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>IyBnZW5lcmF0ZWQgMjAyMS0wMy0xMCAwNDowNDoyOAoKZmVhdHVyZS1rZXktdmVyc2lvbiAgICAgICAgICAgICAgICAgIDIKc2VyaWFsLW51bWJlciAgICAgICAgICAgICAgICAgICAgICAgIDU2ODk1MzA1OAoKYWNjb3VudC1uYW1lICAgICAgICAgICAgICAgICAgICAgRXZhbHVhdGlvbl9MaWNlbnNlCgphY2NvdW50LUlEICAgICAgICAgICAgICAgICAgICAgICBBZXJvc3Bpa2VfXzQzNTcxMTM3NAoKYXNkYi1jaGFuZ2Utbm90aWZpY2F0aW9uICAgICAgICAgdHJ1ZQphc2RiLWNsdXN0ZXItbm9kZXMtbGltaXQgICAgICAgICAxCmFzZGItY29tcHJlc3Npb24gICAgICAgICAgICAgICAgIHRydWUKYXNkYi1lbmNyeXB0aW9uLWF0LXJlc3QgICAgICAgICAgdHJ1ZQphc2RiLWxkYXAgICAgICAgICAgICAgICAgICAgICAgICB0cnVlCmFzZGItcG1lbSAgICAgICAgICAgICAgICAgICAgICAgIHRydWUKYXNkYi1zdHJvbmctY29uc2lzdGVuY3kgICAgICAgICAgdHJ1ZQptZXNnLWptcy1jb25uZWN0b3IgICAgICAgICAgICAgICB0cnVlCm1lc2cta2Fma2EtY29ubmVjdG9yICAgICAgICAgICAgIHRydWUKcHJlc3RvLWNvbm5lY3RvciAgICAgICAgICAgICAgICAgdHJ1ZQpyYWYtcmVhbHRpbWUtYW5hbHlzaXMtZnJhbWV3b3JrICB0cnVlCgotLS0tLSBTSUdOQVRVUkUgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCk1FVUNJRXhGN3VSYzBZdURvb3J6ZkNUR2NhdGgrQVB6U0doUi94M21pN0RuRFB6a0FpRUF1cjkzRVcwb2tlNVoKUWZ5c1l4dzZCb0tKRUI1STVlV2xXdDU2UzlxeGNySWsKLS0tLS0gRU5EIE9GIFNJR05BVFVSRSAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo=</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Base64 encoding of feature-key-file. Default key works only for 1 node cluster.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1814,22 +1896,33 @@ downloadable. Will append file directly to end of aerospike.conf</p></td>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Bastion AMI operating system
-(<code>BastionAMIOS</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Amazon-Linux2-HVM</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Linux distribution for the AMI to be used for the bastion instances.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bastion Security Group ID
+(<code>BastionSecurityGroupID</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ID of the bastion host Security Group (e.g., sg-7f16e910).</p></td>
 </tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 8. AWS Quick Start configuration</caption>
+<colgroup>
+<col style="width: 16%;">
+<col style="width: 11%;">
+<col style="width: 73%;">
+</colgroup>
+<thead>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Bastion instance type
-(<code>BastionInstanceType</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>t3.micro</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Amazon EC2 instance type for the bastion instances.</p></td>
+<th class="tableblock halign-left valign-top">Parameter label (name)</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
 </tr>
+</thead>
+<tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Number of bastion hosts
-(<code>NumBastionHosts</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enter the number of bastion hosts to create.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Quick Start S3 bucket name
+(<code>QSS3BucketName</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>aws-quickstart</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 bucket name for the Quick Start assets. The Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).</p></td>
 </tr>
 </tbody>
 </table>
@@ -1884,7 +1977,7 @@ and to share your customizations with others.</p>
 </html>
 <!--
 repo commit:
-73b1f5d86805f0ba5cc05f0b3bab0346f47c7884
+45bd49fdd9cc6537632892a6b40bee1e18d9d78a
 
 submodule config:
 +a9d6c5903745c1091793d3cd1f960948919c2c9f docs/boilerplate (heads/main)

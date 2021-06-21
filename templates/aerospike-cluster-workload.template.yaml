@@ -19,6 +19,12 @@ Metadata:
     - Location
     - "aerospike.conf"
     - cloudwatch
+    - aerospike
+    - configuration
+    - .conf
+    - QSS3BucketRegion
+    - QSS3BucketName
+
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
@@ -42,6 +48,10 @@ Metadata:
           default: Linux bastion configuration
         Parameters:
           - BastionSecurityGroupID
+      - Label:
+          default: AWS Quick Start configuration
+        Parameters:
+          - QSS3BucketName
     ParameterLabels:
       BastionSecurityGroupID:
         default: Bastion Security Group ID
@@ -67,6 +77,8 @@ Metadata:
         default: Location of namespace definition
       FeatureKeyFile:
         default: Feature key file value encoded in base64
+      QSS3BucketName:
+        default: Quick Start S3 bucket name
 Parameters:
   BastionSecurityGroupID:
     Description: ID of the bastion host Security Group (e.g., sg-7f16e910).
@@ -203,11 +215,19 @@ Parameters:
     Type: String
     Default: ''
   FeatureKeyFile:
-    Description: Base64 encoding of feature-key-file. Default key works only for 1 node cluster.
+    Description: Base64 encoding of feature-key-file. Leaving this blank works only for single node cluster.
     Type: String
-    Default: |
-      IyBnZW5lcmF0ZWQgMjAyMS0wMy0xMCAwNDowNDoyOAoKZmVhdHVyZS1rZXktdmVyc2lvbiAgICAgICAgICAgICAgICAgIDIKc2VyaWFsLW51bWJlciAgICAgICAgICAgICAgICAgICAgICAgIDU2ODk1MzA1OAoKYWNjb3VudC1uYW1lICAgICAgICAgICAgICAgICAgICAgRXZhbHVhdGlvbl9MaWNlbnNlCgphY2NvdW50LUlEICAgICAgICAgICAgICAgICAgICAgICBBZXJvc3Bpa2VfXzQzNTcxMTM3NAoKYXNkYi1jaGFuZ2Utbm90aWZpY2F0aW9uICAgICAgICAgdHJ1ZQphc2RiLWNsdXN0ZXItbm9kZXMtbGltaXQgICAgICAgICAxCmFzZGItY29tcHJlc3Npb24gICAgICAgICAgICAgICAgIHRydWUKYXNkYi1lbmNyeXB0aW9uLWF0LXJlc3QgICAgICAgICAgdHJ1ZQphc2RiLWxkYXAgICAgICAgICAgICAgICAgICAgICAgICB0cnVlCmFzZGItcG1lbSAgICAgICAgICAgICAgICAgICAgICAgIHRydWUKYXNkYi1zdHJvbmctY29uc2lzdGVuY3kgICAgICAgICAgdHJ1ZQptZXNnLWptcy1jb25uZWN0b3IgICAgICAgICAgICAgICB0cnVlCm1lc2cta2Fma2EtY29ubmVjdG9yICAgICAgICAgICAgIHRydWUKcHJlc3RvLWNvbm5lY3RvciAgICAgICAgICAgICAgICAgdHJ1ZQpyYWYtcmVhbHRpbWUtYW5hbHlzaXMtZnJhbWV3b3JrICB0cnVlCgotLS0tLSBTSUdOQVRVUkUgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCk1FVUNJRXhGN3VSYzBZdURvb3J6ZkNUR2NhdGgrQVB6U0doUi94M21pN0RuRFB6a0FpRUF1cjkzRVcwb2tlNVoKUWZ5c1l4dzZCb0tKRUI1STVlV2xXdDU2UzlxeGNySWsKLS0tLS0gRU5EIE9GIFNJR05BVFVSRSAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo=
-
+    Default: ""
+  QSS3BucketName:
+    AllowedPattern: "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$"
+    ConstraintDescription: Quick Start bucket name can include numbers, lowercase
+      letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
+      (-).
+    Default: aws-quickstart
+    Description: S3 bucket name for the Quick Start assets. The Quick Start bucket name
+      can include numbers, lowercase letters, uppercase letters, and hyphens (-).
+      It cannot start or end with a hyphen (-).
+    Type: String
 Mappings:
   AWSAMIRegionMap:
     AMI:
@@ -248,11 +268,17 @@ Mappings:
       AEROSPIKEAMI: ami-0e85ec1cd8e86df3b
 
 Conditions:
+  UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
+  TrialLicense: !Equals [!Ref FeatureKeyFile, '']
   NotUsingEBS: !Equals 
     - !Ref EBS
     - 0
 
 Resources:
+  PsuedoRandom:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: 'Do NOT USE. Do NOT DELETE. Used for random name suffix for CFN circular dependency workaround.'
   ClusterRole:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -289,7 +315,12 @@ Resources:
             Version: 2012-10-17
             Statement:
               - Effect: Allow
-                Action: 'sqs:*'
+                Action: 
+                  - sqs:GetQueueAttributes
+                  - sqs:SendMessageBatch
+                  - sqs:SendMessage
+                  - sqs:SendMessageBatch
+                  - sqs:GetQueueUrl
                 Resource: !GetAtt 
                   - MigrationSQS
                   - Arn
@@ -298,8 +329,13 @@ Resources:
             Version: 2012-10-17
             Statement:
               - Effect: Allow
-                Action: 'autoscaling:*'
-                Resource: '*'
+                Action:
+                  - autoscaling:CompleteLifecycleAction
+                  - autoscaling:RecordLifecycleActionHeartbeat
+                Resource: !Sub
+                  - 'arn:${AWS::Partition}:autoscaling:${AWS::Region}:${AWS::AccountId}:autoScalingGroup:*:autoScalingGroupName/${AutoScalingGroupName}'
+                  - AutoScalingGroupName: !Sub 'AerospikeCluster-${PsuedoRandom.GroupId}'
+
   ClusterInstanceProfile:
     Type: 'AWS::IAM::InstanceProfile'
     Properties:
@@ -324,6 +360,7 @@ Resources:
   ClusterGroup:
     Type: 'AWS::AutoScaling::AutoScalingGroup'
     Properties:
+      AutoScalingGroupName: !Sub 'AerospikeCluster-${PsuedoRandom.GroupId}'
       LaunchConfigurationName: !Ref LaunchConfig
       DesiredCapacity: !Ref NumberOfInstances
       MinSize: '1'
@@ -350,11 +387,12 @@ Resources:
                 - |
                   #!/bin/bash
                   # ${Stub}
-                  echo ${FeatureKeyFile} | base64 --decode > /etc/aerospike/features.conf
+                  echo ${FeatureKeyFileBase64} | base64 --decode > /etc/aerospike/features.conf
                   rm -rf /etc/aerospike/aerospike.conf
                   cp -r /opt/aerospike/cft_scripts/aerospike_mesh.conf /etc/aerospike
                   mv /etc/aerospike/aerospike_mesh.conf /etc/aerospike/aerospike.conf
                 - Stub: A
+                  FeatureKeyFileBase64: !If [ TrialLicense, "IyBnZW5lcmF0ZWQgMjAyMS0wMy0xMCAwNDowNDoyOAoKZmVhdHVyZS1rZXktdmVyc2lvbiAgICAgICAgICAgICAgICAgIDIKc2VyaWFsLW51bWJlciAgICAgICAgICAgICAgICAgICAgICAgIDU2ODk1MzA1OAoKYWNjb3VudC1uYW1lICAgICAgICAgICAgICAgICAgICAgRXZhbHVhdGlvbl9MaWNlbnNlCgphY2NvdW50LUlEICAgICAgICAgICAgICAgICAgICAgICBBZXJvc3Bpa2VfXzQzNTcxMTM3NAoKYXNkYi1jaGFuZ2Utbm90aWZpY2F0aW9uICAgICAgICAgdHJ1ZQphc2RiLWNsdXN0ZXItbm9kZXMtbGltaXQgICAgICAgICAxCmFzZGItY29tcHJlc3Npb24gICAgICAgICAgICAgICAgIHRydWUKYXNkYi1lbmNyeXB0aW9uLWF0LXJlc3QgICAgICAgICAgdHJ1ZQphc2RiLWxkYXAgICAgICAgICAgICAgICAgICAgICAgICB0cnVlCmFzZGItcG1lbSAgICAgICAgICAgICAgICAgICAgICAgIHRydWUKYXNkYi1zdHJvbmctY29uc2lzdGVuY3kgICAgICAgICAgdHJ1ZQptZXNnLWptcy1jb25uZWN0b3IgICAgICAgICAgICAgICB0cnVlCm1lc2cta2Fma2EtY29ubmVjdG9yICAgICAgICAgICAgIHRydWUKcHJlc3RvLWNvbm5lY3RvciAgICAgICAgICAgICAgICAgdHJ1ZQpyYWYtcmVhbHRpbWUtYW5hbHlzaXMtZnJhbWV3b3JrICB0cnVlCgotLS0tLSBTSUdOQVRVUkUgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCk1FVUNJRXhGN3VSYzBZdURvb3J6ZkNUR2NhdGgrQVB6U0doUi94M21pN0RuRFB6a0FpRUF1cjkzRVcwb2tlNVoKUWZ5c1l4dzZCb0tKRUI1STVlV2xXdDU2UzlxeGNySWsKLS0tLS0gRU5EIE9GIFNJR05BVFVSRSAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo=", !Ref FeatureKeyFile ]
               mode: '000744'
               owner: root
               group: root
@@ -365,16 +403,20 @@ Resources:
                   echo ClusterInstancesScriptStart > /var/log/awsuserdatascript
                   PRIVATE_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
                   CONF=/etc/aerospike/aerospike.conf
-                  sed -i \"/port 3000/a \\\t\taccess-address $PRIVATE_IP virtual\" $CONF\n"
+                  sed -i "s/port 3000/port 3000\n\t\taccess-address $PRIVATE_IP virtual\n/g" $CONF
+
+
                   ###Point to all instances using the mesh-address config option
                   sleep 60 # wait for AWS to provision
                   FILTER=Name=tag-key,Values=StackID
-                  PRIVATEIP=$(aws ec2 describe-instances --filter $FILTER  Name=tag-value,Values='${AWS::StackId} --output=text --region=${REGION} | grep PRIVATEIPADDRESSES | awk '{print $4}')
+                  PRIVATEIP=$(aws ec2 describe-instances --filter $FILTER  Name=tag-value,Values=${AWS::StackId} --output=text --region=${REGION} | grep PRIVATEIPADDRESSES | awk '{print $4}')
                   echo $PRIVATEIP >> /var/log/awsuserdatascript
                   sed -i '/.*mesh-seed-address-port/d' $CONF
                   for i in $PRIVATEIP; do
-                    sed -i \"/interval/i \\\t\tmesh-seed-address-port $i 3002\" $CONF
+                      sed -i "/interval/i \\\t\tmesh-seed-address-port $i 3002\n" $CONF
                   done
+
+                  # Check if namespace file in input
                   CODE=$(curl -Is ${NamespaceFile} | head -n 1 | cut -d$' ' -f2)
                   if [ "$CODE" != "200" ]; then echo 'Namespace File not found' >> /var/log/awsuserdatascript
                   else sed -i '/namespace test/,$d' $CONF
@@ -383,11 +425,11 @@ Resources:
 
                   echo OtherInstancesScriptFinish >> /var/log/awsuserdatascript
                   (crontab -l 2>/dev/null; echo '*/5 * * * * /opt/aerospike/poll_sqs') | crontab -
-
-                  if [[ "${EnableCloudWatch}" == "yes" ]]; then
-                    (crontab -l 2>/dev/null; echo '*/5 * * * * /opt/aerospike/cloudwatch') | crontab -
+                  if [[ ${EnableCloudWatch} == "yes" ]]; then
+                  (crontab -l 2>/dev/null; echo '*/5 * * * * /opt/aerospike/cloudwatch') | crontab -
                   fi
-                - REGION: !Sub "${AWS::Region}"
+                - REGION: !Sub "${AWS::Region}" 
+                  S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
               mode: '000744'
               owner: root
               group: root
@@ -533,7 +575,7 @@ Resources:
               command: /opt/aerospike/cft_scripts/aerospike_init
               cwd: /opt/aerospike/cft_scripts
             01_form_asd_cluster:
-              command: /opt/aerospike/cft_scripts/aerospike_cluster
+              command:  /opt/aerospike/cft_scripts/aerospike_cluster
               cwd: /opt/aerospike/cft_scripts
             02_aerospike_start:
               command: /opt/aerospike/cft_scripts/aerospike_start
@@ -611,3 +653,10 @@ Outputs:
   AutoscalingID:
     Description: The Autoscaling Group ID that is used to deploy your cluster
     Value: !Ref ClusterGroup
+Rules:
+  TrialSingleNode:
+    RuleCondition:
+      !Equals [ !Ref FeatureKeyFile, '' ]
+    Assertions:
+    - Assert: !Equals [!Ref NumberOfInstances, '1']
+      AssertDescription: "If you are not providing your own license you may only launch a single node."
