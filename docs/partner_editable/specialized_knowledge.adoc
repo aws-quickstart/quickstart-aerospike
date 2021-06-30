@@ -2,3 +2,4 @@
 // For example: “familiarity with basic concepts in networking, database operations, and data encryption” or “familiarity with <software>.”
 // Include links if helpful. 
 // You don't need to list AWS services or point to general info about AWS; the boilerplate already covers this.
+This deployment guide was designed for general purpose use and requires a moderate level of familiarity with the Aerospike database and AWS services.  To learn more about high performance and availability configurations please refer to Aerospike recommendations for https://docs.aerospike.com/docs/deploy_guides/aws/recommendations/index.html[AWS instance types with locally attached SSDs^].
