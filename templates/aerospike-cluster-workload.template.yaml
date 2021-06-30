@@ -4,7 +4,7 @@ Metadata:
   AWSAMIRegionMap:
     Filters:
       AEROSPIKEAMI:
-        product-code: 26fhd0774dfi5hr7ixtngc1xx
+        product-code: ermcxk7wxadxl2w4kemoshqg0
   QuickStartDocumentation:
     EntrypointName: "Launch into a existing VPC"
     Order: Index a
@@ -233,39 +233,39 @@ Mappings:
     AMI:
       AEROSPIKEAMI: aerospike-amzn2-64bit-4.20
     us-east-1:
-      AEROSPIKEAMI: ami-0d26d37a74be7c252
+      AEROSPIKEAMI: ami-02b4d0fc7fd1391b9
     us-east-2:
-      AEROSPIKEAMI: ami-0f936d8bcc6004087
+      AEROSPIKEAMI: ami-04e92ffd253e42a3d
     us-west-1:
-      AEROSPIKEAMI: ami-032ffa0a1b4f4b65f
+      AEROSPIKEAMI: ami-09bc7e772901067eb
     us-west-2:
-      AEROSPIKEAMI: ami-0a0aced526dfbbae1
+      AEROSPIKEAMI: ami-00183ebe1ff29e83f
     ca-central-1:
-      AEROSPIKEAMI: ami-0bddf972f2c0820ba
+      AEROSPIKEAMI: ami-04b334d8470f28281
     eu-west-1:
-      AEROSPIKEAMI: ami-0d979456a2ae5925b
+      AEROSPIKEAMI: ami-0673ae70899ede698
     eu-west-2:
-      AEROSPIKEAMI: ami-03b24b7f0692bd480
+      AEROSPIKEAMI: ami-054d1e2dde6fd8410
     eu-west-3:
-      AEROSPIKEAMI: ami-09e73091d8898de7d
+      AEROSPIKEAMI: ami-0e495dd43cc0f4fc6
     eu-north-1:
-      AEROSPIKEAMI: ami-08c1784f93757e8e5
+      AEROSPIKEAMI: ami-0f17e203a77e5a120
     eu-central-1:
-      AEROSPIKEAMI: ami-056d80514642a8881
+      AEROSPIKEAMI: ami-04528b62f1cb12863
     ap-southeast-1:
-      AEROSPIKEAMI: ami-0cebefeb9b98c8ab5
+      AEROSPIKEAMI: ami-0371cebf36adf76b2
     ap-southeast-2:
-      AEROSPIKEAMI: ami-030ea5d03c32eb8dc
+      AEROSPIKEAMI: ami-0b706b3c1852a9c2f
     ap-south-1:
-      AEROSPIKEAMI: ami-0fe36226c616d6468
+      AEROSPIKEAMI: ami-0a38b67213cf0c11b
     ap-northeast-1:
-      AEROSPIKEAMI: ami-07e8d017356701bf4
+      AEROSPIKEAMI: ami-0f5cd86d5492aa37d
     ap-northeast-2:
-      AEROSPIKEAMI: ami-0dc900451362789a2
+      AEROSPIKEAMI: ami-04659e1ec3a43da1c
     ap-northeast-3:
-      AEROSPIKEAMI: ami-06ae146458d9d1dc4
+      AEROSPIKEAMI: ami-000f7a348bcbbb1b2
     sa-east-1:
-      AEROSPIKEAMI: ami-0e85ec1cd8e86df3b
+      AEROSPIKEAMI: ami-0d86a1f67349e1871
 
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
