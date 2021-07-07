@@ -7,6 +7,8 @@
 *A.* If AWS CloudFormation fails to create the stack, relaunch the template with *Rollback on failure* set to *Disabled*. This setting is under *Advanced* in the AWS CloudFormation console on the *Configure stack options* page. With this setting, the stack’s state is retained, and the instance keeps running so that you can troubleshoot the issue. (For Windows, look at the log files in `%ProgramFiles%\Amazon\EC2ConfigService` and `C:\cfn\log`.)
 // Customize this answer if needed. For example, if you’re deploying on Linux instances, either provide the location for log files on Linux or omit the final sentence. If the Quick Start has no EC2 instances, revise accordingly (something like "and the assets keep running").
 
+//TODO Andrew, Do we need to customize this statement above for Linux?
+
 WARNING: When you set *Rollback on failure* to *Disabled*, you continue to incur AWS charges for this stack. Delete the stack when you finish troubleshooting.
 
 For more information, see https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html[Troubleshooting AWS CloudFormation^].
@@ -16,9 +18,8 @@ For more information, see https://docs.aws.amazon.com/AWSCloudFormation/latest/U
 *A.* Launch the Quick Start templates from the links in this guide or from another S3 bucket. If you deploy the templates from a local copy on your computer or from a location other than an S3 bucket, you might encounter template-size limitations. For more information, see http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cloudformation-limits.html[AWS CloudFormation quotas^].
 
 
-*Q.* I created a cluster of 3 machines but they do not seem to be clustering
+*Q.* I created a cluster of three machines, but they don't seem to be clustering.
 
-*A.* Most likely you did not get a production license, You can either re-run the quickstart guide ensuring you apply your production license or if you don't have a license you can obtain one https://aerospike.com/lp/try-now/[here]. 
-== Troubleshooting
+*A.* Most likely you did not get a production license. You can rerun the Quick Start ensuring that you apply your production license. If you don't have a license, you can obtain one https://aerospike.com/lp/try-now/[on the Get started with Aerospike^] page.
 
-<Steps for troubleshooting the deployment.>
+//TODO Andrew, Is that the right page for people to get a production license? The big red button says "Start My Free Trial."
