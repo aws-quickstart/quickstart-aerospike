@@ -3,16 +3,18 @@
 
 == Test the deployment
 // If steps are required to test the deployment, add them here. If not, remove the heading
-After the AWS CloudFormation stack is complete, you can test the deployment by checking whether the instances were properly enrolled with your {partner-product-short-name} project.
+After the AWS CloudFormation stack is complete, test the deployment by checking whether the instances were properly enrolled with your {partner-product-short-name} project.
+
+//TODO Andrew, Is the previous paragraph something we do before validating and verifying the configuration——a distinct step from next paragraph? Or are these two ways to say the same thing? To help clarify all the steps in this test section, please add step numbers throughout. Use the asciidoc period-space for numbers and "+" for list continuation, as documented here: https://docs.asciidoctor.org/asciidoc/latest/lists/ordered/
 
 To validate the system and verify the system configuration, follow these steps:
 
-From bastion host, use SSH to log in to one of the aerospike instance created by Quick Start template. It's recommended to use ssh key forwarding for security purpose. More info on ssh key forwarding can be found https://docs.github.com/en/developers/overview/using-ssh-agent-forwarding[here]
+From the bastion host, use SSH to log in to one of the Aerospike instances created by Quick Start template. Use SSH key forwarding for security purposes. For more info on SSH key forwarding, see https://docs.github.com/en/developers/overview/using-ssh-agent-forwarding[Using SSH agent forwarding^].
 ----
 $ ssh ec2-user@<aerospike-instance>
 ----
 
-Verify cluster information using `asadm` command. More information about asadm can be found https://docs.aerospike.com/docs/tools/asadm/[here]. For two node cluster output should look like this : 
+Verify cluster information using `asadm` command. More information, see https://docs.aerospike.com/docs/tools/asadm/[Aerospike Admin (asadm)^]. A two-node cluster output looks like this: 
 ----
 $ asadm
 Seed:        [('127.0.0.1', 3000, None)]
@@ -47,7 +49,7 @@ Number of rows: 2
 
 ----
 
-Insert record using https://docs.aerospike.com/docs/tools/aql/[aql]. Following commands inserts a record in test namespace with foo as set name and bar as bin name:
+Insert record using https://docs.aerospike.com/docs/tools/aql/[aql]. The following commands insert a record in test namespace. Replace *foo* with the set name and *bar* with the bin name.
 
 ----
 $ aql
@@ -73,38 +75,36 @@ aql> select * from test.foo
 OK
 ----
 
-For additional information on testing you can use the https://docs.aerospike.com/docs/client/java/benchmarks.html[benchmark] tool to exercise and demo load on the new Aerospike cluster, otherwise you can check out https://docs.aerospike.com/docs/guide/query.html[Query] for information on querying the {partner-product-short-name} and https://docs.aerospike.com/docs/connect/index.html[here] to checkout {partner-product-short-name} how to set up and use connectors to stream data into your new cluster.
-
-== Post-deployment steps
-// If post-deployment steps are required, add them here. If not, remove the heading
-
-After your deployment is up and ready, you can read more on 
-
- - https://docs.aerospike.com/docs/operations/configure/index.html[Configuring]
- - https://docs.aerospike.com/docs/operations/manage/index.html[Managing]
- - https://docs.aerospike.com/docs/operations/monitor/index.html[Monitoring]
- - https://docs.aerospike.com/docs/operations/troubleshoot/index.html[Troubleshooting]
- - https://docs.aerospike.com/docs/architecture/clients.html[Clients]
- - https://docs.aerospike.com/docs/connect/index.html[Connectors]
-
+For more information on testing, see https://docs.aerospike.com/docs/client/java/benchmarks.html[Benchmarks^]. With the benchmark application, you can exercise and demo load on the new Aerospike cluster. 
 
 == Best practices for using {partner-product-short-name} on AWS
 // Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
 
-https://docs.aerospike.com/docs/deploy_guides/aws/recommendations/index.html[best practices] contains a lot of information on best practices for running {partner-product-short-name} in AWS.
+Follow these best practices: https://docs.aerospike.com/docs/deploy_guides/aws/recommendations/index.html[Aerospike on Amazon EC2 - Recommendations^].
+
+Also set up a backup plan your {partner-product-short-name} data. For details, see https://docs.aerospike.com/docs/deploy_guides/aws/backup/index.html[Backup and Recovery in AWS^].
 
 == Security
 // Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
 
-When running {partner-product-short-name} in production it's important to review and ensure security best practices are understood and followed.
-
-When it comes to backing up and restoring your data, There are many ways to accomplish this task depending on your needs. Check out the {partner-product-short-name} AWS https://docs.aerospike.com/docs/deploy_guides/aws/backup/index.html[docs] for more information to empowering what way is best for you on AWS.
-
-Check out https://docs.aerospike.com/docs/deploy_guides/aws/recommendations/index.html[best practices] for security and other best practices when running {partner-product-short-name} in production.
+When you run {partner-product-short-name} in production, review and ensure that your security best practices are understood and followed. You'll find some recommended security best practices in https://docs.aerospike.com/docs/deploy_guides/aws/recommendations/index.html[Aerospike on Amazon EC2 - Recommendations^].
 
 == Other useful information
 //Provide any other information of interest to users, especially focusing on areas where AWS or cloud usage differs from on-premises usage.
 
-Additional information can be found on the Aerospike https://docs.aerospike.com/docs/architecture/index.html[Architecture] as well as extra information on https://docs.aerospike.com/docs/operations/index.html[operations]
+After your deployment is up and ready, read and understand the following sections of the Aerospike documentation. Use the navigation panel to open each subsection within these main sections. 
 
-The ability to monitor the stack is provided by our https://docs.aerospike.com/docs/tools/monitorstack/index.html[Monitoring Stack]
+* https://docs.aerospike.com/docs/operations/configure/index.html[Configure Aerospike Database^]
+* https://docs.aerospike.com/docs/operations/manage/index.html[Manage^]
+* https://docs.aerospike.com/docs/operations/monitor/index.html[Monitoring^]
+* https://docs.aerospike.com/docs/operations/troubleshoot/index.html[Troubleshoot^]
+* https://docs.aerospike.com/docs/architecture/clients.html[Client Architecture^]
+* https://docs.aerospike.com/docs/connect/index.html[Overview of Aerospike Connect^]
+
+For information on the architecture and system, see the Aerospike https://docs.aerospike.com/docs/architecture/index.html[Architecture Overview^] and https://docs.aerospike.com/docs/operations/index.html[System Overview^]
+
+For information on monitoring your stack, see https://docs.aerospike.com/docs/tools/monitorstack/index.html[Overview to the Aerospike Monitoring Stack^].
+
+For information on querying your database, see https://docs.aerospike.com/docs/guide/query.html[Query^]. 
+
+For information on setting up and using connectors to stream data into your new cluster, see https://docs.aerospike.com/docs/connect/index.html[Overview of Aerospike Connect^].

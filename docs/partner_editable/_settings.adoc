@@ -2,13 +2,13 @@
 :quickstart-project-name: quickstart-aerospike
 :partner-product-name: Aerospike Database Enterprise Edition
 // For the following attribute, if you have no short name, enter the same name as partner-product-name.
-:partner-product-short-name: Aerospike Database
+:partner-product-short-name: Aerospike
 // If there's no partner, comment partner-company-name.
-:partner-company-name: Aerospike, Inc
-:doc-month: June
+:partner-company-name: Aerospike Inc.
+:doc-month: July
 :doc-year: 2021
 // Uncomment the following "contributor" attributes as appropriate. If the partner agrees to include names, enter contributor names for every line we use. If partner doesn't want to include names, delete all placeholder names and keep only "{partner-company-name}" and "AWS Quick Start team." 
-:partner-contributors: Marek Counts, Sourabh Bhagat, {partner-company-name}
+:partner-contributors: Marek Counts and Sourabh Bhagat, {partner-company-name}
 //:other-contributors: Akua Mansa, Trek10
 //:aws-contributors: Janine Singh, AWS IoT Partner team
 :quickstart-contributors: Andrew Gargan, AWS Quick Start team
@@ -28,5 +28,3 @@
 // Uncomment the following two attributes if you are deploying a CDK Quick Start. Make sure to comment out :parameters_as_appendix: also.
 // :cdk_qs:
 // :no_parameters:
-
-WARNING: DEVELOPER PREVIEW ONLY

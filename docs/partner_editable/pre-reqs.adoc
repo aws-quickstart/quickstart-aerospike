@@ -1,9 +1,9 @@
-// If no preperation is required, remove all content from here
+// If no preparation is required, remove all content from here
 
 ==== Prepare your AWS account
 
-Ensure your account has permissions required to create the infrastructure listed in Resource Quotas.
+Ensure that your account has permissions required to create the resources listed in the link:#_resource_quotas[Resource quotas] section of this guide.
 
 ==== Prepare for the deployment
 
-If you want to run more than a single node, you will need to bring your own license. Please obtain this from Aerospike before continuing. If a single node is acceptable, a trial license is provided that brings all the enterprise features to a single node.
+Obtain any necessary software licenses before you deploy this Quick Start. For details, see the link:#_software_licenses[Software licenses] section of this guide
