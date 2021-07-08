@@ -5,17 +5,16 @@
 // If steps are required to test the deployment, add them here. If not, remove the heading
 After the AWS CloudFormation stack is complete, test the deployment by checking whether the instances were properly enrolled with your {partner-product-short-name} project.
 
-//TODO Andrew, Is the previous paragraph something we do before validating and verifying the configuration——a distinct step from next paragraph? Or are these two ways to say the same thing? To help clarify all the steps in this test section, please add step numbers throughout. Use the asciidoc period-space for numbers and "+" for list continuation, as documented here: https://docs.asciidoctor.org/asciidoc/latest/lists/ordered/
-
 To validate the system and verify the system configuration, follow these steps:
 
 . From the bastion host, use SSH to log in to one of the Aerospike instances created by Quick Start template. Use SSH key forwarding for security purposes. For more info on SSH key forwarding, see https://docs.github.com/en/developers/overview/using-ssh-agent-forwarding[Using SSH agent forwarding^].
++
 ----
 $ ssh ec2-user@<aerospike-instance>
 ----
-[start=2]
-. Verify cluster information using `asadm` command. More information, see https://docs.aerospike.com/docs/tools/asadm/[Aerospike Admin (asadm)^]. A two-node cluster output looks like this:
 
+. Verify cluster information using `asadm` command. More information, see https://docs.aerospike.com/docs/tools/asadm/[Aerospike Admin (asadm)^]. A two-node cluster output looks like this:
++
 ----
 $ asadm
 Seed:        [('127.0.0.1', 3000, None)]
@@ -49,9 +48,10 @@ test     |    0|       0|8.000 GB|    0|   100|0.000 B |    0|     0|          2
 Number of rows: 2
 
 ----
-[start=3]
-. Insert record using https://docs.aerospike.com/docs/tools/aql/[aql]. The following commands insert a record in test namespace. Replace *foo* with the set name and *bar* with the bin name.
++
 
+. Insert record using https://docs.aerospike.com/docs/tools/aql/[aql^]. The following commands insert a record in test namespace. Replace *foo* with the set name and *bar* with the bin name.
++
 ----
 $ aql
 Seed:         127.0.0.1

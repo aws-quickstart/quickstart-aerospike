@@ -18,19 +18,9 @@ internet access for resources in the private subnets.*
 ** A Linux bastion host in an Auto Scaling group to allow inbound Secure
 Shell (SSH) access to EC2 instances in public and private subnets.*
 * In the private subnets:
-** Auto Scaling Group of Aerospike instances
-*** Each is configured with:
-**** <Aerospike Database>.
-**** <Aerospike Tools>.
-**** [Optional] EBS volume.
-* Cloudwatch for logging and monitoring of the Aerospike instances.
-* SQS used for Aerospike migration.
+** An Auto Scaling group of EC2 instances configured with {partner-product-name} and Aerospike tools.
+** An Amazon Elastic Block Store (Amazon EBS) volume in each subnet.
+* Amazon CloudWatch for logging and monitoring the Aerospike instances.
+* Amazon Simple Queue Service (Amazon SQS) for Aerospike migration.
 
-// Add bullet points for any additional components that are included in the deployment. Make sure that the additional components are also represented in the architecture diagram. End each bullet with a period.
-//* <describe any additional components>.
-
-//TODO Andrew, Please complete this bulleted list. Identify every item that we show in the diagram. Use the same exact terms in the list that we use in the diagram.
-
-//TODO Andrew, Please update the diagram following our standards. For example, keep the icon sizes consistent, use the same fonts and font sizes throughout, and use the standard dotted-line boxes from the latest deck (such as the Auto Scaling group box), label the box that goes across the private subnets ("Security group" I suspect?), etc. Also, do we want to show both security groups? Be as thorough and thoughtful as possible to minimize back and forth. Details on our wiki: https://w.amazon.com/bin/view/AWS_Quick_Starts/Process_for_PSAs/#HPrepareyourarchitecturediagram
-// TODO Marcia, the udpated architecture is in the docs/images/architecture_diagram.pptx
 [.small]#* The template that deploys the Quick Start into an existing VPC skips the components marked by asterisks and prompts you for your existing VPC configuration.#
