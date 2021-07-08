@@ -5,6 +5,7 @@
 {partner-product-short-name} is a real-time data platform that delivers predictable performance at petabyte scale with microsecond latency across billions of transactions. 
 
 //TODO What does "performance" refer to ... what are we saying the platform predictably does?
+//TODO Marica, this refers to query performance, Aerospike is a NoSQL data store. It has a predictable performance at any scale. In other words query performance is not greatly variable and is rather consistent.
 
 Aerospike is frequently used for data-intensive, geodistributed applications delivering the performance of a cache with the persistence of a NoSQL data platform. It provides multisite clustering, cross-datacenter replication, fast restarts, rapid rebalancing, and security-related features. Aerospike features a hybrid memory architecture where indexes, including the primary index and optional secondary indexes, are stored by default in DRAM for fast access. Data can be stored either in DRAM or, more cost-effectively, on solid-state drive (SSDs) by configuring each namespace separately, so small namespaces can take advantage of DRAM and larger ones gain the cost benefits of SSDs.  
 

@@ -7,3 +7,4 @@ If you don’t have a license, the Quick Start deploys with a trial license. The
 If you want to run multiple nodes, you need to bring your own license. The trial license provided by the Quick Start brings all the enterprise features to a single node.
 
 //TODO Andrew, what should this link be?
+//TODO Marcia the links above both work and are correct.

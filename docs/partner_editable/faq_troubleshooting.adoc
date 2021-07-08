@@ -8,6 +8,7 @@
 // Customize this answer if needed. For example, if you’re deploying on Linux instances, either provide the location for log files on Linux or omit the final sentence. If the Quick Start has no EC2 instances, revise accordingly (something like "and the assets keep running").
 
 //TODO Andrew, Do we need to customize this statement above for Linux?
+//TODO Marcia. No we do not.
 
 WARNING: When you set *Rollback on failure* to *Disabled*, you continue to incur AWS charges for this stack. Delete the stack when you finish troubleshooting.
 
@@ -23,3 +24,4 @@ For more information, see https://docs.aws.amazon.com/AWSCloudFormation/latest/U
 *A.* Most likely you did not get a production license. You can rerun the Quick Start ensuring that you apply your production license. If you don't have a license, you can obtain one https://aerospike.com/lp/try-now/[on the Get started with Aerospike^] page.
 
 //TODO Andrew, Is that the right page for people to get a production license? The big red button says "Start My Free Trial."
+//TODO Marcia, This is the starting point for that. They are trying to encourage adoption and will be directing customers here. For the aims of the Quick Start currently this seems correct to me.
