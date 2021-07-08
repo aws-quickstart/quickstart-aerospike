@@ -4,4 +4,4 @@
 
 This guide provides instructions for deploying the {partner-product-short-name} Quick Start reference architecture on the AWS Cloud.
 
-This Quick Start is for people who would like to quickly get started with {partner-product-short-name} using current best practices, high availability, and security-related features.
+This Quick Start is for people who want to quickly get started with {partner-product-short-name} using current best practices, high availability, and security-related features.

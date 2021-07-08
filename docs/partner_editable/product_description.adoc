@@ -2,13 +2,10 @@
 // Briefly describe the software. Use consistent and clear branding. 
 // Include the benefits of using the software on AWS, and provide details on usage scenarios.
 
-{partner-product-short-name} is a real-time data platform that delivers predictable performance at petabyte scale with microsecond latency across billions of transactions. 
+{partner-product-short-name} is a real-time NoSQL data-storage platform. It delivers predictable query performance at petabyte scale with microsecond latency across billions of transactions. 
 
-//TODO What does "performance" refer to ... what are we saying the platform predictably does?
-//TODO Marica, this refers to query performance, Aerospike is a NoSQL data store. It has a predictable performance at any scale. In other words query performance is not greatly variable and is rather consistent.
+When you use Aerospike with data-intensive, geodistributed applications, it performs like a cache with the persistence of a NoSQL data platform. It provides multisite clustering, cross-datacenter replication, fast restarts, rapid rebalancing, and security-related features. 
 
-Aerospike is frequently used for data-intensive, geodistributed applications delivering the performance of a cache with the persistence of a NoSQL data platform. It provides multisite clustering, cross-datacenter replication, fast restarts, rapid rebalancing, and security-related features. 
+Aerospike features a hybrid memory architecture where indexes, including the primary index and optional secondary indexes, are stored by default in DRAM for fast access. You can also store data on solid state drive (SSDs) by configuring each namespace separately. Small namespaces can take advantage of DRAM, and larger ones gain the cost benefits of SSDs.  
 
-Aerospike features a hybrid memory architecture where indexes, including the primary index and optional secondary indexes, are stored by default in DRAM for fast access. You can also store data on solid-state drive (SSDs) by configuring each namespace separately. Small namespaces can take advantage of DRAM, and larger ones gain the cost benefits of SSDs.  
-
-Quick Starts are automated reference deployments that use AWS CloudFormation templates to launch, configure, and run the AWS compute, network, storage, and other services required to deploy a specific workload on AWS. This Quick Start helps you build an {partner-product-short-name} cluster by automating deployment tasks to quickly install an {partner-product-short-name} instance with a limited single-node license. Alternatively, bring your own license to quickly stand up {partner-product-short-name} clusters using the {partner-product-short-name} CloudFormation template across multiple Availability Zones.
+Quick Starts are automated reference deployments that use AWS CloudFormation templates. You use Quick Starts to launch, configure, and run the AWS compute, network, storage, and other services required to deploy a specific workload on AWS. This Quick Start helps you build an {partner-product-short-name} cluster. It automates deployment tasks to install an {partner-product-short-name} instance with a limited single-node license. Alternatively, you can bring your own license to stand up {partner-product-short-name} clusters using the {partner-product-short-name} CloudFormation template across multiple Availability Zones.

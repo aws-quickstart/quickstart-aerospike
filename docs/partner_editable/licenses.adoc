@@ -2,8 +2,6 @@
 
 The Quick Start requires a subscription to the Amazon Machine Image (AMI) for {partner-product-name}, which is available from https://aws.amazon.com/marketplace/pp/prodview-ouzvxjdgfsa64/[AWS Marketplace^]. Additional pricing, terms, and conditions may apply. For instructions, see link:#_subscribe_to_the_aerospike_ami[Subscribe to the Aerospike AMI].
 
-If you don't have a license, the Quick Start deploys with a trial license. The trial license gives you an enterprise experience limited to a single node in a nonproduction environment. You can upgrade to a production license by following the instructions at <link>.
+If you don't have a license, the Quick Start deploys with a trial license. The trial license gives you an enterprise experience limited to a single node in a nonproduction environment. If you want to upgrade to a production license, send a message to https://aerospike.com/forms/contact-us/[contact Aerospike^].
 
-If you want to run multiple nodes, you need to bring your own license. The trial license provided by the Quick Start brings all the enterprise features to a single node.
-//TODO Andrew, what should this link be?
-//TODO Marcia the links above both work and are correct.
+If you want to run multiple nodes, you must bring your own license. The trial license provided by the Quick Start brings all the enterprise features to a single node.

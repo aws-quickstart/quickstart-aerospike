@@ -334,7 +334,7 @@ Parameters:
       - i3.16xlarge
   EBS:
     Description: |
-      Size of the EBS SSD volume in GB. The volume attaches under /dev/sdg. Limit of 16000. Enter 0 to not use EBS.
+      Size of the EBS SSD volume in GB. The volume attaches under /dev/sdg. Limit of 16000. Enter 0 if you do not want to use EBS.
     Type: Number
     Default: '50'
     MinValue: '0'
@@ -345,7 +345,7 @@ Parameters:
     Type: String
     Default: ''
   FeatureKeyFile:
-    Description: Base 64 encoding of the feature key file. This is the Aerospike key to use for this deployment. Leaving this blank works only for a single node cluster.
+    Description: Base64 encoding of the feature key file. This is the Aerospike key to use for this deployment. Keeping this blank works only for a single node cluster.
     Type: String
     Default: ""
 Conditions:
