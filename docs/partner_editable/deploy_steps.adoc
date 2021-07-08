@@ -34,7 +34,7 @@ Each deployment takes about {deployment_time} to complete.
 ^|https://fwd.aws/d6nX8?[Deploy {partner-product-short-name} into a new VPC on AWS^]
 ^|https://fwd.aws/DDX53?[View template^]
 
-^|http://https://fwd.aws/vM8jA?[Deploy {partner-product-short-name} into an existing VPC on AWS^]
+^|https://fwd.aws/vM8jA?[Deploy {partner-product-short-name} into an existing VPC on AWS^]
 ^|https://fwd.aws/YBjWj?[View template^]
 |===
 +
