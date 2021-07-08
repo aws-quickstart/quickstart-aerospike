@@ -4,6 +4,6 @@ The Quick Start requires a subscription to the Amazon Machine Image (AMI) for {p
 
 If you don't have a license, the Quick Start deploys with a trial license. The trial license gives you an enterprise experience limited to a single node in a nonproduction environment. You can upgrade to a production license by following the instructions at <link>.
 
-//TODO Andrew, what should this link be?
-
 If you want to run multiple nodes, you need to bring your own license. The trial license provided by the Quick Start brings all the enterprise features to a single node.
+//TODO Andrew, what should this link be?
+//TODO Marcia the links above both work and are correct.
