@@ -6,7 +6,7 @@ Metadata:
       AEROSPIKEAMI:
         product-code: ermcxk7wxadxl2w4kemoshqg0
   QuickStartDocumentation:
-    EntrypointName: "Launch into a existing VPC"
+    EntrypointName: "Parameters for deploying into an existing VPC"
     Order: Index a
   LintSpellExclude:
     - Aerospike
@@ -54,7 +54,7 @@ Metadata:
           - QSS3BucketName
     ParameterLabels:
       BastionSecurityGroupID:
-        default: Bastion Security Group ID
+        default: Bastion security group ID
       KeyPairName:
         default: EC2 key pair
       VPCID:
@@ -62,66 +62,66 @@ Metadata:
       VPCCIDR:
         default: CIDR for the VPC
       VPCSubnet:
-        default: List of subnet
+        default: VPC subnet
       Tenancy:
-        default: Tenancy of instance
+        default: Tenancy
       NumberOfInstances:
-        default: Number of instances in the cluster
+        default: Number of instances
       EnableCloudWatch:
-        default: Enable CloudWatch for the Aerospike cluster
+        default: Enable CloudWatch logging
       InstanceType:
-        default: Type of EC2 instance
+        default: Instance type
       EBS:
-        default: Size of EBS volume
+        default: EBS volume size
       NamespaceFile:
-        default: Location of namespace definition
+        default: Namespace file
       FeatureKeyFile:
-        default: Feature key file value encoded in base64
+        default: Feature key file
       QSS3BucketName:
         default: Quick Start S3 bucket name
 Parameters:
   BastionSecurityGroupID:
-    Description: ID of the bastion host Security Group (e.g., sg-7f16e910).
+    Description: ID of the bastion host security group (e.g., sg-7f16e910).
     Type: 'AWS::EC2::SecurityGroup::Id'
   KeyPairName:
-    Description: Name of the EC2 keypair that would be used to ssh into the instances.
+    Description: Name of the key pair to be used to connect to your EC2 instances by using SSH.
     Type: 'AWS::EC2::KeyPair::KeyName'
-    ConstraintDescription: Please specify the name of the keypair that you use to login
+    ConstraintDescription: Specify the name of the key pair that you use to log in.
   VPCID:
-    Description: Choose which VPC this cluster should be deployed into.
+    Description: ID of the VPC that you're deploying this cluster into.
     Type: 'AWS::EC2::VPC::Id'
   VPCCIDR:
-    Description: VPC CIDR block, in format x.x.0.0/16.
+    Description: VPC CIDR block in the format x.x.0.0/16.
     Type: String
     Default: 10.0.0.0/16
     ConstraintDescription: Must be in format x.x.0.0/16.
     AllowedPattern: '^([0-9]{1,3}\.){2}([0]{1}.)[0]{1}(\/[16]{2})$'
   VPCSubnet:
-    Description: List of subnet IDs, this will link instance in the VPC selected above.
+    Description: Subnet that links to the instance in the selected VPC.
     Type: 'List<AWS::EC2::Subnet::Id>'
   Tenancy:
-    Description: The tenancy of your instance.
+    Description: Tenancy of the Aerospike instances. Choose "dedicated" to change the host from shared (default).
     Type: String
     Default: default
     AllowedValues:
       - default
       - dedicated
   NumberOfInstances:
-    Description: Number of instances in the cluster.
+    Description: Number of instances to provision for the Aerospike cluster.
     Type: Number
     Default: '1'
     MinValue: '1'
     MaxValue: '15'
   EnableCloudWatch:
     Description: >-
-      Add basic Aerospike metrics to CloudWatch. Will incur CloudWatch expenses.
+      Choose "yes" to enable CloudWatch logging for the Aerospike cluster, which adds basic Aerospike metrics to Amazon CloudWatch. This incurs CloudWatch expenses.
     Type: String
     Default: 'no'
     AllowedValues:
       - 'yes'
       - 'no'
   InstanceType:
-    Description: Type of EC2 instance to launch.
+    Description: Type of EC2 instance to deploy for the Aerospike cluster.
     Type: String
     Default: m5.large
     AllowedValues:
@@ -202,31 +202,32 @@ Parameters:
       - i3.16xlarge
   EBS:
     Description: |
-      Size of EBS SSD volume in GB. The volume will attach under /dev/sdg. Limit
-      of 16000. Enter 0 to not use EBS.
+      Size of the EBS SSD volume in GB. The volume attaches under /dev/sdg. Limit of 16000. Enter 0 to not use EBS.
     Type: Number
     Default: '50'
     MinValue: '0'
     MaxValue: '16000'
   NamespaceFile:
     Description: >-
-      (Optional) Location of your namespace definition. Must be publicly
-      downloadable. Will append file directly to end of aerospike.conf.
+      (Optional) Location of your namespace-definition file. Must be publically downloadable. Appends to aerospike.conf.
     Type: String
     Default: ''
   FeatureKeyFile:
-    Description: Base64 encoding of feature-key-file. Leaving this blank works only for single node cluster.
+    Description: Base 64 encoding of the feature key file. This is the Aerospike key to use for this deployment. Leaving this blank works only for single node cluster.
     Type: String
     Default: ""
   QSS3BucketName:
     AllowedPattern: "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$"
-    ConstraintDescription: Quick Start bucket name can include numbers, lowercase
-      letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
-      (-).
+    ConstraintDescription: The Quick Start bucket name can include numbers, lowercase
+      letters, uppercase letters, and hyphens (-). It cannot start or end with a 
+      hyphen (-).
     Default: aws-quickstart
-    Description: S3 bucket name for the Quick Start assets. The Quick Start bucket name
-      can include numbers, lowercase letters, uppercase letters, and hyphens (-).
-      It cannot start or end with a hyphen (-).
+    Description: Name of the S3 bucket for your copy of the Quick Start assets. 
+      Keep the default name unless you are customizing the template. 
+      Changing the name updates code references to point to a new Quick 
+      Start location. This name can include numbers, lowercase letters, 
+      uppercase letters, and hyphens, but do not start or end with a hyphen (-). 
+      See https://aws-quickstart.github.io/option1.html.
     Type: String
 Mappings:
   AWSAMIRegionMap:
@@ -653,6 +654,9 @@ Outputs:
   AutoscalingID:
     Description: The Autoscaling Group ID that is used to deploy your cluster
     Value: !Ref ClusterGroup
+  Postdeployment:
+    Description: To test your deployment, see the procedure in the deployment guide.
+    Value: https://fwd.aws/Pa8Yw?
 Rules:
   TrialSingleNode:
     RuleCondition:

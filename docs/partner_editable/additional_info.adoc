@@ -49,7 +49,7 @@ Number of rows: 2
 
 ----
 
-Insert record using https://docs.aerospike.com/docs/tools/aql/[aql]. The following commands insert a record in test namespace. Replace *foo* with the set name and *bar* with the bin name.
+Insert record using https://docs.aerospike.com/docs/tools/aql/[aql^]. The following commands insert a record in test namespace. Replace *foo* with the set name and *bar* with the bin name.
 
 ----
 $ aql
