@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.15">
-<title>Overview</title>
+<title>Aerospike Database Enterprise Edition on the AWS Cloud</title>
 <style>
 
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -839,21 +839,20 @@ p.footer-text a{color:#d7d8d8}
 <li><a href="#_deployment_steps">Deployment steps</a>
 <ul class="sectlevel2">
 <li><a href="#_confirm_your_aws_account_configuration">Confirm your AWS account configuration</a></li>
-<li><a href="#_subscribe_to_the_aerospike_database_ami">Subscribe to the Aerospike Database AMI</a></li>
+<li><a href="#_subscribe_to_the_aerospike_ami">Subscribe to the Aerospike AMI</a></li>
 <li><a href="#_launch_the_quick_start">Launch the Quick Start</a></li>
 </ul>
 </li>
 <li><a href="#_test_the_deployment">Test the deployment</a></li>
-<li><a href="#_post_deployment_steps">Post-deployment steps</a></li>
-<li><a href="#_best_practices_for_using_aerospike_database_on_aws">Best practices for using Aerospike Database on AWS</a></li>
+<li><a href="#_best_practices_for_using_aerospike_on_aws">Best practices for using Aerospike on AWS</a></li>
 <li><a href="#_security">Security</a></li>
 <li><a href="#_other_useful_information">Other useful information</a></li>
 <li><a href="#_faq">FAQ</a></li>
 <li><a href="#_customer_responsibility">Customer responsibility</a></li>
 <li><a href="#_parameter_reference">Parameter reference</a>
 <ul class="sectlevel2">
-<li><a href="#_launch_into_a_new_vpc">Launch into a new VPC</a></li>
-<li><a href="#_launch_into_a_existing_vpc">Launch into a existing VPC</a></li>
+<li><a href="#_parameters_for_deploying_into_an_existing_vpc">Parameters for deploying into an existing VPC</a></li>
+<li><a href="#_parameters_for_deploying_into_a_new_vpc">Parameters for deploying into a new VPC</a></li>
 </ul>
 </li>
 <li><a href="#_send_us_feedback">Send us feedback</a></li>
@@ -866,18 +865,6 @@ p.footer-text a{color:#d7d8d8}
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-DEVELOPER PREVIEW ONLY
-</td>
-</tr>
-</table>
-</div>
 <h2 id="_aerospike_database_enterprise_edition_on_the_aws_cloud" class="discrete text-center">Aerospike Database Enterprise Edition on the AWS Cloud</h2>
 <h2 id="_quick_start_reference_deployment" class="discrete text-left text-center">Quick Start Reference Deployment</h2>
 <div class="imageblock text-center">
@@ -886,8 +873,8 @@ DEVELOPER PREVIEW ONLY
 </div>
 </div>
 <div class="paragraph text-center">
-<p><strong>June 2021</strong><br>
-<em>Marek Counts, Sourabh Bhagat, Aerospike, Inc</em><br>
+<p><strong>July 2021</strong><br>
+<em>Marek Counts and Sourabh Bhagat, Aerospike Inc.</em><br>
 <em>Andrew Gargan, AWS Quick Start team</em></p>
 </div>
 <div class="admonitionblock tip text-left">
@@ -904,7 +891,7 @@ report bugs, or submit feature ideas for this Quick Start.
 </table>
 </div>
 <div class="paragraph text-left">
-<p>This Quick Start was created by Aerospike, Inc in collaboration with Amazon Web Services (AWS). <a href="http://aws.amazon.com/quickstart/" target="_blank" rel="noopener">Quick Starts</a> are automated reference deployments that use AWS CloudFormation templates to deploy key technologies on AWS, following AWS best practices.</p>
+<p>This Quick Start was created by Aerospike Inc. in collaboration with Amazon Web Services (AWS). <a href="http://aws.amazon.com/quickstart/" target="_blank" rel="noopener">Quick Starts</a> are automated reference deployments that use AWS CloudFormation templates to deploy key technologies on AWS, following AWS best practices.</p>
 </div>
 </div>
 </div>
@@ -912,10 +899,10 @@ report bugs, or submit feature ideas for this Quick Start.
 <h2 id="_overview">Overview</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This guide provides instructions for deploying the Aerospike Database Quick Start reference architecture on the AWS Cloud.</p>
+<p>This guide provides instructions for deploying the Aerospike Quick Start reference architecture on the AWS Cloud.</p>
 </div>
 <div class="paragraph">
-<p>This Quick Start is for users who would like to quickly get started with an Aerospike Database leveraging current best practices, high availability and security.</p>
+<p>This Quick Start is for people who want to get started with Aerospike on the AWS Cloud using current best practices, high availability, and security-related features.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -935,10 +922,16 @@ Amazon may share user-deployment information with the AWS Partner that collabora
 <h2 id="_aerospike_database_enterprise_edition_on_aws">Aerospike Database Enterprise Edition on AWS</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Aerospike Database is a real-time data platform that delivers predictable performance at petabyte scale with microsecond latency across billions of transactions. Aerospike is frequently used for data-intensive, geo-distributed applications delivering the performance of a cache with the persistence of a NoSQL data platform. It provides a rich set of enterprise features which include Multi-site clustering, Cross Datacenter Replication™ (XDR), Fast Restarts, Rapid Rebalance, and TLS Security.  Aerospike features a Hybrid Memory Architecture™ where indexes, including the primary index and optional secondary indexes, are stored by default in DRAM for ultra-fast access. Data can be stored either in DRAM or more cost-effectively on SSDs by configuring each namespace separately, so small namespaces can take advantage of DRAM and larger ones gain the cost benefits of SSDs.</p>
+<p>Aerospike is a real-time NoSQL data-storage platform. It delivers predictable query performance at petabyte scale with microsecond latency across billions of transactions.</p>
 </div>
 <div class="paragraph">
-<p>Quick Starts are automated reference deployments that use AWS CloudFormation templates to launch, configure and run the AWS compute, network, storage, and other services required to deploy a specific workload on AWS. This reference deployment will help you build an Aerospike Database cluster by automating deployment tasks to quickly install an Aerospike Database instance with a limited single node-license, or bring your own license to quickly stand up an Aerospike Database clusters using the Aerospike Database Cloud Formation Template (CFT) across multiple availability zones.</p>
+<p>When you use Aerospike with data-intensive, geodistributed applications, it performs like a cache with the persistence of a NoSQL data platform. It provides multisite clustering, cross-datacenter replication, fast restarts, rapid rebalancing, and security-related features.</p>
+</div>
+<div class="paragraph">
+<p>Aerospike features a hybrid memory architecture where indexes, including the primary index and optional secondary indexes, are stored by default in dynamic random-access memory (DRAM) for fast access. You can also store data on solid state drives (SSDs) by configuring each namespace separately. Small namespaces can take advantage of DRAM, and larger ones gain the cost benefits of SSDs.</p>
+</div>
+<div class="paragraph">
+<p>Quick Starts are automated reference deployments that use AWS CloudFormation templates. You use Quick Starts to launch, configure, and run the AWS compute, network, storage, and other services required to deploy a specific workload on AWS. This Quick Start helps you build an Aerospike cluster. It automates deployment tasks to install an Aerospike instance with a limited single-node license. Alternatively, you can bring your own license to stand up Aerospike clusters using the Aerospike CloudFormation template across multiple Availability Zones.</p>
 </div>
 </div>
 </div>
@@ -973,10 +966,10 @@ After you deploy the Quick Start, create <a href="https://docs.aws.amazon.com/aw
 <h2 id="_software_licenses">Software licenses</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>If you don’t have a license, the Quick Start deploys with a trial license. The trial license gives you an enterprise experience limited to a single node in a non-production environment. You can upgrade to a production license by following the instructions at &lt;link&gt;.</p>
+<p>The Quick Start requires a subscription to the Amazon Machine Image (AMI) for <a href="https://aws.amazon.com/marketplace/pp/prodview-ouzvxjdgfsa64/" target="_blank" rel="noopener">Aerospike Database Enterprise Edition in AWS Marketplace</a>. Additional pricing, terms, and conditions may apply. For instructions, see <a href="#_subscribe_to_the_aerospike_ami">Subscribe to the Aerospike AMI</a>.</p>
 </div>
 <div class="paragraph">
-<p><em>&lt;AMI information&gt;The Quick Start requires a subscription to the Amazon Machine Image (AMI) for Aerospike Database, which is available from <a href="https://aws.amazon.com/marketplace/pp/prodview-ouzvxjdgfsa64/" target="_blank" rel="noopener">AWS Marketplace</a>. Additional pricing, terms, and conditions may apply. For instructions, see <a href="#_deployment_steps">step 2</a> in the deployment section.</em></p>
+<p>If you don&#8217;t have a license, the Quick Start deploys with a trial license. The trial license gives you all the enterprise features in a single node in a nonproduction environment. If you want to upgrade to a production license, <a href="https://aerospike.com/forms/contact-us/" target="_blank" rel="noopener">contact Aerospike</a>. If you want to run multiple nodes, you must bring your own license.</p>
 </div>
 </div>
 </div>
@@ -985,14 +978,13 @@ After you deploy the Quick Start, create <a href="https://docs.aws.amazon.com/aw
 <div class="sectionbody">
 <div class="paragraph">
 <p>Deploying this Quick Start for a new virtual private cloud (VPC) with
-default parameters builds the following Aerospike Database environment in the
-AWS Cloud.</p>
+default parameters builds the following Aerospike environment in the AWS Cloud.</p>
 </div>
 <div id="architecture1" class="imageblock">
 <div class="content">
 <img src="images/architecture_diagram.png" alt="Architecture">
 </div>
-<div class="title">Figure 1. Quick Start architecture for Aerospike Database on AWS</div>
+<div class="title">Figure 1. Quick Start architecture for Aerospike on AWS</div>
 </div>
 <div class="paragraph">
 <p>As shown in <a href="#architecture1">Figure 1</a>, the Quick Start sets up the following:</p>
@@ -1015,8 +1007,7 @@ best practices, to provide you with your own virtual network on AWS.*</p>
 internet access for resources in the private subnets.*</p>
 </li>
 <li>
-<p>A Linux bastion host in an Auto Scaling group to allow inbound Secure
-Shell (SSH) access to EC2 instances in public and private subnets.*</p>
+<p>A Linux bastion host in an Auto Scaling group to allow inbound Secure Shell (SSH) access to Amazon Elastic Compute Cloud (Amazon EC2) instances in public and private subnets.*</p>
 </li>
 </ul>
 </div>
@@ -1026,16 +1017,19 @@ Shell (SSH) access to EC2 instances in public and private subnets.*</p>
 <div class="ulist">
 <ul>
 <li>
-<p>&lt;Aerospike Database&gt;.</p>
+<p>An Auto Scaling group of EC2 instances configured with Aerospike Database Enterprise Edition and Aerospike tools.</p>
 </li>
 <li>
-<p>&lt;Aerospike Tools&gt;.</p>
+<p>An Amazon Elastic Block Store (Amazon EBS) volume in each subnet.</p>
 </li>
 </ul>
 </div>
 </li>
 <li>
-<p>&lt;describe any additional components&gt;.</p>
+<p>Amazon CloudWatch for logging and monitoring the Aerospike instances.</p>
+</li>
+<li>
+<p>Amazon Simple Queue Service (Amazon SQS) for Aerospike migration.</p>
 </li>
 </ul>
 </div>
@@ -1056,7 +1050,7 @@ and <a href="https://aws.amazon.com/training/" target="_blank" rel="noopener">AW
 deploy, and operate your infrastructure and applications on the AWS Cloud.</p>
 </div>
 <div class="paragraph">
-<p>This deployment guide was designed for general purpose use and requires a moderate level of familiarity with the Aerospike database and AWS services.  To learn more about high performance and availability configurations please refer to Aerospike recommendations for <a href="https://docs.aerospike.com/docs/deploy_guides/aws/recommendations/index.html" target="_blank" rel="noopener">AWS instance types with locally attached SSDs</a>.</p>
+<p>There are many considerations for a production-grade Aerospike deployment. This Quick Start was designed for general-purpose use and is not intended as a high-performance configuration. To learn more about high-performance and fully resilient configurations, see Aerospike best practices for AWS instance types with locally attached SSDs as documented here: <a href="https://docs.aerospike.com/docs/deploy_guides/aws/recommendations/index.html" target="_blank" rel="noopener">Aerospike on Amazon EC2 - Recommendations</a>.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1091,7 +1085,7 @@ deploy, and operate your infrastructure and applications on the AWS Cloud.</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">VPCs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VPC</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 </tr>
 <tr>
@@ -1112,7 +1106,7 @@ deploy, and operate your infrastructure and applications on the AWS Cloud.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">EC2 instances</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2-16</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2 to 16</p></td>
 </tr>
 </tbody>
 </table>
@@ -1214,13 +1208,13 @@ Certain Regions are available on an opt-in basis. For more information, see <a h
 <div class="sect3">
 <h4 id="_prepare_your_aws_account">Prepare your AWS account</h4>
 <div class="paragraph">
-<p>Ensure your account has permissions required to create the infrastructure listed in Resource Quotas.</p>
+<p>Ensure that your account has permissions required to create the resources listed in the <a href="#_resource_quotas">Resource quotas</a> section of this guide.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_prepare_for_the_deployment">Prepare for the deployment</h4>
 <div class="paragraph">
-<p>If you want to run more than a single node, you will need to bring your own license. Please obtain this from Aerospike before continuing. If a single node is acceptable, a trial license is provided that brings all the enterprise features to a single node.</p>
+<p>Obtain any necessary software licenses before you deploy this Quick Start. For details, see the <a href="#_software_licenses">Software licenses</a> section of this guide</p>
 </div>
 </div>
 <div class="sect3">
@@ -1231,15 +1225,15 @@ Certain Regions are available on an opt-in basis. For more information, see <a h
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Deploy Aerospike Database into a new VPC</strong>. This option builds a new AWS environment consisting of the VPC, subnets, NAT gateways, security groups, bastion hosts, and other infrastructure components. It then deploys Aerospike Database into this new VPC.</p>
+<p><strong>Deploy Aerospike into a new VPC</strong>. This option builds a new AWS environment consisting of the VPC, subnets, NAT gateways, security groups, bastion hosts, and other infrastructure components. It then deploys Aerospike into this new VPC.</p>
 </li>
 <li>
-<p><strong>Deploy Aerospike Database into an existing VPC</strong>. This option provisions Aerospike Database in your existing AWS infrastructure.</p>
+<p><strong>Deploy Aerospike into an existing VPC</strong>. This option provisions Aerospike in your existing AWS infrastructure.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>The Quick Start provides separate templates for these options. It also lets you configure Classless Inter-Domain Routing (CIDR) blocks, instance types, and Aerospike Database settings, as discussed later in this guide.</p>
+<p>The Quick Start provides separate templates for these options. It also lets you configure Classless Inter-Domain Routing (CIDR) blocks, instance types, and Aerospike settings, as discussed later in this guide.</p>
 </div>
 </div>
 </div>
@@ -1262,9 +1256,9 @@ Certain Regions are available on an opt-in basis. For more information, see <a h
 </div>
 </div>
 <div class="sect2">
-<h3 id="_subscribe_to_the_aerospike_database_ami">Subscribe to the Aerospike Database AMI</h3>
+<h3 id="_subscribe_to_the_aerospike_ami">Subscribe to the Aerospike AMI</h3>
 <div class="paragraph">
-<p>This Quick Start requires a subscription to the AMI for Aerospike Database in AWS Marketplace.</p>
+<p>This Quick Start requires a subscription to the AMI for Aerospike in AWS Marketplace.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -1272,11 +1266,13 @@ Certain Regions are available on an opt-in basis. For more information, see <a h
 <p>Sign in to your AWS account.</p>
 </li>
 <li>
-<p>Open the page for the <a href="https://aws.amazon.com/marketplace/pp/prodview-ouzvxjdgfsa64" target="_blank" rel="noopener">Aerospike Database AMI in AWS Marketplace</a>, and then choose <strong>Continue to Subscribe</strong>.</p>
+<p>Open the page for the <a href="https://aws.amazon.com/marketplace/pp/prodview-ouzvxjdgfsa64" target="_blank" rel="noopener">Aerospike AMI in AWS Marketplace</a>, and then choose <strong>Continue to Subscribe</strong>.</p>
 </li>
 <li>
-<p>Review the terms and conditions for software usage, and then choose <strong>Accept Terms</strong>.<br>
-A confirmation page loads, and an email confirmation is sent to the account owner. For detailed subscription instructions, see the <a href="https://aws.amazon.com/marketplace/help/200799470" target="_blank" rel="noopener">AWS Marketplace documentation</a>.</p>
+<p>Review the terms and conditions for software usage, and then choose <strong>Accept Terms</strong>.</p>
+<div class="paragraph">
+<p>A confirmation page loads, and an email confirmation is sent to the account owner. For detailed subscription instructions, see the <a href="https://aws.amazon.com/marketplace/help/200799470" target="_blank" rel="noopener">AWS Marketplace documentation</a>.</p>
+</div>
 </li>
 <li>
 <p>When the subscription process is complete, exit out of AWS Marketplace without further action. <strong>Do not</strong> provision the software from AWS Marketplace—the Quick Start deploys the AMI for you.</p>
@@ -1293,7 +1289,7 @@ A confirmation page loads, and an email confirmation is sent to the account owne
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-If you’re deploying Aerospike Database into an existing VPC, make sure that your VPC has two private subnets in different Availability Zones for the workload instances and that the subnets aren’t shared. This Quick Start doesn’t support <a href="https://docs.aws.amazon.com/vpc/latest/userguide/vpc-sharing.html" target="_blank" rel="noopener">shared subnets</a>. These subnets require <a href="https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html" target="_blank" rel="noopener">NAT gateways</a> in their route tables to allow the instances to download packages and software without exposing them to the internet. Also make sure that the domain name option in the DHCP options is configured as explained in <a href="http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_DHCP_Options.html" target="_blank" rel="noopener">DHCP options sets</a>. You provide your VPC settings when you launch the Quick Start.
+If you&#8217;re deploying Aerospike into an existing VPC, make sure that your VPC has at least two private subnets in different Availability Zones for the workload instances and that the subnets aren&#8217;t shared. This Quick Start doesn&#8217;t support <a href="https://docs.aws.amazon.com/vpc/latest/userguide/vpc-sharing.html" target="_blank" rel="noopener">shared subnets</a>. These subnets require <a href="https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html" target="_blank" rel="noopener">NAT gateways</a> in their route tables to allow the instances to download packages and software without exposing them to the internet. Also make sure that the domain name option in the DHCP options is configured as explained in <a href="http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_DHCP_Options.html" target="_blank" rel="noopener">DHCP options sets</a>. You provide your VPC settings when you launch the Quick Start.
 </td>
 </tr>
 </table>
@@ -1312,18 +1308,18 @@ If you’re deploying Aerospike Database into an existing VPC, make sure that yo
 </colgroup>
 <tbody>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://fwd.aws/d6nX8?" target="_blank" rel="noopener">Deploy Aerospike Database into a new VPC on AWS</a></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="http://qs_template_permalink" target="_blank" rel="noopener">View template</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://fwd.aws/d6nX8?" target="_blank" rel="noopener">Deploy Aerospike into a new VPC on AWS</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://fwd.aws/DDX53?" target="_blank" rel="noopener">View template</a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="http://https://fwd.aws/vM8jA?" target="_blank" rel="noopener">Deploy Aerospike Database into an existing VPC on AWS</a></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="http://qs_template_permalink" target="_blank" rel="noopener">View template</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://fwd.aws/vM8jA?" target="_blank" rel="noopener">Deploy Aerospike into an existing VPC on AWS</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://fwd.aws/YBjWj?" target="_blank" rel="noopener">View template</a></p></td>
 </tr>
 </tbody>
 </table>
 </li>
 <li>
-<p>Check the AWS Region that’s displayed in the upper-right corner of the navigation bar, and change it if necessary. This Region is where the network infrastructure for Aerospike Database is built. The template is launched in the us-east-2 Region by default. For other choices, see <a href="#_supported_regions">Supported Regions</a> earlier in this guide.</p>
+<p>Check the AWS Region that&#8217;s displayed in the upper-right corner of the navigation bar, and change it if necessary. This Region is where the network infrastructure for Aerospike is built. The template is launched in the us-east-2 Region by default. For other choices, see <a href="#_supported_regions">Supported Regions</a> earlier in this guide.</p>
 </li>
 <li>
 <p>On the <strong>Create stack</strong> page, keep the default setting for the template URL, and then choose <strong>Next</strong>.</p>
@@ -1341,7 +1337,7 @@ If you’re deploying Aerospike Database into an existing VPC, make sure that yo
 <p>Choose <strong>Create stack</strong> to deploy the stack.</p>
 </li>
 <li>
-<p>Monitor the status of the stack. When the status is <strong>CREATE_COMPLETE</strong>, the Aerospike Database deployment is ready.</p>
+<p>Monitor the status of the stack. When the status is <strong>CREATE_COMPLETE</strong>, the Aerospike deployment is ready.</p>
 </li>
 <li>
 <p>To view the created resources, see the values displayed in the <strong>Outputs</strong> tab for the stack.</p>
@@ -1355,22 +1351,23 @@ If you’re deploying Aerospike Database into an existing VPC, make sure that yo
 <h2 id="_test_the_deployment">Test the deployment</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>After the AWS CloudFormation stack is complete, you can test the deployment by checking whether the instances were properly enrolled with your Aerospike Database project.</p>
+<p>After the AWS CloudFormation stack is complete, test the deployment by checking whether the instances were properly enrolled with your Aerospike project.</p>
 </div>
 <div class="paragraph">
 <p>To validate the system and verify the system configuration, follow these steps:</p>
 </div>
-<div class="paragraph">
-<p>From bastion host, use SSH to log in to one of the aerospike instance created by Quick Start template. It&#8217;s recommended to use ssh key forwarding for security purpose. More info on ssh key forwarding can be found <a href="https://docs.github.com/en/developers/overview/using-ssh-agent-forwarding">here</a></p>
-</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>From the bastion host, use SSH to log in to one of the Aerospike instances created by Quick Start template. Use SSH key forwarding for security purposes. For more info on SSH key forwarding, see <a href="https://docs.github.com/en/developers/overview/using-ssh-agent-forwarding" target="_blank" rel="noopener">Using SSH agent forwarding</a>.</p>
 <div class="listingblock">
 <div class="content">
 <pre>$ ssh ec2-user@&lt;aerospike-instance&gt;</pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Verify cluster information using <code>asadm</code> command. More information about asadm can be found <a href="https://docs.aerospike.com/docs/tools/asadm/">here</a>. For two node cluster output should look like this :</p>
-</div>
+</li>
+<li>
+<p>Verify cluster information using <code>asadm</code> command. More information, see <a href="https://docs.aerospike.com/docs/tools/asadm/" target="_blank" rel="noopener">Aerospike Admin (asadm)</a>. A two-node cluster output looks like this:</p>
 <div class="listingblock">
 <div class="content">
 <pre>$ asadm
@@ -1405,9 +1402,9 @@ test     |    0|       0|8.000 GB|    0|   100|0.000 B |    0|     0|          2
 Number of rows: 2</pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Insert record using <a href="https://docs.aerospike.com/docs/tools/aql/">aql</a>. Following commands inserts a record in test namespace with foo as set name and bar as bin name:</p>
-</div>
+</li>
+<li>
+<p>Insert record using <a href="https://docs.aerospike.com/docs/tools/aql/" target="_blank" rel="noopener">aql</a>. The following commands insert a record in test namespace. Replace <strong>foo</strong> with the set name and <strong>bar</strong> with the bin name.</p>
 <div class="listingblock">
 <div class="content">
 <pre>$ aql
@@ -1433,46 +1430,22 @@ aql&gt; select * from test.foo
 OK</pre>
 </div>
 </div>
+</li>
+</ol>
+</div>
 <div class="paragraph">
-<p>For additional information on testing you can use the <a href="https://docs.aerospike.com/docs/client/java/benchmarks.html">benchmark</a> tool to exercise and demo load on the new Aerospike cluster, otherwise you can check out <a href="https://docs.aerospike.com/docs/guide/query.html">Query</a> for information on querying the Aerospike Database and <a href="https://docs.aerospike.com/docs/connect/index.html">here</a> to checkout Aerospike Database how to set up and use connectors to stream data into your new cluster.</p>
+<p>For more information on testing, see <a href="https://docs.aerospike.com/docs/client/java/benchmarks.html" target="_blank" rel="noopener">Benchmarks</a>. With the benchmark application, you can exercise and demo load on the new Aerospike cluster.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_post_deployment_steps">Post-deployment steps</h2>
+<h2 id="_best_practices_for_using_aerospike_on_aws">Best practices for using Aerospike on AWS</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>After your deployment is up and ready, you can read more on</p>
+<p>Follow these best practices: <a href="https://docs.aerospike.com/docs/deploy_guides/aws/recommendations/index.html" target="_blank" rel="noopener">Aerospike on Amazon EC2 - Recommendations</a>.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://docs.aerospike.com/docs/operations/configure/index.html">Configuring</a></p>
-</li>
-<li>
-<p><a href="https://docs.aerospike.com/docs/operations/manage/index.html">Managing</a></p>
-</li>
-<li>
-<p><a href="https://docs.aerospike.com/docs/operations/monitor/index.html">Monitoring</a></p>
-</li>
-<li>
-<p><a href="https://docs.aerospike.com/docs/operations/troubleshoot/index.html">Troubleshooting</a></p>
-</li>
-<li>
-<p><a href="https://docs.aerospike.com/docs/architecture/clients.html">Clients</a></p>
-</li>
-<li>
-<p><a href="https://docs.aerospike.com/docs/connect/index.html">Connectors</a></p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_best_practices_for_using_aerospike_database_on_aws">Best practices for using Aerospike Database on AWS</h2>
-<div class="sectionbody">
 <div class="paragraph">
-<p><a href="https://docs.aerospike.com/docs/deploy_guides/aws/recommendations/index.html">best practices</a> contains a lot of information on best practices for running Aerospike Database in AWS.</p>
+<p>Also set up a backup plan your Aerospike data. For details, see <a href="https://docs.aerospike.com/docs/deploy_guides/aws/backup/index.html" target="_blank" rel="noopener">Backup and Recovery in AWS</a>.</p>
 </div>
 </div>
 </div>
@@ -1480,13 +1453,7 @@ OK</pre>
 <h2 id="_security">Security</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>When running Aerospike Database in production it&#8217;s important to review and ensure security best practices are understood and followed.</p>
-</div>
-<div class="paragraph">
-<p>When it comes to backing up and restoring your data, There are many ways to accomplish this task depending on your needs. Check out the Aerospike Database AWS <a href="https://docs.aerospike.com/docs/deploy_guides/aws/backup/index.html">docs</a> for more information to empowering what way is best for you on AWS.</p>
-</div>
-<div class="paragraph">
-<p>Check out <a href="https://docs.aerospike.com/docs/deploy_guides/aws/recommendations/index.html">best practices</a> for security and other best practices when running Aerospike Database in production.</p>
+<p>When you run Aerospike in production, review and ensure that your security best practices are understood and followed. You&#8217;ll find some recommended security best practices in <a href="https://docs.aerospike.com/docs/deploy_guides/aws/recommendations/index.html" target="_blank" rel="noopener">Aerospike on Amazon EC2 - Recommendations</a>.</p>
 </div>
 </div>
 </div>
@@ -1494,10 +1461,41 @@ OK</pre>
 <h2 id="_other_useful_information">Other useful information</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Additional information can be found on the Aerospike <a href="https://docs.aerospike.com/docs/architecture/index.html">Architecture</a> as well as extra information on <a href="https://docs.aerospike.com/docs/operations/index.html">operations</a></p>
+<p>After your deployment is up and ready, read and understand the following sections of the Aerospike documentation. Use the navigation panel to open each subsection within these main sections.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.aerospike.com/docs/operations/configure/index.html" target="_blank" rel="noopener">Configure Aerospike Database</a></p>
+</li>
+<li>
+<p><a href="https://docs.aerospike.com/docs/operations/manage/index.html" target="_blank" rel="noopener">Manage</a></p>
+</li>
+<li>
+<p><a href="https://docs.aerospike.com/docs/operations/monitor/index.html" target="_blank" rel="noopener">Monitoring</a></p>
+</li>
+<li>
+<p><a href="https://docs.aerospike.com/docs/operations/troubleshoot/index.html" target="_blank" rel="noopener">Troubleshoot</a></p>
+</li>
+<li>
+<p><a href="https://docs.aerospike.com/docs/architecture/clients.html" target="_blank" rel="noopener">Client Architecture</a></p>
+</li>
+<li>
+<p><a href="https://docs.aerospike.com/docs/connect/index.html" target="_blank" rel="noopener">Overview of Aerospike Connect</a></p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>The ability to monitor the stack is provided by our <a href="https://docs.aerospike.com/docs/tools/monitorstack/index.html">Monitoring Stack</a></p>
+<p>For information on the architecture and system, see the Aerospike <a href="https://docs.aerospike.com/docs/architecture/index.html" target="_blank" rel="noopener">Architecture Overview</a> and <a href="https://docs.aerospike.com/docs/operations/index.html" target="_blank" rel="noopener">System Overview</a></p>
+</div>
+<div class="paragraph">
+<p>For information on monitoring your stack, see <a href="https://docs.aerospike.com/docs/tools/monitorstack/index.html" target="_blank" rel="noopener">Overview to the Aerospike Monitoring Stack</a>.</p>
+</div>
+<div class="paragraph">
+<p>For information on querying your database, see <a href="https://docs.aerospike.com/docs/guide/query.html" target="_blank" rel="noopener">Query</a>.</p>
+</div>
+<div class="paragraph">
+<p>For information on setting up and using connectors to stream data into your new cluster, see <a href="https://docs.aerospike.com/docs/connect/index.html" target="_blank" rel="noopener">Overview of Aerospike Connect</a>.</p>
 </div>
 </div>
 </div>
@@ -1508,7 +1506,7 @@ OK</pre>
 <p><strong>Q.</strong> I encountered a <strong>CREATE_FAILED</strong> error when I launched the Quick Start.</p>
 </div>
 <div class="paragraph">
-<p><strong>A.</strong> If AWS CloudFormation fails to create the stack, relaunch the template with <strong>Rollback on failure</strong> set to <strong>Disabled</strong>. This setting is under <strong>Advanced</strong> in the AWS CloudFormation console on the <strong>Configure stack options</strong> page. With this setting, the stack’s state is retained, and the instance keeps running so that you can troubleshoot the issue. (For Windows, look at the log files in <code>%ProgramFiles%\Amazon\EC2ConfigService</code> and <code>C:\cfn\log</code>.)</p>
+<p><strong>A.</strong> If AWS CloudFormation fails to create the stack, relaunch the template with <strong>Rollback on failure</strong> set to <strong>Disabled</strong>. This setting is under <strong>Advanced</strong> in the AWS CloudFormation console on the <strong>Configure stack options</strong> page. With this setting, the stack&#8217;s state is retained, and the instance keeps running so that you can troubleshoot the issue. (For Windows, look at the log files in <code>%ProgramFiles%\Amazon\EC2ConfigService</code> and <code>C:\cfn\log</code>.)</p>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -1532,14 +1530,10 @@ When you set <strong>Rollback on failure</strong> to <strong>Disabled</strong>, 
 <p><strong>A.</strong> Launch the Quick Start templates from the links in this guide or from another S3 bucket. If you deploy the templates from a local copy on your computer or from a location other than an S3 bucket, you might encounter template-size limitations. For more information, see <a href="http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cloudformation-limits.html" target="_blank" rel="noopener">AWS CloudFormation quotas</a>.</p>
 </div>
 <div class="paragraph">
-<p><strong>Q.</strong> I created a cluster of 3 machines but they do not seem to be clustering</p>
+<p><strong>Q.</strong> I created a cluster of three machines, but they don&#8217;t seem to be clustering.</p>
 </div>
 <div class="paragraph">
-<p><strong>A.</strong> Most likely you did not get a production license, You can either re-run the quickstart guide ensuring you apply your production license or if you don&#8217;t have a license you can obtain one <a href="https://aerospike.com/lp/try-now/">here</a>.
-== Troubleshooting</p>
-</div>
-<div class="paragraph">
-<p>&lt;Steps for troubleshooting the deployment.&gt;</p>
+<p><strong>A.</strong> Most likely you did not get a production license. You can rerun the Quick Start ensuring that you apply your production license. If you don&#8217;t have a license, you can obtain one on the <a href="https://aerospike.com/lp/try-now/" target="_blank" rel="noopener">Get started with Aerospike</a> page.</p>
 </div>
 </div>
 </div>
@@ -1567,9 +1561,158 @@ Unless you are customizing the Quick Start templates for your own deployment pro
 </table>
 </div>
 <div class="sect2">
-<h3 id="_launch_into_a_new_vpc">Launch into a new VPC</h3>
+<h3 id="_parameters_for_deploying_into_an_existing_vpc">Parameters for deploying into an existing VPC</h3>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. VPC network configuration</caption>
+<colgroup>
+<col style="width: 16%;">
+<col style="width: 11%;">
+<col style="width: 73%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter label (name)</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EC2 key pair
+(<code>KeyPairName</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the key pair to be used to connect to your EC2 instances by using SSH.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VPC ID
+(<code>VPCID</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ID of the VPC that you&#8217;re deploying this cluster into.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CIDR for the VPC
+(<code>VPCCIDR</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10.0.0.0/16</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VPC CIDR block in the format x.x.0.0/16.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VPC subnet
+(<code>VPCSubnet</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Subnet that links to the instance in the selected VPC.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tenancy
+(<code>Tenancy</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>default</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tenancy of the Aerospike instances. Choose "dedicated" to change the host from shared (default).</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Aerospike configuration</caption>
+<colgroup>
+<col style="width: 16%;">
+<col style="width: 11%;">
+<col style="width: 73%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter label (name)</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Namespace file
+(<code>NamespaceFile</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Location of your namespace-definition file. Must be publically downloadable. Appends to aerospike.conf.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Feature key file
+(<code>FeatureKeyFile</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Base64 encoding of the feature key file. This is the Aerospike key to use for this deployment. Keeping this blank works only for single node cluster.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of instances
+(<code>NumberOfInstances</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of instances to provision for the Aerospike cluster.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enable CloudWatch logging
+(<code>EnableCloudWatch</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>no</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Choose "yes" to enable CloudWatch logging for the Aerospike cluster, which adds basic Aerospike metrics to Amazon CloudWatch. This incurs CloudWatch expenses.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Instance type
+(<code>InstanceType</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>m5.large</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type of EC2 instance to deploy for the Aerospike cluster.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EBS volume size
+(<code>EBS</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>50</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Size of the EBS SSD volume in GB. The volume attaches under /dev/sdg. Limit of 16000. Enter 0 if you do not want to use EBS.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. Linux bastion configuration</caption>
+<colgroup>
+<col style="width: 16%;">
+<col style="width: 11%;">
+<col style="width: 73%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter label (name)</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bastion security group ID
+(<code>BastionSecurityGroupID</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ID of the bastion host security group (e.g., sg-7f16e910).</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. AWS Quick Start configuration</caption>
+<colgroup>
+<col style="width: 16%;">
+<col style="width: 11%;">
+<col style="width: 73%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter label (name)</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Quick Start S3 bucket name
+(<code>QSS3BucketName</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>aws-quickstart</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the S3 bucket for your copy of the Quick Start assets. Keep the default name unless you are customizing the template. Changing the name updates code references to point to a new Quick Start location. This name can include numbers, lowercase letters, uppercase letters, and hyphens, but do not start or end with a hyphen (-). See <a href="https://aws-quickstart.github.io/option1.html" class="bare">https://aws-quickstart.github.io/option1.html</a>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_parameters_for_deploying_into_a_new_vpc">Parameters for deploying into a new VPC</h3>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 5. VPC network configuration</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -1587,13 +1730,13 @@ Unless you are customizing the Quick Start templates for your own deployment pro
 <td class="tableblock halign-left valign-top"><p class="tableblock">Availability Zones
 (<code>AvailabilityZones</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">List of Availability Zones to use for the VPC subnets. Minimum two Availability Zones are required.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Availability Zones to use for the VPC subnets. At least two Availability Zones are required.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Number of Availability Zones
 (<code>NumberOfAZs</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>3</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Number of Availability Zones to use in the VPC. This must match the value entered for the AvailabilityZones parameter.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of Availability Zones to use in the VPC. This number must match the number of Availability Zones you chose for the AvailabilityZones parameter.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">VPC CIDR
@@ -1644,197 +1787,10 @@ Unless you are customizing the Quick Start templates for your own deployment pro
 <td class="tableblock halign-left valign-top"><p class="tableblock">CIDR IP range permitted to access Aerospike. A value of 0.0.0.0/0 allows access from any IP address.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Are the instances for the Aerospike instances on shared or dedicated host
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tenancy
 (<code>Tenancy</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>default</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The tenancy of your instance.</p></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. Aerospike configuration</caption>
-<colgroup>
-<col style="width: 16%;">
-<col style="width: 11%;">
-<col style="width: 73%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter label (name)</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">EC2 key pair
-(<code>KeyPairName</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Key pair to securely connect to your instance after it launches.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Number of instances to provision for the Aerospike cluster
-(<code>NumberOfInstances</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Number of instances in the Aerospike cluster.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Are the instances for the Aerospike instances on shared or dedicated host
-(<code>Tenancy</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>default</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The tenancy of your instance.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enable CloudWatch logging for the Aerospike cluster
-(<code>EnableCloudWatch</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>no</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Add basic Aerospike metrics to CloudWatch. Enabling this will incur CloudWatch expenses.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Which instance type to deploy for the Aerospike cluster
-(<code>InstanceType</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>m5.large</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Type of EC2 instance to launch.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Size of EBS SSD volume in GB. The volume will attach under /dev/sdg. Limit of 16000. Enter 0 to not use EBS.
-(<code>EBS</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>50</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Size of EBS SSD volume in GB. The volume will attach under /dev/sdg. Limit
-of 16000. Enter 0 to not use EBS.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Location of your namespace definition. Must be publically downloadable. Will append file directly to end of aerospike.conf.
-(<code>NamespaceFile</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Location of your namespace definition. Must be publically
-downloadable. Will append file directly to end of aerospike.conf.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Aerospike key to use for this deployment
-(<code>FeatureKeyFile</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Base64 encoding of feature-key-file. Leaving this blank works only for a single node cluster.</p></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. Linux bastion configuration</caption>
-<colgroup>
-<col style="width: 16%;">
-<col style="width: 11%;">
-<col style="width: 73%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter label (name)</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Bastion AMI operating system
-(<code>BastionAMIOS</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Amazon-Linux2-HVM</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Linux distribution for the AMI to be used for the bastion instances.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Bastion instance type
-(<code>BastionInstanceType</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>t3.micro</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Amazon EC2 instance type for the bastion instances.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Number of bastion hosts
-(<code>NumBastionHosts</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enter the number of bastion hosts to create.</p></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. AWS Quick Start configuration</caption>
-<colgroup>
-<col style="width: 16%;">
-<col style="width: 11%;">
-<col style="width: 73%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter label (name)</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Quick Start S3 bucket name
-(<code>QSS3BucketName</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>aws-quickstart</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">S3 bucket name for the Quick Start assets. The Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Quick Start S3 object key prefix
-(<code>QSS3KeyPrefix</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quickstart-aerospike/</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">S3 key prefix for the Quick Start assets. The prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and a forward slash (/).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Quick Start S3 bucket Region
-(<code>QSS3BucketRegion</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>us-east-1</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect2">
-<h3 id="_launch_into_a_existing_vpc">Launch into a existing VPC</h3>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. VPC network configuration</caption>
-<colgroup>
-<col style="width: 16%;">
-<col style="width: 11%;">
-<col style="width: 73%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter label (name)</th>
-<th class="tableblock halign-left valign-top">Default value</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">EC2 key pair
-(<code>KeyPairName</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the EC2 keypair that would be used to ssh into the instances.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">VPC ID
-(<code>VPCID</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Choose which VPC this cluster should be deployed into.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">CIDR for the VPC
-(<code>VPCCIDR</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>10.0.0.0/16</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">VPC CIDR block, in format x.x.0.0/16.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">List of subnet
-(<code>VPCSubnet</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">List of subnet IDs, this will link instance in the VPC selected above.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Tenancy of instance
-(<code>Tenancy</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>default</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The tenancy of your instance.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tenancy of the Aerospike instances. Choose "dedicated" to change the host from shared (default).</p></td>
 </tr>
 </tbody>
 </table>
@@ -1854,41 +1810,52 @@ downloadable. Will append file directly to end of aerospike.conf.</p></td>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Location of namespace definition
-(<code>NamespaceFile</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Location of your namespace definition. Must be publicly downloadable. Will append file directly to end of aerospike.conf.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EC2 key pair
+(<code>KeyPairName</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the key pair to be used to connect to your EC2 instances by using SSH.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Feature key file value encoded in base64
-(<code>FeatureKeyFile</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Base64 encoding of feature-key-file. Leaving this blank works only for single node cluster.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Number of instances in the cluster
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of instances
 (<code>NumberOfInstances</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>1</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Number of instances in the cluster.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of instances to provision for the Aerospike cluster.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Enable CloudWatch for the Aerospike cluster
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tenancy
+(<code>Tenancy</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>default</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tenancy of the Aerospike instances. Choose "dedicated" to change the host from shared (default).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enable CloudWatch logging
 (<code>EnableCloudWatch</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>no</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Add basic Aerospike metrics to CloudWatch. Will incur CloudWatch expenses.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Choose "yes" to enable CloudWatch logging for the Aerospike cluster, which adds basic Aerospike metrics to Amazon CloudWatch. This incurs CloudWatch expenses.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Type of EC2 instance
+<td class="tableblock halign-left valign-top"><p class="tableblock">Instance type
 (<code>InstanceType</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>m5.large</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Type of EC2 instance to launch.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type of EC2 instance to deploy for the Aerospike cluster.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Size of EBS volume
+<td class="tableblock halign-left valign-top"><p class="tableblock">EBS volume size
 (<code>EBS</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>50</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Size of EBS SSD volume in GB. The volume will attach under /dev/sdg. Limit
-of 16000. Enter 0 to not use EBS.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Size of the EBS SSD volume in GB. The volume attaches under /dev/sdg. Limit of 16000. Enter 0 if you do not want to use EBS.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Namespace file
+(<code>NamespaceFile</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Location of your namespace-definition file. Must be publically downloadable. Appends to aerospike.conf.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Feature key file
+(<code>FeatureKeyFile</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Base64 encoding of the feature key file. This is the Aerospike key to use for this deployment. Keeping this blank works only for a single node cluster.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1908,10 +1875,22 @@ of 16000. Enter 0 to not use EBS.</p></td>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Bastion Security Group ID
-(<code>BastionSecurityGroupID</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ID of the bastion host Security Group (e.g., sg-7f16e910).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bastion AMI operating system
+(<code>BastionAMIOS</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Amazon-Linux2-HVM</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Linux distribution for the AMI to be used for the bastion instances.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bastion instance type
+(<code>BastionInstanceType</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>t3.micro</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type of EC2 instance for the bastion hosts.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of bastion hosts
+(<code>NumBastionHosts</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of bastion hosts to create.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1934,7 +1913,19 @@ of 16000. Enter 0 to not use EBS.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Quick Start S3 bucket name
 (<code>QSS3BucketName</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>aws-quickstart</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">S3 bucket name for the Quick Start assets. The Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the S3 bucket for your copy of the Quick Start assets. Keep the default name unless you are customizing the template. Changing the name updates code references to point to a new Quick Start location. This name can include numbers, lowercase letters, uppercase letters, and hyphens, but do not start or end with a hyphen (-). See <a href="https://aws-quickstart.github.io/option1.html" class="bare">https://aws-quickstart.github.io/option1.html</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Quick Start S3 key prefix
+(<code>QSS3KeyPrefix</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quickstart-aerospike/</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 key prefix that is used to simulate a directory for your copy of the Quick Start assets. Keep the default prefix unless you are customizing the template. Changing this prefix updates code references to point to a new Quick Start location. This prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slashes (/). End with a forward slash. See <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html" class="bare">https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html</a> and <a href="https://aws-quickstart.github.io/option1.html" class="bare">https://aws-quickstart.github.io/option1.html</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Quick Start S3 bucket Region
+(<code>QSS3BucketRegion</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>us-east-1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. Keep the default Region unless you are customizing the template. Changing this Region updates code references to point to a new Quick Start location. When using your own bucket, specify the Region. See <a href="https://aws-quickstart.github.io/option1.html" class="bare">https://aws-quickstart.github.io/option1.html</a>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1983,16 +1974,16 @@ and to share your customizations with others.</p>
 <p class="footer-text">
 <!-- We can use document attributes: -->
 <!-- Generated with Asciidoctor v2.0.15. -->
-<a href="https://aws.amazon.com/privacy/">Privacy</a> | <a href="https://aws.amazon.com/terms/">Site terms</a> | &copy; 2021, Amazon Web Services, Inc. or its affiliates and Aerospike, Inc. All rights reserved.
+<a href="https://aws.amazon.com/privacy/">Privacy</a> | <a href="https://aws.amazon.com/terms/">Site terms</a> | &copy; 2021, Amazon Web Services, Inc. or its affiliates and Aerospike Inc.. All rights reserved.
 </p>
 </body>
 </html>
 <!--
 repo commit:
-a1fa18367005d7e70e9dba578d018a1927f8551d
+a9b88686fedee122e31eda888b5f15e20f299a9e
 
 submodule config:
-+81ea0b675a571b662377f9de556a26cce8dad05f docs/boilerplate (heads/main)
+ 81ea0b675a571b662377f9de556a26cce8dad05f docs/boilerplate (heads/main)
  ffc7af4e59a09dbf52199a3ecf70f3805abeff48 submodules/quickstart-aws-vpc (v1.0-58-gffc7af4)
  dd1762f3d263f3b6b2156340fa36fcff30765888 submodules/quickstart-linux-bastion (heads/main)
 -->
