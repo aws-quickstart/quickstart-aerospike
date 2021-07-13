@@ -2,7 +2,7 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: 'Deploy an Aerospike Cluster into a new VPC (qs-1rpniq8qr)'
 Metadata:
   QuickStartDocumentation:
-    EntrypointName: "Launch into a new VPC"
+    EntrypointName: "Parameters for deploying into a new VPC"
     Order: Index a
   LintSpellExclude:
     - Aerospike
@@ -63,19 +63,19 @@ Metadata:
       NumberOfAZs:
         default: Number of Availability Zones
       NumberOfInstances:
-        default: Number of instances to provision for the Aerospike cluster
+        default: Number of instances
       Tenancy:
-        default: Are the instances for the Aerospike instances on shared or dedicated host
+        default: Tenancy
       EnableCloudWatch:
-        default: Enable CloudWatch logging for the Aerospike cluster
+        default: Enable CloudWatch logging
       InstanceType:
-        default: Which instance type to deploy for the Aerospike cluster
+        default: Instance type
       FeatureKeyFile:
-        default: Aerospike key to use for this deployment
+        default: Feature key file
       NamespaceFile:
-        default: "(Optional) Location of your namespace definition. Must be publically downloadable. Will append file directly to end of aerospike.conf."
+        default: "Namespace file"
       EBS:
-        default: "Size of EBS SSD volume in GB. The volume will attach under /dev/sdg. Limit of 16000. Enter 0 to not use EBS."
+        default: "EBS volume size"
       BastionAMIOS:
         default: Bastion AMI operating system
       BastionInstanceType:
@@ -99,7 +99,7 @@ Metadata:
       QSS3BucketName:
         default: Quick Start S3 bucket name
       QSS3KeyPrefix:
-        default: Quick Start S3 object key prefix
+        default: Quick Start S3 key prefix
       QSS3BucketRegion:
         default: Quick Start S3 bucket Region
       AccessCIDR:
@@ -108,17 +108,17 @@ Metadata:
         default: VPC CIDR
 Parameters:
   AvailabilityZones:
-    Description: "List of Availability Zones to use for the VPC subnets. Minimum two Availability Zones are required."
+    Description: "Availability Zones to use for the VPC subnets. At least two Availability Zones are required."
     Type: List<AWS::EC2::AvailabilityZone::Name>
   NumberOfAZs:
     Type: String
     AllowedValues: ["2", "3"]
     Default: "3"
-    Description: Number of Availability Zones to use in the VPC. This must match the value entered for the AvailabilityZones parameter.
+    Description: Number of Availability Zones to use in the VPC. This number must match the number of Availability Zones you chose for the AvailabilityZones parameter.
   BastionInstanceType:
     Default: t3.micro
     Type: String
-    Description: Amazon EC2 instance type for the bastion instances.
+    Description:  Type of EC2 instance for the bastion hosts.
     AllowedValues:
       - t2.nano
       - t2.micro
@@ -143,16 +143,16 @@ Parameters:
       - '3'
       - '4'
     Default: '1'
-    Description: Enter the number of bastion hosts to create.
+    Description: Number of bastion hosts to create.
     Type: String
   BastionAMIOS:
     AllowedValues:
       - Amazon-Linux2-HVM
     Default: Amazon-Linux2-HVM
-    Description: The Linux distribution for the AMI to be used for the bastion instances.
+    Description: Linux distribution for the AMI to be used for the bastion instances.
     Type: String
   KeyPairName:
-    Description: Key pair to securely connect to your instance after it launches.
+    Description: Name of the key pair to be used to connect to your EC2 instances by using SSH.
     Type: AWS::EC2::KeyPair::KeyName
   PrivateSubnet1CIDR:
     AllowedPattern: "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$"
@@ -186,26 +186,38 @@ Parameters:
     Type: String
   QSS3BucketName:
     AllowedPattern: "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$"
-    ConstraintDescription: Quick Start bucket name can include numbers, lowercase
-      letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
-      (-).
+    ConstraintDescription: The Quick Start bucket name can include numbers, lowercase
+      letters, uppercase letters, and hyphens (-). It cannot start or end with a 
+      hyphen (-).
     Default: aws-quickstart
-    Description: S3 bucket name for the Quick Start assets. The Quick Start bucket name
-      can include numbers, lowercase letters, uppercase letters, and hyphens (-).
-      It cannot start or end with a hyphen (-).
+    Description: Name of the S3 bucket for your copy of the Quick Start assets. 
+      Keep the default name unless you are customizing the template. 
+      Changing the name updates code references to point to a new Quick 
+      Start location. This name can include numbers, lowercase letters, 
+      uppercase letters, and hyphens, but do not start or end with a hyphen (-). 
+      See https://aws-quickstart.github.io/option1.html.
     Type: String
   QSS3BucketRegion:
     Default: 'us-east-1'
-    Description: 'AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value.'
+    Description: 'AWS Region where the Quick Start S3 bucket (QSS3BucketName) is 
+    hosted. Keep the default Region unless you are customizing the template. 
+    Changing this Region updates code references to point to a new Quick Start location. 
+    When using your own bucket, specify the Region. 
+    See https://aws-quickstart.github.io/option1.html.'
     Type: String
   QSS3KeyPrefix:
     AllowedPattern: "^[0-9a-zA-Z-/]*$"
-    ConstraintDescription: Quick Start key prefix can include numbers, lowercase letters,
-      uppercase letters, hyphens (-), and a forward slash (/).
+    ConstraintDescription: The Quick Start S3 key prefix can include numbers, lowercase letters,
+      uppercase letters, hyphens (-), and forward slashes (/). The prefix should
+      end with a forward slash (/).
     Default: quickstart-aerospike/
-    Description: S3 key prefix for the Quick Start assets. The prefix
-      can include numbers, lowercase letters, uppercase letters, hyphens (-), and
-      a forward slash (/).
+    Description: S3 key prefix that is used to simulate a directory for your copy of the 
+      Quick Start assets. Keep the default prefix unless you are customizing 
+      the template. Changing this prefix updates code references to point to 
+      a new Quick Start location. This prefix can include numbers, lowercase 
+      letters, uppercase letters, hyphens (-), and forward slashes (/). End with 
+      a forward slash. See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html 
+      and https://aws-quickstart.github.io/option1.html.
     Type: String
   VPCCIDR:
     AllowedPattern: "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$"
@@ -220,28 +232,28 @@ Parameters:
     Type: String
     Default: 0.0.0.0/0
   Tenancy:
-    Description: The tenancy of your instance.
+    Description: Tenancy of the Aerospike instances. Choose "dedicated" to change the host from shared (default).
     Type: String
     Default: default
     AllowedValues:
       - default
       - dedicated
   NumberOfInstances:
-    Description: Number of instances in the Aerospike cluster.
+    Description: Number of instances to provision for the Aerospike cluster.
     Type: Number
     Default: '1'
     MinValue: '1'
     MaxValue: '15'
   EnableCloudWatch:
     Description: |
-      Add basic Aerospike metrics to CloudWatch. Enabling this will incur CloudWatch expenses.
+      Choose "yes" to enable CloudWatch logging for the Aerospike cluster, which adds basic Aerospike metrics to Amazon CloudWatch. This incurs CloudWatch expenses.
     Type: String
     Default: 'no'
     AllowedValues:
       - 'yes'
       - 'no'
   InstanceType:
-    Description: Type of EC2 instance to launch.
+    Description: Type of EC2 instance to deploy for the Aerospike cluster.
     Type: String
     Default: m5.large
     AllowedValues:
@@ -322,20 +334,18 @@ Parameters:
       - i3.16xlarge
   EBS:
     Description: |
-      Size of EBS SSD volume in GB. The volume will attach under /dev/sdg. Limit
-      of 16000. Enter 0 to not use EBS.
+      Size of the EBS SSD volume in GB. The volume attaches under /dev/sdg. Limit of 16000. Enter 0 if you do not want to use EBS.
     Type: Number
     Default: '50'
     MinValue: '0'
     MaxValue: '16000'
   NamespaceFile:
     Description: |
-      (Optional) Location of your namespace definition. Must be publically
-      downloadable. Will append file directly to end of aerospike.conf.
+      (Optional) Location of your namespace-definition file. Must be publically downloadable. Appends to aerospike.conf.
     Type: String
     Default: ''
   FeatureKeyFile:
-    Description: Base64 encoding of feature-key-file. Leaving this blank works only for a single node cluster.
+    Description: Base64 encoding of the feature key file. This is the Aerospike key to use for this deployment. Keeping this blank works only for a single node cluster.
     Type: String
     Default: ""
 Conditions:
@@ -437,10 +447,14 @@ Outputs:
   BastionHostIP:
     Description: IP for bastion host.
     Value: !GetAtt "BastionStack.Outputs.EIP1"
+  Postdeployment:
+    Description: To test your deployment, see the procedure in the deployment guide.
+    Value: https://fwd.aws/Pa8Yw?
+
 Rules:
   TrialSingleNode:
     RuleCondition:
       !Equals [ !Ref FeatureKeyFile, '' ]
     Assertions:
     - Assert: !Equals [!Ref NumberOfInstances, '1']
-      AssertDescription: "If you are not providing your own license you may only launch a single node."
+      AssertDescription: "If you are not providing your own license, you may launch only a single node."
