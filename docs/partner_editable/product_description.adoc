@@ -2,7 +2,7 @@
 // Briefly describe the software. Use consistent and clear branding. 
 // Include the benefits of using the software on AWS, and provide details on usage scenarios.
 
-{partner-product-short-name} is a real-time NoSQL data-storage platform. It delivers predictable query performance at petabyte scale with microsecond latency across billions of transactions. 
+{partner-product-short-name} is a real-time NoSQL data-storage platform. It delivers predictable performance at petabyte scale with microsecond latency across billions of transactions. 
 
 When you use Aerospike with data-intensive, geodistributed applications, it performs like a cache with the persistence of a NoSQL data platform. It provides multisite clustering, cross-datacenter replication, fast restarts, rapid rebalancing, and security-related features. 
 
