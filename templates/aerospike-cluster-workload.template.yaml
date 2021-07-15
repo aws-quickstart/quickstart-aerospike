@@ -123,7 +123,7 @@ Parameters:
   InstanceType:
     Description: Type of EC2 instance to deploy for the Aerospike cluster.
     Type: String
-    Default: m5.large
+    Default: m5d.xlarge
     AllowedValues:
       - t2.micro
       - t2.small
@@ -151,6 +151,15 @@ Parameters:
       - m5.4xlarge
       - m5.12xlarge
       - m5.24xlarge
+      - m5d.large
+      - m5d.xlarge
+      - m5d.2xlarge
+      - m5d.4xlarge
+      - m5d.8xlarge
+      - m5d.12xlarge
+      - m5d.16xlarge
+      - m5d.24xlarge
+      - m5d.metal
       - c3.large
       - c3.xlarge
       - c3.2xlarge
@@ -188,8 +197,11 @@ Parameters:
       - r5d.xlarge
       - r5d.2xlarge
       - r5d.4xlarge
+      - r5d.8xlarge
       - r5d.12xlarge
+      - r5d.16xlarge
       - r5d.24xlarge
+      - r5d.metal
       - i2.xlarge
       - i2.2xlarge
       - i2.4xlarge
@@ -200,6 +212,15 @@ Parameters:
       - i3.4xlarge
       - i3.8xlarge
       - i3.16xlarge
+      - i3.metal
+      - i3en.large
+      - i3en.xlarge
+      - i3en.2xlarge
+      - i3en.4xlarge
+      - i3en.8xlarge
+      - i3en.16xlarge
+      - i3en.24xlarge
+      - i3en.metal
   EBS:
     Description: |
       Size of the EBS SSD volume in GB. The volume attaches under /dev/sdg. Limit of 16000. Enter 0 if you do not want to use EBS.
