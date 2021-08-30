@@ -46,12 +46,6 @@ Metadata:
       - NamespaceFile
       - FeatureKeyFile
     - Label:
-        default: Linux bastion configuration
-      Parameters:
-        - BastionAMIOS
-        - BastionInstanceType
-        - NumBastionHosts
-    - Label:
         default: AWS Quick Start configuration
       Parameters:
         - QSS3BucketName
@@ -76,12 +70,6 @@ Metadata:
         default: "Namespace file"
       EBS:
         default: "EBS volume size"
-      BastionAMIOS:
-        default: Bastion AMI operating system
-      BastionInstanceType:
-        default: Bastion instance type
-      NumBastionHosts:
-        default: Number of bastion hosts
       KeyPairName:
         default: EC2 key pair
       PrivateSubnet1CIDR:
@@ -115,42 +103,6 @@ Parameters:
     AllowedValues: ["2", "3"]
     Default: "3"
     Description: Number of Availability Zones to use in the VPC. This number must match the number of Availability Zones you chose for the AvailabilityZones parameter.
-  BastionInstanceType:
-    Default: t3.micro
-    Type: String
-    Description:  Type of EC2 instance for the bastion hosts.
-    AllowedValues:
-      - t2.nano
-      - t2.micro
-      - t2.small
-      - t2.medium
-      - t2.large
-      - t3.micro
-      - t3.small
-      - t3.medium
-      - t3.large
-      - m3.large
-      - m3.xlarge
-      - m3.2xlarge
-      - m4.large
-      - m4.xlarge
-      - m4.2xlarge
-      - m4.4xlarge
-  NumBastionHosts:
-    AllowedValues:
-      - '1'
-      - '2'
-      - '3'
-      - '4'
-    Default: '1'
-    Description: Number of bastion hosts to create.
-    Type: String
-  BastionAMIOS:
-    AllowedValues:
-      - Amazon-Linux2-HVM
-    Default: Amazon-Linux2-HVM
-    Description: Linux distribution for the AMI to be used for the bastion instances.
-    Type: String
   KeyPairName:
     Description: Name of the key pair to be used to connect to your EC2 instances by using SSH.
     Type: AWS::EC2::KeyPair::KeyName
@@ -373,41 +325,6 @@ Resources:
         PublicSubnet3CIDR: !Ref 'PublicSubnet3CIDR'
         VPCCIDR: !Ref 'VPCCIDR'
 
-  BastionStack:
-    Metadata: { cfn-lint: { config: { ignore_checks: [ W9901 ] } } }
-    Type: 'AWS::CloudFormation::Stack'
-    Properties:
-      TemplateURL: !Sub 
-        - >-
-          https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-linux-bastion/templates/linux-bastion.template
-        - S3Region: !If 
-            - UsingDefaultBucket
-            - !Ref 'AWS::Region'
-            - !Ref QSS3BucketRegion
-          S3Bucket: !If 
-            - UsingDefaultBucket
-            - !Sub '${QSS3BucketName}-${AWS::Region}'
-            - !Ref QSS3BucketName
-      Parameters:
-        BastionInstanceType: !Ref BastionInstanceType
-        NumBastionHosts: !Ref NumBastionHosts
-        BastionAMIOS: !Ref BastionAMIOS
-        EnableTCPForwarding: 'true'
-        KeyPairName: !Ref KeyPairName
-        PublicSubnet1ID: !GetAtt
-          - VPCStack
-          - Outputs.PublicSubnet1ID
-        PublicSubnet2ID: !GetAtt
-          - VPCStack
-          - Outputs.PublicSubnet2ID
-        QSS3BucketName: !Ref QSS3BucketName
-        QSS3KeyPrefix: !Sub '${QSS3KeyPrefix}submodules/quickstart-linux-bastion/'
-        QSS3BucketRegion: !Ref QSS3BucketRegion
-        RemoteAccessCIDR: !Ref AccessCIDR
-        VPCID: !GetAtt 
-          - VPCStack
-          - Outputs.VPCID
-
   AerospikeServerStack:
     Type: 'AWS::CloudFormation::Stack'
     Properties:
@@ -423,9 +340,6 @@ Resources:
             - !Ref 'AWS::Region'
             - !Ref QSS3BucketRegion
       Parameters:
-        BastionSecurityGroupID: !GetAtt
-          - BastionStack
-          - Outputs.BastionSecurityGroupID
         VPCCIDR: !Ref VPCCIDR
         VPCID: !GetAtt VPCStack.Outputs.VPCID
         KeyPairName: !Ref KeyPairName
@@ -442,11 +356,9 @@ Resources:
         NamespaceFile: !Ref NamespaceFile
         FeatureKeyFile: !If [ TrialLicense, "IyBnZW5lcmF0ZWQgMjAyMS0wMy0xMCAwNDowNDoyOAoKZmVhdHVyZS1rZXktdmVyc2lvbiAgICAgICAgICAgICAgICAgIDIKc2VyaWFsLW51bWJlciAgICAgICAgICAgICAgICAgICAgICAgIDU2ODk1MzA1OAoKYWNjb3VudC1uYW1lICAgICAgICAgICAgICAgICAgICAgRXZhbHVhdGlvbl9MaWNlbnNlCgphY2NvdW50LUlEICAgICAgICAgICAgICAgICAgICAgICBBZXJvc3Bpa2VfXzQzNTcxMTM3NAoKYXNkYi1jaGFuZ2Utbm90aWZpY2F0aW9uICAgICAgICAgdHJ1ZQphc2RiLWNsdXN0ZXItbm9kZXMtbGltaXQgICAgICAgICAxCmFzZGItY29tcHJlc3Npb24gICAgICAgICAgICAgICAgIHRydWUKYXNkYi1lbmNyeXB0aW9uLWF0LXJlc3QgICAgICAgICAgdHJ1ZQphc2RiLWxkYXAgICAgICAgICAgICAgICAgICAgICAgICB0cnVlCmFzZGItcG1lbSAgICAgICAgICAgICAgICAgICAgICAgIHRydWUKYXNkYi1zdHJvbmctY29uc2lzdGVuY3kgICAgICAgICAgdHJ1ZQptZXNnLWptcy1jb25uZWN0b3IgICAgICAgICAgICAgICB0cnVlCm1lc2cta2Fma2EtY29ubmVjdG9yICAgICAgICAgICAgIHRydWUKcHJlc3RvLWNvbm5lY3RvciAgICAgICAgICAgICAgICAgdHJ1ZQpyYWYtcmVhbHRpbWUtYW5hbHlzaXMtZnJhbWV3b3JrICB0cnVlCgotLS0tLSBTSUdOQVRVUkUgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCk1FVUNJRXhGN3VSYzBZdURvb3J6ZkNUR2NhdGgrQVB6U0doUi94M21pN0RuRFB6a0FpRUF1cjkzRVcwb2tlNVoKUWZ5c1l4dzZCb0tKRUI1STVlV2xXdDU2UzlxeGNySWsKLS0tLS0gRU5EIE9GIFNJR05BVFVSRSAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo=", !Ref FeatureKeyFile ]
         QSS3BucketName: !Ref QSS3BucketName
+        AccessCIDR: !Ref AccessCIDR
 
 Outputs:
-  BastionHostIP:
-    Description: IP for bastion host.
-    Value: !GetAtt "BastionStack.Outputs.EIP1"
   Postdeployment:
     Description: To test your deployment, see the procedure in the deployment guide.
     Value: https://fwd.aws/Pa8Yw?

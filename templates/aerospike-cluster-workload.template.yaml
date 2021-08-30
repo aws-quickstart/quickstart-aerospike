@@ -58,8 +58,6 @@ Metadata:
           - QSS3KeyPrefix
           - QSS3BucketRegion
     ParameterLabels:
-      BastionSecurityGroupID:
-        default: Bastion security group ID
       KeyPairName:
         default: EC2 key pair
       VPCID:
