@@ -33,9 +33,14 @@ Metadata:
           - KeyPairName
           - VPCID
           - VPCCIDR
-          - VPCSubnet
           - Tenancy
           - AccessCIDR
+          - PublicSubnet1ID
+          - PublicSubnet2ID
+          - PublicSubnet3ID
+          - PrivateSubnet1ID
+          - PrivateSubnet2ID
+          - PrivateSubnet3ID
       - Label:
           default: Aerospike configuration
         Parameters:
@@ -64,8 +69,6 @@ Metadata:
         default: VPC ID
       VPCCIDR:
         default: CIDR for the VPC
-      VPCSubnet:
-        default: VPC subnet
       Tenancy:
         default: Tenancy
       NumberOfInstances:
@@ -148,9 +151,30 @@ Parameters:
       of 0.0.0.0/0 allows access from any IP address."
     Type: String
     Default: 0.0.0.0/0
-  VPCSubnet:
-    Description: Subnet that links to the instance in the selected VPC. At least two Subnets are required.
-    Type: 'List<AWS::EC2::Subnet::Id>'
+  PublicSubnet1ID:
+    Type: String
+    Default: ""
+    Description: "ID of public subnet 1"
+  PublicSubnet2ID:
+    Type: String
+    Default: ""
+    Description: "ID of public subnet 2"
+  PublicSubnet3ID:
+    Type: String
+    Default: ""
+    Description: "(Optional) ID of public subnet 3"
+  PrivateSubnet1ID:
+    Type: String
+    Default: ""
+    Description: "ID of private subnet 1"
+  PrivateSubnet2ID:
+    Type: String
+    Default: ""
+    Description: "ID of private subnet 2"
+  PrivateSubnet3ID:
+    Type: String
+    Default: ""
+    Description: "(Optional) ID of private subnet 3"
   Tenancy:
     Description: Tenancy of the Aerospike instances. Choose "dedicated" to change the host from shared (default).
     Type: String
@@ -370,6 +394,10 @@ Conditions:
   NotUsingEBS: !Equals 
     - !Ref EBS
     - 0
+  3AZDeployment: !Not [!Equals [!Ref PrivateSubnet3ID, ""]]
+  2AZDeployment: !Or
+    - !Not [!Equals [!Ref PrivateSubnet2ID, ""]]
+    - !Not [!Equals [!Ref PrivateSubnet3ID, ""]]
 
 Resources:
   BastionStack:
@@ -393,8 +421,8 @@ Resources:
         BastionAMIOS: !Ref BastionAMIOS
         EnableTCPForwarding: 'true'
         KeyPairName: !Ref KeyPairName
-        PublicSubnet1ID: !Select [ 0, !Ref VPCSubnet ]
-        PublicSubnet2ID: !Select [ 1, !Ref VPCSubnet ]
+        PublicSubnet1ID: !Ref PublicSubnet1ID
+        PublicSubnet2ID: !If [2AZDeployment, !Ref PublicSubnet2ID, !Ref "AWS::NoValue"]
         QSS3BucketName: !Ref QSS3BucketName
         QSS3KeyPrefix: !Sub '${QSS3KeyPrefix}submodules/quickstart-linux-bastion/'
         QSS3BucketRegion: !Ref QSS3BucketRegion
@@ -491,10 +519,10 @@ Resources:
       DesiredCapacity: !Ref NumberOfInstances
       MinSize: '1'
       MaxSize: '15'
-      VPCZoneIdentifier:
-        - !Join 
-          - ','
-          - !Ref VPCSubnet
+      VPCZoneIdentifier: !If
+        - 3AZDeployment
+        - [ !Ref PrivateSubnet1ID, !Ref PrivateSubnet2ID, !Ref PrivateSubnet3ID ]
+        - [ !Ref PrivateSubnet1ID, !Ref PrivateSubnet2ID ]
       Tags:
         - Key: StackID
           Value: !Ref 'AWS::StackId'
