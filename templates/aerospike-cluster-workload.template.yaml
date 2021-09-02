@@ -37,7 +37,6 @@ Metadata:
           - AccessCIDR
           - PublicSubnet1ID
           - PublicSubnet2ID
-          - PublicSubnet3ID
           - PrivateSubnet1ID
           - PrivateSubnet2ID
           - PrivateSubnet3ID
@@ -159,10 +158,6 @@ Parameters:
     Type: String
     Default: ""
     Description: "ID of public subnet 2"
-  PublicSubnet3ID:
-    Type: String
-    Default: ""
-    Description: "(Optional) ID of public subnet 3"
   PrivateSubnet1ID:
     Type: String
     Default: ""
