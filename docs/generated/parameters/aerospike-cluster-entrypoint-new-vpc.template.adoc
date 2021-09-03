@@ -24,7 +24,7 @@
 (`Tenancy`)|`default`|Tenancy of the Aerospike instances. Choose "dedicated" to change the host from shared (default).|Enable CloudWatch logging
 (`EnableCloudWatch`)|`no`|Choose "yes" to enable CloudWatch logging for the Aerospike cluster, which adds basic Aerospike metrics to Amazon CloudWatch. This incurs CloudWatch expenses.
 |Instance type
-(`InstanceType`)|`m5.large`|Type of EC2 instance to deploy for the Aerospike cluster.|EBS volume size
+(`InstanceType`)|`m5d.xlarge`|Type of EC2 instance to deploy for the Aerospike cluster.|EBS volume size
 (`EBS`)|`50`|Size of the EBS SSD volume in GB. The volume attaches under /dev/sdg. Limit of 16000. Enter 0 if you do not want to use EBS.
 |Namespace file
 (`NamespaceFile`)|`**__Blank string__**`|(Optional) Location of your namespace-definition file. Must be publically downloadable. Appends to aerospike.conf.
