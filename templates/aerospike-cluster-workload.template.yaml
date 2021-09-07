@@ -126,8 +126,6 @@ Parameters:
     Description: Number of bastion hosts to create.
     Type: String
   BastionAMIOS:
-    AllowedValues:
-      - Amazon-Linux2-HVM
     Default: Amazon-Linux2-HVM
     Description: Linux distribution for the AMI to be used for the bastion instances.
     Type: String
@@ -801,6 +799,9 @@ Resources:
         - InstanceSecurityGroup
         - GroupId
 Outputs:
+  BastionHostIP:
+    Description: IP for bastion host.
+    Value: !GetAtt "BastionStack.Outputs.EIP1"
   AutoscalingID:
     Description: The Autoscaling Group ID that is used to deploy your cluster
     Value: !Ref ClusterGroup

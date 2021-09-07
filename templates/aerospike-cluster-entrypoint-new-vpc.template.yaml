@@ -46,6 +46,12 @@ Metadata:
       - NamespaceFile
       - FeatureKeyFile
     - Label:
+        default: Linux bastion configuration
+      Parameters:
+      - BastionAMIOS
+      - BastionInstanceType
+      - NumBastionHosts
+    - Label:
         default: AWS Quick Start configuration
       Parameters:
         - QSS3BucketName
@@ -70,6 +76,12 @@ Metadata:
         default: "Namespace file"
       EBS:
         default: "EBS volume size"
+      BastionAMIOS:
+        default: Bastion AMI operating system
+      BastionInstanceType:
+        default: Bastion instance type
+      NumBastionHosts:
+        default: Number of bastion hosts
       KeyPairName:
         default: EC2 key pair
       PrivateSubnet1CIDR:
@@ -103,6 +115,40 @@ Parameters:
     AllowedValues: ["2", "3"]
     Default: "3"
     Description: Number of Availability Zones to use in the VPC. This number must match the number of Availability Zones you chose for the AvailabilityZones parameter.
+  BastionInstanceType:
+    Default: t3.micro
+    Type: String
+    Description:  Type of EC2 instance for the bastion hosts.
+    AllowedValues:
+      - t2.nano
+      - t2.micro
+      - t2.small
+      - t2.medium
+      - t2.large
+      - t3.micro
+      - t3.small
+      - t3.medium
+      - t3.large
+      - m3.large
+      - m3.xlarge
+      - m3.2xlarge
+      - m4.large
+      - m4.xlarge
+      - m4.2xlarge
+      - m4.4xlarge
+  NumBastionHosts:
+    AllowedValues:
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+    Default: '1'
+    Description: Number of bastion hosts to create.
+    Type: String
+  BastionAMIOS:
+    Default: Amazon-Linux2-HVM
+    Description: Linux distribution for the AMI to be used for the bastion instances.
+    Type: String
   KeyPairName:
     Description: Name of the key pair to be used to connect to your EC2 instances by using SSH.
     Type: AWS::EC2::KeyPair::KeyName
@@ -358,6 +404,9 @@ Resources:
         PrivateSubnet1ID: !GetAtt VPCStack.Outputs.PrivateSubnet1AID
         PrivateSubnet2ID: !GetAtt VPCStack.Outputs.PrivateSubnet2AID
         PrivateSubnet3ID: !If [ 3AZDeployment, !GetAtt VPCStack.Outputs.PrivateSubnet3AID, !Ref "AWS::NoValue" ]
+        BastionInstanceType: !Ref BastionInstanceType
+        NumBastionHosts: !Ref NumBastionHosts
+        BastionAMIOS: !Ref BastionAMIOS
 
 Outputs:
   Postdeployment:
