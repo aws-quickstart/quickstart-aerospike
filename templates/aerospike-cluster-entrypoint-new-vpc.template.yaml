@@ -396,16 +396,9 @@ Resources:
     Type: 'AWS::CloudFormation::Stack'
     Properties:
       TemplateURL: !Sub
-        - >-
-          https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/aerospike-cluster-workload.template.yaml
-        - S3Bucket: !If
-            - UsingDefaultBucket
-            - !Sub '${QSS3BucketName}-${AWS::Region}'
-            - !Ref QSS3BucketName
-          S3Region: !If
-            - UsingDefaultBucket
-            - !Ref 'AWS::Region'
-            - !Ref QSS3BucketRegion
+        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/aerospike-cluster-workload.template.yaml'
+        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
         VPCCIDR: !Ref VPCCIDR
         VPCID: !GetAtt VPCStack.Outputs.VPCID
@@ -418,6 +411,7 @@ Resources:
         NamespaceFile: !Ref NamespaceFile
         FeatureKeyFile: !If [ TrialLicense, "IyBnZW5lcmF0ZWQgMjAyMS0wMy0xMCAwNDowNDoyOAoKZmVhdHVyZS1rZXktdmVyc2lvbiAgICAgICAgICAgICAgICAgIDIKc2VyaWFsLW51bWJlciAgICAgICAgICAgICAgICAgICAgICAgIDU2ODk1MzA1OAoKYWNjb3VudC1uYW1lICAgICAgICAgICAgICAgICAgICAgRXZhbHVhdGlvbl9MaWNlbnNlCgphY2NvdW50LUlEICAgICAgICAgICAgICAgICAgICAgICBBZXJvc3Bpa2VfXzQzNTcxMTM3NAoKYXNkYi1jaGFuZ2Utbm90aWZpY2F0aW9uICAgICAgICAgdHJ1ZQphc2RiLWNsdXN0ZXItbm9kZXMtbGltaXQgICAgICAgICAxCmFzZGItY29tcHJlc3Npb24gICAgICAgICAgICAgICAgIHRydWUKYXNkYi1lbmNyeXB0aW9uLWF0LXJlc3QgICAgICAgICAgdHJ1ZQphc2RiLWxkYXAgICAgICAgICAgICAgICAgICAgICAgICB0cnVlCmFzZGItcG1lbSAgICAgICAgICAgICAgICAgICAgICAgIHRydWUKYXNkYi1zdHJvbmctY29uc2lzdGVuY3kgICAgICAgICAgdHJ1ZQptZXNnLWptcy1jb25uZWN0b3IgICAgICAgICAgICAgICB0cnVlCm1lc2cta2Fma2EtY29ubmVjdG9yICAgICAgICAgICAgIHRydWUKcHJlc3RvLWNvbm5lY3RvciAgICAgICAgICAgICAgICAgdHJ1ZQpyYWYtcmVhbHRpbWUtYW5hbHlzaXMtZnJhbWV3b3JrICB0cnVlCgotLS0tLSBTSUdOQVRVUkUgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCk1FVUNJRXhGN3VSYzBZdURvb3J6ZkNUR2NhdGgrQVB6U0doUi94M21pN0RuRFB6a0FpRUF1cjkzRVcwb2tlNVoKUWZ5c1l4dzZCb0tKRUI1STVlV2xXdDU2UzlxeGNySWsKLS0tLS0gRU5EIE9GIFNJR05BVFVSRSAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo=", !Ref FeatureKeyFile ]
         QSS3BucketName: !Ref QSS3BucketName
+        QSS3BucketRegion: !Ref QSS3BucketRegion
         AccessCIDR: !Ref AccessCIDR
         PublicSubnet1ID: !GetAtt VPCStack.Outputs.PublicSubnet1ID
         PublicSubnet2ID: !GetAtt VPCStack.Outputs.PublicSubnet2ID
