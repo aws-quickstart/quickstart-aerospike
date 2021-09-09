@@ -33,8 +33,13 @@ Metadata:
           - KeyPairName
           - VPCID
           - VPCCIDR
-          - VPCSubnet
           - Tenancy
+          - AccessCIDR
+          - PublicSubnet1ID
+          - PublicSubnet2ID
+          - PrivateSubnet1ID
+          - PrivateSubnet2ID
+          - PrivateSubnet3ID
       - Label:
           default: Aerospike configuration
         Parameters:
@@ -47,22 +52,22 @@ Metadata:
       - Label:
           default: Linux bastion configuration
         Parameters:
-          - BastionSecurityGroupID
+          - BastionAMIOS
+          - BastionInstanceType
+          - NumBastionHosts
       - Label:
           default: AWS Quick Start configuration
         Parameters:
           - QSS3BucketName
+          - QSS3KeyPrefix
+          - QSS3BucketRegion
     ParameterLabels:
-      BastionSecurityGroupID:
-        default: Bastion security group ID
       KeyPairName:
         default: EC2 key pair
       VPCID:
         default: VPC ID
       VPCCIDR:
         default: CIDR for the VPC
-      VPCSubnet:
-        default: VPC subnet
       Tenancy:
         default: Tenancy
       NumberOfInstances:
@@ -73,16 +78,57 @@ Metadata:
         default: Instance type
       EBS:
         default: EBS volume size
+      BastionAMIOS:
+        default: Bastion AMI operating system
+      BastionInstanceType:
+        default: Bastion instance type
+      NumBastionHosts:
+        default: Number of bastion hosts
       NamespaceFile:
         default: Namespace file
       FeatureKeyFile:
         default: Feature key file
       QSS3BucketName:
         default: Quick Start S3 bucket name
+      QSS3KeyPrefix:
+        default: Quick Start S3 key prefix
+      QSS3BucketRegion:
+        default: Quick Start S3 bucket Region
 Parameters:
-  BastionSecurityGroupID:
-    Description: ID of the bastion host security group (e.g., sg-7f16e910).
-    Type: 'AWS::EC2::SecurityGroup::Id'
+  BastionInstanceType:
+    Default: t3.micro
+    Type: String
+    Description:  Type of EC2 instance for the bastion hosts.
+    AllowedValues:
+      - t2.nano
+      - t2.micro
+      - t2.small
+      - t2.medium
+      - t2.large
+      - t3.micro
+      - t3.small
+      - t3.medium
+      - t3.large
+      - m3.large
+      - m3.xlarge
+      - m3.2xlarge
+      - m4.large
+      - m4.xlarge
+      - m4.2xlarge
+      - m4.4xlarge
+  NumBastionHosts:
+    AllowedValues:
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+    Default: '1'
+    Description: Number of bastion hosts to create.
+    Type: String
+  BastionAMIOS:
+    Default: Amazon-Linux2-HVM
+    Description: Linux distribution for the AMI to be used for the bastion instances.
+    Type: String
   KeyPairName:
     Description: Name of the key pair to be used to connect to your EC2 instances by using SSH.
     Type: 'AWS::EC2::KeyPair::KeyName'
@@ -96,9 +142,32 @@ Parameters:
     Default: 10.0.0.0/16
     ConstraintDescription: Must be in format x.x.0.0/16.
     AllowedPattern: '^([0-9]{1,3}\.){2}([0]{1}.)[0]{1}(\/[16]{2})$'
-  VPCSubnet:
-    Description: Subnet that links to the instance in the selected VPC.
-    Type: 'List<AWS::EC2::Subnet::Id>'
+  AccessCIDR:
+    AllowedPattern: "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$"
+    Description: "CIDR IP range permitted to access Aerospike. A value
+      of 0.0.0.0/0 allows access from any IP address."
+    Type: String
+    Default: 0.0.0.0/0
+  PublicSubnet1ID:
+    Type: String
+    Default: ""
+    Description: "ID of public subnet 1"
+  PublicSubnet2ID:
+    Type: String
+    Default: ""
+    Description: "ID of public subnet 2"
+  PrivateSubnet1ID:
+    Type: String
+    Default: ""
+    Description: "ID of private subnet 1"
+  PrivateSubnet2ID:
+    Type: String
+    Default: ""
+    Description: "ID of private subnet 2"
+  PrivateSubnet3ID:
+    Type: String
+    Default: ""
+    Description: "(Optional) ID of private subnet 3"
   Tenancy:
     Description: Tenancy of the Aerospike instances. Choose "dedicated" to change the host from shared (default).
     Type: String
@@ -250,6 +319,29 @@ Parameters:
       uppercase letters, and hyphens, but do not start or end with a hyphen (-). 
       See https://aws-quickstart.github.io/option1.html.
     Type: String
+  QSS3BucketRegion:
+    Default: 'us-east-1'
+    Description: 'AWS Region where the Quick Start S3 bucket (QSS3BucketName) is 
+    hosted. Keep the default Region unless you are customizing the template. 
+    Changing this Region updates code references to point to a new Quick Start location. 
+    When using your own bucket, specify the Region. 
+    See https://aws-quickstart.github.io/option1.html.'
+    Type: String
+  QSS3KeyPrefix:
+    AllowedPattern: "^[0-9a-zA-Z-/]*$"
+    ConstraintDescription: The Quick Start S3 key prefix can include numbers, lowercase letters,
+      uppercase letters, hyphens (-), and forward slashes (/). The prefix should
+      end with a forward slash (/).
+    Default: quickstart-aerospike/
+    Description: S3 key prefix that is used to simulate a directory for your copy of the 
+      Quick Start assets. Keep the default prefix unless you are customizing 
+      the template. Changing this prefix updates code references to point to 
+      a new Quick Start location. This prefix can include numbers, lowercase 
+      letters, uppercase letters, hyphens (-), and forward slashes (/). End with 
+      a forward slash. See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html 
+      and https://aws-quickstart.github.io/option1.html.
+    Type: String
+
 Mappings:
   AWSAMIRegionMap:
     AMI:
@@ -295,8 +387,41 @@ Conditions:
   NotUsingEBS: !Equals 
     - !Ref EBS
     - 0
+  3AZDeployment: !Not [!Equals [!Ref PrivateSubnet3ID, ""]]
+  2AZDeployment: !Or
+    - !Not [!Equals [!Ref PrivateSubnet2ID, ""]]
+    - !Not [!Equals [!Ref PrivateSubnet3ID, ""]]
 
 Resources:
+  BastionStack:
+    Metadata: { cfn-lint: { config: { ignore_checks: [ W9901 ] } } }
+    Type: 'AWS::CloudFormation::Stack'
+    Properties:
+      TemplateURL: !Sub 
+        - >-
+          https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-linux-bastion/templates/linux-bastion.template
+        - S3Region: !If 
+            - UsingDefaultBucket
+            - !Ref 'AWS::Region'
+            - !Ref QSS3BucketRegion
+          S3Bucket: !If 
+            - UsingDefaultBucket
+            - !Sub '${QSS3BucketName}-${AWS::Region}'
+            - !Ref QSS3BucketName
+      Parameters:
+        BastionInstanceType: !Ref BastionInstanceType
+        NumBastionHosts: !Ref NumBastionHosts
+        BastionAMIOS: !Ref BastionAMIOS
+        EnableTCPForwarding: 'true'
+        KeyPairName: !Ref KeyPairName
+        PublicSubnet1ID: !Ref PublicSubnet1ID
+        PublicSubnet2ID: !If [2AZDeployment, !Ref PublicSubnet2ID, !Ref "AWS::NoValue"]
+        QSS3BucketName: !Ref QSS3BucketName
+        QSS3KeyPrefix: !Sub '${QSS3KeyPrefix}submodules/quickstart-linux-bastion/'
+        QSS3BucketRegion: !Ref QSS3BucketRegion
+        RemoteAccessCIDR: !Ref AccessCIDR
+        VPCID: !Ref VPCID
+
   PsuedoRandom:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -387,10 +512,10 @@ Resources:
       DesiredCapacity: !Ref NumberOfInstances
       MinSize: '1'
       MaxSize: '15'
-      VPCZoneIdentifier:
-        - !Join 
-          - ','
-          - !Ref VPCSubnet
+      VPCZoneIdentifier: !If
+        - 3AZDeployment
+        - [ !Ref PrivateSubnet1ID, !Ref PrivateSubnet2ID, !Ref PrivateSubnet3ID ]
+        - [ !Ref PrivateSubnet1ID, !Ref PrivateSubnet2ID ]
       Tags:
         - Key: StackID
           Value: !Ref 'AWS::StackId'
@@ -651,7 +776,9 @@ Resources:
         - IpProtocol: tcp
           FromPort: 22
           ToPort: 22
-          SourceSecurityGroupId: !Ref BastionSecurityGroupID
+          SourceSecurityGroupId: !GetAtt
+          - BastionStack
+          - Outputs.BastionSecurityGroupID
         - IpProtocol: icmp
           FromPort: -1
           ToPort: -1
@@ -672,6 +799,9 @@ Resources:
         - InstanceSecurityGroup
         - GroupId
 Outputs:
+  BastionHostIP:
+    Description: IP for bastion host.
+    Value: !GetAtt "BastionStack.Outputs.EIP1"
   AutoscalingID:
     Description: The Autoscaling Group ID that is used to deploy your cluster
     Value: !Ref ClusterGroup
