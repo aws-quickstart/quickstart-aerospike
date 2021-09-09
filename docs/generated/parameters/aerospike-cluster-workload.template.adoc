@@ -5,9 +5,14 @@
 |Parameter label (name) |Default value|Description|EC2 key pair
 (`KeyPairName`)|`**__Requires input__**`|Name of the key pair to be used to connect to your EC2 instances by using SSH.|VPC ID
 (`VPCID`)|`**__Requires input__**`|ID of the VPC that you're deploying this cluster into.|CIDR for the VPC
-(`VPCCIDR`)|`10.0.0.0/16`|VPC CIDR block in the format x.x.0.0/16.|VPC subnet
-(`VPCSubnet`)|`**__Requires input__**`|Subnet that links to the instance in the selected VPC.|Tenancy
-(`Tenancy`)|`default`|Tenancy of the Aerospike instances. Choose "dedicated" to change the host from shared (default).
+(`VPCCIDR`)|`10.0.0.0/16`|VPC CIDR block in the format x.x.0.0/16.|Tenancy
+(`Tenancy`)|`default`|Tenancy of the Aerospike instances. Choose "dedicated" to change the host from shared (default).|**NO_LABEL**
+(`AccessCIDR`)|`0.0.0.0/0`|CIDR IP range permitted to access Aerospike. A value of 0.0.0.0/0 allows access from any IP address.|**NO_LABEL**
+(`PublicSubnet1ID`)|`**__Blank string__**`|ID of public subnet 1|**NO_LABEL**
+(`PublicSubnet2ID`)|`**__Blank string__**`|ID of public subnet 2|**NO_LABEL**
+(`PrivateSubnet1ID`)|`**__Blank string__**`|ID of private subnet 1|**NO_LABEL**
+(`PrivateSubnet2ID`)|`**__Blank string__**`|ID of private subnet 2|**NO_LABEL**
+(`PrivateSubnet3ID`)|`**__Blank string__**`|(Optional) ID of private subnet 3
 |===
 .Aerospike configuration
 [width="100%",cols="16%,11%,73%",options="header",]
@@ -24,12 +29,16 @@
 .Linux bastion configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
-|Parameter label (name) |Default value|Description|Bastion security group ID
-(`BastionSecurityGroupID`)|`**__Requires input__**`|ID of the bastion host security group (e.g., sg-7f16e910).
+|Parameter label (name) |Default value|Description|Bastion AMI operating system
+(`BastionAMIOS`)|`Amazon-Linux2-HVM`|Linux distribution for the AMI to be used for the bastion instances.|Bastion instance type
+(`BastionInstanceType`)|`t3.micro`|Type of EC2 instance for the bastion hosts.|Number of bastion hosts
+(`NumBastionHosts`)|`1`|Number of bastion hosts to create.
 |===
 .AWS Quick Start configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
 |Parameter label (name) |Default value|Description|Quick Start S3 bucket name
-(`QSS3BucketName`)|`aws-quickstart`|Name of the S3 bucket for your copy of the Quick Start assets. Keep the default name unless you are customizing the template. Changing the name updates code references to point to a new Quick Start location. This name can include numbers, lowercase letters, uppercase letters, and hyphens, but do not start or end with a hyphen (-). See https://aws-quickstart.github.io/option1.html.
+(`QSS3BucketName`)|`aws-quickstart`|Name of the S3 bucket for your copy of the Quick Start assets. Keep the default name unless you are customizing the template. Changing the name updates code references to point to a new Quick Start location. This name can include numbers, lowercase letters, uppercase letters, and hyphens, but do not start or end with a hyphen (-). See https://aws-quickstart.github.io/option1.html.|Quick Start S3 key prefix
+(`QSS3KeyPrefix`)|`quickstart-aerospike/`|S3 key prefix that is used to simulate a directory for your copy of the Quick Start assets. Keep the default prefix unless you are customizing the template. Changing this prefix updates code references to point to a new Quick Start location. This prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slashes (/). End with a forward slash. See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html and https://aws-quickstart.github.io/option1.html.|Quick Start S3 bucket Region
+(`QSS3BucketRegion`)|`us-east-1`|AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. Keep the default Region unless you are customizing the template. Changing this Region updates code references to point to a new Quick Start location. When using your own bucket, specify the Region. See https://aws-quickstart.github.io/option1.html.
 |===
