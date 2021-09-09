@@ -24,6 +24,7 @@ Metadata:
     - .conf
     - QSS3BucketRegion
     - QSS3BucketName
+    - QSS3KeyPrefix
 
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -398,16 +399,9 @@ Resources:
     Type: 'AWS::CloudFormation::Stack'
     Properties:
       TemplateURL: !Sub 
-        - >-
-          https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-linux-bastion/templates/linux-bastion.template
-        - S3Region: !If 
-            - UsingDefaultBucket
-            - !Ref 'AWS::Region'
-            - !Ref QSS3BucketRegion
-          S3Bucket: !If 
-            - UsingDefaultBucket
-            - !Sub '${QSS3BucketName}-${AWS::Region}'
-            - !Ref QSS3BucketName
+        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-linux-bastion/templates/linux-bastion.template'
+        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
         BastionInstanceType: !Ref BastionInstanceType
         NumBastionHosts: !Ref NumBastionHosts
