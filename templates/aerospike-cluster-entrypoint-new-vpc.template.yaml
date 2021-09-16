@@ -415,7 +415,6 @@ Resources:
         AccessCIDR: !Ref AccessCIDR
         PublicSubnet1ID: !GetAtt VPCStack.Outputs.PublicSubnet1ID
         PublicSubnet2ID: !GetAtt VPCStack.Outputs.PublicSubnet2ID
-        PublicSubnet3ID: !If [ 3AZDeployment, !GetAtt VPCStack.Outputs.PublicSubnet3ID, !Ref "AWS::NoValue" ]
         PrivateSubnet1ID: !GetAtt VPCStack.Outputs.PrivateSubnet1AID
         PrivateSubnet2ID: !GetAtt VPCStack.Outputs.PrivateSubnet2AID
         PrivateSubnet3ID: !If [ 3AZDeployment, !GetAtt VPCStack.Outputs.PrivateSubnet3AID, !Ref "AWS::NoValue" ]
