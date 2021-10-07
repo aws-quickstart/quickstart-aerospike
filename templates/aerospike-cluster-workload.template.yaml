@@ -195,26 +195,7 @@ Parameters:
     Type: String
     Default: m5d.xlarge
     AllowedValues:
-      - t2.micro
-      - t2.small
-      - t2.medium
-      - t2.large
-      - t3.micro
-      - t3.small
-      - t3.medium
       - t3.large
-      - t3.xlarge
-      - t3.2xlarge
-      - m3.medium
-      - m3.large
-      - m3.xlarge
-      - m3.2xlarge
-      - m4.large
-      - m4.xlarge
-      - m4.2xlarge
-      - m4.4xlarge
-      - m4.10xlarge
-      - m4.16xlarge
       - m5.large
       - m5.xlarge
       - m5.2xlarge
@@ -230,33 +211,21 @@ Parameters:
       - m5d.16xlarge
       - m5d.24xlarge
       - m5d.metal
-      - c3.large
-      - c3.xlarge
-      - c3.2xlarge
-      - c3.4xlarge
-      - c3.8xlarge
-      - c4.large
-      - c4.xlarge
-      - c4.2xlarge
-      - c4.4xlarge
-      - c4.8xlarge
+      - m5n.large
+      - m5n.xlarge
+      - m5n.2xlarge	
+      - m5n.4xlarge	
+      - m5n.8xlarge	
+      - m5n.12xlarge
+      - m5n.16xlarge	
+      - m5n.24xlarge
+      - m5n.metal
       - c5.large
       - c5.xlarge
       - c5.2xlarge
       - c5.4xlarge
       - c5.9xlarge
       - c5.18xlarge
-      - r3.large
-      - r3.xlarge
-      - r3.2xlarge
-      - r3.4xlarge
-      - r3.8xlarge
-      - r4.large
-      - r4.xlarge
-      - r4.2xlarge
-      - r4.4xlarge
-      - r4.8xlarge
-      - r4.16xlarge
       - r5.large
       - r5.xlarge
       - r5.2xlarge
@@ -272,10 +241,6 @@ Parameters:
       - r5d.16xlarge
       - r5d.24xlarge
       - r5d.metal
-      - i2.xlarge
-      - i2.2xlarge
-      - i2.4xlarge
-      - i2.8xlarge
       - i3.large
       - i3.xlarge
       - i3.2xlarge
@@ -291,6 +256,14 @@ Parameters:
       - i3en.16xlarge
       - i3en.24xlarge
       - i3en.metal
+      - c5d.large
+      - c5d.xlarge
+      - c5d.2xlarge
+      - c5d.4xlarge
+      - c5d.9xlarge
+      - c5d.18xlarge
+      - x1.16xlarge
+      - x1.32xlarge
   EBS:
     Description: |
       Size of the EBS SSD volume in GB. The volume attaches under /dev/sdg. Limit of 16000. Enter 0 if you do not want to use EBS.
