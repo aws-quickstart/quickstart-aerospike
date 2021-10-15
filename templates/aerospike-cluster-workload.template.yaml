@@ -348,39 +348,39 @@ Mappings:
     AMI:
       AEROSPIKEAMI: aerospike-amzn2-64bit-4.20
     us-east-1:
-      AEROSPIKEAMI: ami-02b4d0fc7fd1391b9
+      AEROSPIKEAMI: ami-021f94397f9b7296a
     us-east-2:
-      AEROSPIKEAMI: ami-04e92ffd253e42a3d
+      AEROSPIKEAMI: ami-02b844f525f5971a8
     us-west-1:
-      AEROSPIKEAMI: ami-09bc7e772901067eb
+      AEROSPIKEAMI: ami-004f25c2206966ccd
     us-west-2:
-      AEROSPIKEAMI: ami-00183ebe1ff29e83f
+      AEROSPIKEAMI: ami-0d3dcdb7921e8feb5
     ca-central-1:
-      AEROSPIKEAMI: ami-04b334d8470f28281
+      AEROSPIKEAMI: ami-0b1eebf04428a7e99
     eu-west-1:
-      AEROSPIKEAMI: ami-0673ae70899ede698
+      AEROSPIKEAMI: ami-0cad3556b41666b15
     eu-west-2:
-      AEROSPIKEAMI: ami-054d1e2dde6fd8410
+      AEROSPIKEAMI: ami-096dd4649893821c3
     eu-west-3:
-      AEROSPIKEAMI: ami-0e495dd43cc0f4fc6
+      AEROSPIKEAMI: ami-0b2772f04f405a268
     eu-north-1:
-      AEROSPIKEAMI: ami-0f17e203a77e5a120
+      AEROSPIKEAMI: ami-0b085d6c3fcd83ab0
     eu-central-1:
-      AEROSPIKEAMI: ami-04528b62f1cb12863
+      AEROSPIKEAMI: ami-0338bbdaf13c1b19a
     ap-southeast-1:
-      AEROSPIKEAMI: ami-0371cebf36adf76b2
+      AEROSPIKEAMI: ami-05cc28c7586ac8c42
     ap-southeast-2:
-      AEROSPIKEAMI: ami-0b706b3c1852a9c2f
+      AEROSPIKEAMI: ami-055c43fc07977e985
     ap-south-1:
-      AEROSPIKEAMI: ami-0a38b67213cf0c11b
+      AEROSPIKEAMI: ami-03b87dd9fbd719b1b
     ap-northeast-1:
-      AEROSPIKEAMI: ami-0f5cd86d5492aa37d
+      AEROSPIKEAMI: ami-06d8224eddf40a5c8
     ap-northeast-2:
-      AEROSPIKEAMI: ami-04659e1ec3a43da1c
+      AEROSPIKEAMI: ami-04e3ac4a5020a26b6
     ap-northeast-3:
-      AEROSPIKEAMI: ami-000f7a348bcbbb1b2
+      AEROSPIKEAMI: ami-02103891990bb871b
     sa-east-1:
-      AEROSPIKEAMI: ami-0d86a1f67349e1871
+      AEROSPIKEAMI: ami-0dd8bf4fc926fbddb
 
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
