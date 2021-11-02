@@ -21,5 +21,6 @@ internet access for resources in the private subnets.*
 ** An Amazon Elastic Block Store (Amazon EBS) volume in each subnet.
 * Amazon CloudWatch for logging and monitoring the Aerospike instances.
 * Amazon Simple Queue Service (Amazon SQS) for Aerospike migration.
+* This is a comment from AC
 
 [.small]#* The template that deploys the Quick Start into an existing VPC skips the components marked by asterisks and prompts you for your existing VPC configuration.#
