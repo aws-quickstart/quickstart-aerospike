@@ -405,6 +405,7 @@ Resources:
       Parameters:
         BastionInstanceType: !Ref BastionInstanceType
         NumBastionHosts: !Ref NumBastionHosts
+        BastionHostName: 'Bastion host'
         BastionAMIOS: !Ref BastionAMIOS
         EnableTCPForwarding: 'true'
         KeyPairName: !Ref KeyPairName
@@ -415,7 +416,7 @@ Resources:
         QSS3BucketRegion: !Ref QSS3BucketRegion
         RemoteAccessCIDR: !Ref AccessCIDR
         VPCID: !Ref VPCID
-
+  
   PsuedoRandom:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -475,7 +476,7 @@ Resources:
                   - autoscaling:RecordLifecycleActionHeartbeat
                 Resource: !Sub
                   - 'arn:${AWS::Partition}:autoscaling:${AWS::Region}:${AWS::AccountId}:autoScalingGroup:*:autoScalingGroupName/${AutoScalingGroupName}'
-                  - AutoScalingGroupName: !Sub 'AerospikeCluster-${PsuedoRandom.GroupId}'
+                  - AutoScalingGroupName: !Sub 'AerospikeCluster'
 
   ClusterInstanceProfile:
     Type: 'AWS::IAM::InstanceProfile'
@@ -501,7 +502,7 @@ Resources:
   ClusterGroup:
     Type: 'AWS::AutoScaling::AutoScalingGroup'
     Properties:
-      AutoScalingGroupName: !Sub 'AerospikeCluster-${PsuedoRandom.GroupId}'
+      AutoScalingGroupName: !Sub 'AerospikeCluster'
       LaunchConfigurationName: !Ref LaunchConfig
       DesiredCapacity: !Ref NumberOfInstances
       MinSize: '1'
@@ -552,7 +553,11 @@ Resources:
                   FILTER=Name=tag-key,Values=StackID
                   PRIVATEIP=$(aws ec2 describe-instances --filter $FILTER  Name=tag-value,Values=${AWS::StackId} --output=text --region=${REGION} | grep PRIVATEIPADDRESSES | awk '{print $4}')
                   echo $PRIVATEIP >> /var/log/awsuserdatascript
+                  
+                  # Delete all lines containing mesh-seed-address-port
                   sed -i '/.*mesh-seed-address-port/d' $CONF
+
+                  # Iterate over private IP and find the line containing 'internal' and add IPs with mesh-seed-address-port
                   for i in $PRIVATEIP; do
                       sed -i "/interval/i \\\t\tmesh-seed-address-port $i 3002\n" $CONF
                   done
@@ -777,6 +782,10 @@ Resources:
           FromPort: -1
           ToPort: -1
           CidrIp: !Ref VPCCIDR
+        - IpProtocol: tcp
+          FromPort: 9145
+          ToPort: 9145
+          CidrIp: !Ref VPCCIDR
       Tags:
         - Key: StackID
           Value: !Ref 'AWS::StackId'
@@ -792,10 +801,37 @@ Resources:
       SourceSecurityGroupId: !GetAtt 
         - InstanceSecurityGroup
         - GroupId
+
+  MonitoringBastionStack:
+    Metadata: { cfn-lint: { config: { ignore_checks: [ W9901 ] } } }
+    Type: 'AWS::CloudFormation::Stack'
+    Properties:
+      TemplateURL: !Sub 
+        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/monitoring-bastion-template.yaml'
+        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+      Parameters:
+        BastionInstanceType: !Ref BastionInstanceType
+        NumBastionHosts: !Ref NumBastionHosts
+        BastionHostName: 'Monitoring Bastion host'
+        BastionAMIOS: !Ref BastionAMIOS
+        EnableTCPForwarding: 'true'
+        KeyPairName: !Ref KeyPairName
+        PublicSubnet1ID: !Ref PublicSubnet1ID
+        PublicSubnet2ID: !If [2AZDeployment, !Ref PublicSubnet2ID, !Ref "AWS::NoValue"]
+        QSS3BucketName: !Ref QSS3BucketName
+        QSS3KeyPrefix: !Sub '${QSS3KeyPrefix}submodules/quickstart-linux-bastion/'
+        QSS3BucketRegion: !Ref QSS3BucketRegion
+        RemoteAccessCIDR: !Ref AccessCIDR
+        VPCID: !Ref VPCID
+  
 Outputs:
   BastionHostIP:
     Description: IP for bastion host.
     Value: !GetAtt "BastionStack.Outputs.EIP1"
+  MonitoringBastionHostIP:
+    Description: IP for monitoring bastion host.
+    Value: !GetAtt "MonitoringBastionStack.Outputs.EIP1"
   AutoscalingID:
     Description: The Autoscaling Group ID that is used to deploy your cluster
     Value: !Ref ClusterGroup
