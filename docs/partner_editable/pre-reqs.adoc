@@ -6,4 +6,4 @@ Ensure that your account has permissions required to create the resources listed
 
 ==== Prepare for the deployment
 
-Obtain any necessary software licenses before you deploy this Quick Start. For details, see the link:#_software_licenses[Software licenses] section of this guide
+Obtain any necessary software licenses before you deploy this Quick Start. For details, see the link:#_software_licenses[Software licenses] section of this guide.
