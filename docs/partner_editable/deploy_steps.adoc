@@ -7,7 +7,7 @@
 ifdef::marketplace_subscription[]
 === Subscribe to the {partner-product-short-name} AMI
 
-This Quick Start requires a subscription to the AMI for {partner-product-short-name} in AWS Marketplace.
+This Quick Start requires a subscription to the AMI for {partner-product-short-name} in AWS Marketplace. 
 
 . Sign in to your AWS account.
 . Open the page for the {marketplace_listing_url}[{partner-product-short-name} AMI in AWS Marketplace^], and then choose *Continue to Subscribe*.
@@ -16,6 +16,9 @@ This Quick Start requires a subscription to the AMI for {partner-product-short-n
 A confirmation page loads, and an email confirmation is sent to the account owner. For detailed subscription instructions, see the https://aws.amazon.com/marketplace/help/200799470[AWS Marketplace documentation^].
 
 . When the subscription process is complete, exit out of AWS Marketplace without further action. *Do not* provision the software from AWS Marketplace—the Quick Start deploys the AMI for you.
+
+. If you're deploying a three-node Aerospike cluster, request a license using https://aerospike.com/lp/aws-three-node/[this form^]. For additional tips and tools for configuring the settings, see https://aerospike.com/products/aerospike-quick-start-for-aws/[Aerospike Quick Start for AWS^]. 
+
 endif::marketplace_subscription[]
 // \Not to be edited
 
