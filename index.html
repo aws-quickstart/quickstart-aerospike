@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.15">
+<meta name="generator" content="Asciidoctor 2.0.16">
 <title>Aerospike Database Enterprise Edition on the AWS Cloud</title>
 <style>
 
@@ -873,7 +873,7 @@ p.footer-text a{color:#d7d8d8}
 </div>
 </div>
 <div class="paragraph text-center">
-<p><strong>July 2021</strong><br>
+<p><strong>November 2021</strong><br>
 <em>Marek Counts and Sourabh Bhagat, Aerospike Inc.</em><br>
 <em>Andrew Gargan, AWS Quick Start team</em></p>
 </div>
@@ -969,7 +969,7 @@ After you deploy the Quick Start, create <a href="https://docs.aws.amazon.com/aw
 <p>The Quick Start requires a subscription to the Amazon Machine Image (AMI) for <a href="https://aws.amazon.com/marketplace/pp/prodview-ouzvxjdgfsa64/" target="_blank" rel="noopener">Aerospike Database Enterprise Edition in AWS Marketplace</a>. Additional pricing, terms, and conditions may apply. For instructions, see <a href="#_subscribe_to_the_aerospike_ami">Subscribe to the Aerospike AMI</a>.</p>
 </div>
 <div class="paragraph">
-<p>If you don&#8217;t have a license, the Quick Start deploys with a trial license. The trial license gives you all the enterprise features in a single node in a nonproduction environment. If you want to upgrade to a production license, <a href="https://aerospike.com/forms/contact-us/" target="_blank" rel="noopener">contact Aerospike</a>. If you want to run multiple nodes, you must bring your own license.</p>
+<p>If you don&#8217;t have a license, the Quick Start deploys with a trial license. The Quick Start deploys with a single-node trial license unless you request a <a href="https://aerospike.com/lp/aws-three-node/" target="_blank" rel="noopener">three-node trial license</a>. The trial license gives you all the enterprise features in a nonproduction environment. If you want to upgrade to a production license, <a href="https://aerospike.com/forms/contact-us/" target="_blank" rel="noopener">contact Aerospike</a>.</p>
 </div>
 </div>
 </div>
@@ -1156,7 +1156,7 @@ Certain Regions are available on an opt-in basis. For more information, see <a h
 <div class="sect3">
 <h4 id="_prepare_for_the_deployment">Prepare for the deployment</h4>
 <div class="paragraph">
-<p>Obtain any necessary software licenses before you deploy this Quick Start. For details, see the <a href="#_software_licenses">Software licenses</a> section of this guide</p>
+<p>Obtain any necessary software licenses before you deploy this Quick Start. For details, see the <a href="#_software_licenses">Software licenses</a> section of this guide.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1176,6 +1176,9 @@ Certain Regions are available on an opt-in basis. For more information, see <a h
 </div>
 <div class="paragraph">
 <p>The Quick Start provides separate templates for these options. It also lets you configure Classless Inter-Domain Routing (CIDR) blocks, instance types, and Aerospike settings, as discussed later in this guide.</p>
+</div>
+<div class="paragraph">
+<p>You can deploy either a single-node or three-node cluster. For more information, see <a href="https://aerospike.com/products/aerospike-quick-start-for-aws/" target="_blank" rel="noopener">Aerospike Quick Start for AWS</a>.</p>
 </div>
 </div>
 </div>
@@ -1218,6 +1221,9 @@ Certain Regions are available on an opt-in basis. For more information, see <a h
 </li>
 <li>
 <p>When the subscription process is complete, exit out of AWS Marketplace without further action. <strong>Do not</strong> provision the software from AWS Marketplace—the Quick Start deploys the AMI for you.</p>
+</li>
+<li>
+<p>If you&#8217;re deploying a three-node Aerospike cluster, request a license using <a href="https://aerospike.com/lp/aws-three-node/" target="_blank" rel="noopener">this form</a>. For additional tips and tools for configuring the settings, see <a href="https://aerospike.com/products/aerospike-quick-start-for-aws/" target="_blank" rel="noopener">Aerospike Quick Start for AWS</a>.</p>
 </li>
 </ol>
 </div>
@@ -1969,14 +1975,14 @@ and to share your customizations with others.</p>
 </div>
 <p class="footer-text">
 <!-- We can use document attributes: -->
-<!-- Generated with Asciidoctor v2.0.15. -->
+<!-- Generated with Asciidoctor v2.0.16. -->
 <a href="https://aws.amazon.com/privacy/">Privacy</a> | <a href="https://aws.amazon.com/terms/">Site terms</a> | &copy; 2021, Amazon Web Services, Inc. or its affiliates and Aerospike Inc.. All rights reserved.
 </p>
 </body>
 </html>
 <!--
 repo commit:
-f3b7d52fb3f3a1107bdb4620a9c888099e26d790
+5417c670693d79e079a2b95b11b7d9c1cd8a370c
 
 submodule config:
  4ee94d6b60ec455e5b452e8ad9841eb825704b70 docs/boilerplate (remotes/origin/region_table_optin-3-g4ee94d6)
