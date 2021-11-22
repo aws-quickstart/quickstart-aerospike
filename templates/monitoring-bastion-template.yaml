@@ -490,11 +490,12 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                  - autoscaling:CompleteLifecycleAction
-                  - autoscaling:RecordLifecycleActionHeartbeat
-                Resource: !Sub
-                  - 'arn:${AWS::Partition}:autoscaling:${AWS::Region}:${AWS::AccountId}:autoScalingGroup:*:autoScalingGroupName/${AutoScalingGroupName}'
-                  - AutoScalingGroupName: !Sub 'MonitoringBastionStackASG'
+                - autoscaling:Describe*
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                - ec2:DescribeInstances
+                Resource: "*"
       AssumeRolePolicyDocument:
         Statement:
           - Action:
@@ -712,11 +713,18 @@ Resources:
             /tmp/update_prometheus_config.sh:
               content: |
                   #!/bin/bash
+                  set -x
+                  chmod +x /var/tmp/awsuserdatascript
+                  echo update_prometheus_config.sh > /var/tmp/awsuserdatascript
                   yum install -y jq
                   export AWS_REGION=${AWS::Region}
                   PROMETHUS_CONFIG_LOCATION=/home/ec2-user/monitoring_stack/prometheus-2.30.3.linux-amd64/prometheus.yml
+                  
                   # get aerospike IPs
                   aerospike_instance_private_ip=$(aws --output text --query "Reservations[*].Instances[*].PrivateIpAddress" ec2 describe-instances --instance-ids `aws --output text --query "AutoScalingGroups[0].Instances[*].InstanceId" autoscaling describe-auto-scaling-groups --auto-scaling-group-names "AerospikeCluster" --region "${AWS_REGION}"`)
+                  echo $aerospike_instance_private_ip >> /var/tmp/awsuserdatascript
+                  echo $AWS_REGION
+                  echo $(aws --version) >> /var/tmp/awsuserdatascript
 
                   # append :9145 port in all IPS and form prometheus target
                   ips=""
@@ -730,6 +738,9 @@ Resources:
 
                   # replace aerospike_targets
                   sed -e "s/aerospike_targets/$prometheus_target/g" $PROMETHUS_CONFIG_LOCATION
+              mode: '000755'
+              owner: root
+              group: root
               mode: '000744'
               owner: root
               group: root
@@ -761,9 +772,13 @@ Resources:
               command: "./aerospike_monitoring_stack_asbench_install.sh"
             d-prometheus_config:
               cwd: '/tmp/'
+              env:
+                REGION: !Sub ${AWS::Region}
               command: "./create_sample_prometheus_config.sh"
             e-prometheus_target:
               cwd: '/tmp/'
+              env:
+                REGION: !Sub ${AWS::Region}
               command: "./update_prometheus_config.sh > /home/ec2-user/monitoring_stack/prometheus-2.30.3.linux-amd64/prometheus.yaml" 
     Properties:
       AssociatePublicIpAddress: true
@@ -800,6 +815,15 @@ Resources:
               echo "$e" >> /root/.bashrc
             done
             export PATH=$PATH:/usr/local/bin
+
+            pip install awscli
+            export AWS_REGION=${AWS::Region}
+            aws s3 cp s3://${S3Bucket}/${QSS3KeyPrefix}scripts/prometheus_configure.sh .
+            chmod +x prometheus_configure.sh
+            $(which bash) -xe ./prometheus_configure.sh > /home/ec2-user/monitoring_stack/prometheus-2.30.3.linux-amd64/prometheus1.yaml
+            /usr/local/bin/cfn-signal -e $? --region ${!AWS_REGION}
+
+
             #cfn signaling functions
             yum install git -y || apt-get install -y git || zypper -n install git
 
@@ -841,6 +865,7 @@ Resources:
               - 4BastionCondition
               - !Ref EIP4
               - 'Null'
+            S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
   BastionSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
