@@ -4,7 +4,6 @@ chmod +x /var/tmp/awsuserdatascript
 echo update_prometheus_config.sh > /var/tmp/awsuserdatascript
 yum install -y jq
 PROMETHUS_CONFIG_LOCATION=/home/ec2-user/monitoring_stack/prometheus-2.30.3.linux-amd64/prometheus.yml
-
 # get aerospike IPs
 aerospike_instance_private_ip=$(aws --output text --query "Reservations[*].Instances[*].PrivateIpAddress" ec2 describe-instances --instance-ids `aws --output text --query "AutoScalingGroups[0].Instances[*].InstanceId" autoscaling describe-auto-scaling-groups --auto-scaling-group-names "AerospikeCluster" --region "${AWS_REGION}"`)
 echo $aerospike_instance_private_ip >> /var/tmp/awsuserdatascript

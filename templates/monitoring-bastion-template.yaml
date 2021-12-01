@@ -15,6 +15,11 @@ Metadata:
           - PublicSubnet2ID
           - RemoteAccessCIDR
       - Label:
+          default: IAM configuration
+        Parameters:
+          - RolePath
+          - PermissionsBoundaryArn
+      - Label:
           default: Amazon EC2 configuration
         Parameters:
           - KeyPairName
@@ -89,6 +94,10 @@ Metadata:
         default: VPC ID
       RootVolumeSize:
         default: Root volume size
+      PermissionsBoundaryArn:
+        default: Permissions boundary ARN
+      RolePath:
+        default: Role path
   cfn-lint: { config: { ignore_checks: [E9007] } }
 Parameters:
   BastionAMIOS:
@@ -246,6 +255,14 @@ Parameters:
     Description: The size in GB for the root EBS volume.
     Type: Number
     Default: '10'
+  PermissionsBoundaryArn:
+    Description: Will be attached to all created IAM Roles to satisfy security requirements
+    Type: String
+    Default: ''
+  RolePath:
+    Description: Will be attached to all created IAM Roles to satisfy security requirements
+    Type: String
+    Default: ''
 Rules:
   SubnetsInVPC:
     Assertions:
@@ -437,6 +454,8 @@ Mappings:
       Code: SLES15HVM
       OS: SLES
 Conditions:
+  RolePathProvided: !Not [!Equals ["", !Ref RolePath]]
+  PermissionsBoundaryProvided: !Not [!Equals ["", !Ref PermissionsBoundaryArn]]
   2BastionCondition: !Or
     - !Equals
       - !Ref NumBastionHosts
@@ -482,32 +501,66 @@ Resources:
     Condition: CreateIAMRole
     Type: 'AWS::IAM::Role'
     Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+                - autoscaling.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
       Path: /
       Policies:
-        - PolicyName: MonitoringBastionHostAutoScalingPolicy
+        - PolicyName: AerospikeClusterPolicy
           PolicyDocument:
             Version: 2012-10-17
             Statement:
               - Effect: Allow
                 Action:
-                - autoscaling:Describe*
-                Resource: "*"
+                  - 'ec2:*'
+                Resource: '*'
+        - PolicyName: AerospikeCloudWatchPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action: 'cloudwatch:PutMetricData'
+                Resource: '*'
+        - PolicyName: AerospikeAutoScalingPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
               - Effect: Allow
                 Action:
-                - ec2:DescribeInstances
-                Resource: "*"
-      AssumeRolePolicyDocument:
-        Statement:
-          - Action:
-              - 'sts:AssumeRole'
-            Principal:
-              Service:
-                - !Sub 'ec2.${AWS::URLSuffix}'
-            Effect: Allow
-        Version: 2012-10-17
-      ManagedPolicyArns:
-        - !Sub 'arn:${AWS::Partition}:iam::aws:policy/AmazonSSMManagedInstanceCore'
-        - !Sub 'arn:${AWS::Partition}:iam::aws:policy/CloudWatchAgentServerPolicy'
+                  - autoscaling:*
+                Resource: !Sub
+                  - 'arn:${AWS::Partition}:autoscaling:${AWS::Region}:${AWS::AccountId}:autoScalingGroup:*:autoScalingGroupName/${AutoScalingGroupName}'
+                  - AutoScalingGroupName: !Sub 'AerospikeCluster'
+        - PolicyName: root
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+            - Effect: Allow
+              Resource:
+                - !Sub 'arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:*'
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents  
+            # TODO: Restrict permissions to just the SSM Parameters we create
+            - Effect: Allow
+              Resource:
+                - '*'
+              Action:
+                - ssm:*
+            # TODO: Restrict to only our AutoScaling group
+            - Effect: Allow
+              Resource:
+                - '*'
+              Action:
+                - autoscaling:DescribeAutoScalingGroups
   BastionHostPolicy:
     Type: 'AWS::IAM::Policy'
     Properties:
@@ -580,7 +633,6 @@ Resources:
   BastionAutoScalingGroup:
     Type: 'AWS::AutoScaling::AutoScalingGroup'
     Properties:
-      AutoScalingGroupName: !Sub 'MonitoringBastionStackASG'
       LaunchConfigurationName: !Ref BastionLaunchConfiguration
       VPCZoneIdentifier:
         - !Ref PublicSubnet1ID
@@ -686,7 +738,7 @@ Resources:
                   sudo ./asinstall > /dev/null 2>&1 & 
               mode: '000744'
               owner: root
-              group: root     
+              group: root
             /tmp/create_sample_prometheus_config.sh:
               content: |
                   #!/bin/bash
@@ -710,37 +762,30 @@ Resources:
               mode: '000744'
               owner: root
               group: root
-            /tmp/update_prometheus_config.sh:
-              content: |
+            /opt/aerospike/cft_scripts/aerospike_cluster:
+              content: !Sub
+                - |
                   #!/bin/bash
-                  set -x
-                  chmod +x /var/tmp/awsuserdatascript
-                  echo update_prometheus_config.sh > /var/tmp/awsuserdatascript
-                  yum install -y jq
-                  export AWS_REGION=${AWS::Region}
-                  PROMETHUS_CONFIG_LOCATION=/home/ec2-user/monitoring_stack/prometheus-2.30.3.linux-amd64/prometheus.yml
-                  
-                  # get aerospike IPs
-                  aerospike_instance_private_ip=$(aws --output text --query "Reservations[*].Instances[*].PrivateIpAddress" ec2 describe-instances --instance-ids `aws --output text --query "AutoScalingGroups[0].Instances[*].InstanceId" autoscaling describe-auto-scaling-groups --auto-scaling-group-names "AerospikeCluster" --region "${AWS_REGION}"`)
-                  echo $aerospike_instance_private_ip >> /var/tmp/awsuserdatascript
-                  echo $AWS_REGION
-                  echo $(aws --version) >> /var/tmp/awsuserdatascript
-
-                  # append :9145 port in all IPS and form prometheus target
-                  ips=""
-                  for i in ${aerospike_instance_private_ip[@]}
-                  do
-                      ips+=\'${i}:9145\',
+                  echo ClusterInstancesScriptStart > /var/log/awsuserdatascript
+                  PRIVATE_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
+                  CONF=/etc/aerospike/aerospike.conf
+                  sed -i "s/port 3000/port 3000\n\t\taccess-address $PRIVATE_IP virtual\n/g" $CONF
+                  ###Point to all instances using the mesh-address config option
+                  sleep 60 # wait for AWS to provision
+                  FILTER=Name=tag-key,Values=StackID
+                  # export AWS_REGION = 
+                  # export AWS_ACCESS_KEY=
+                  PRIVATEIP=$(aws ec2 describe-instances --filter $FILTER  Name=tag-value,Values=${AWS::StackId} --output=text --region=${REGION} | grep PRIVATEIPADDRESSES | awk '{print $4}')
+                  echo $PRIVATEIP >> /var/log/awsuserdatascript
+                  sed -i '/.*mesh-seed-address-port/d' $CONF
+                  for i in $PRIVATEIP; do
+                      sed -i "/interval/i \\\t\tmesh-seed-address-port $i 3002\n" $CONF
                   done
-                  ips=${ips%?}
-
-                  prometheus_target=`echo [$ips]`
-
-                  # replace aerospike_targets
-                  sed -e "s/aerospike_targets/$prometheus_target/g" $PROMETHUS_CONFIG_LOCATION
-              mode: '000755'
-              owner: root
-              group: root
+                  
+                  echo OtherInstancesScriptFinish >> /var/log/awsuserdatascript
+              
+                - REGION: !Sub "${AWS::Region}" 
+                  S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
               mode: '000744'
               owner: root
               group: root
@@ -775,11 +820,9 @@ Resources:
               env:
                 REGION: !Sub ${AWS::Region}
               command: "./create_sample_prometheus_config.sh"
-            e-prometheus_target:
-              cwd: '/tmp/'
-              env:
-                REGION: !Sub ${AWS::Region}
-              command: "./update_prometheus_config.sh > /home/ec2-user/monitoring_stack/prometheus-2.30.3.linux-amd64/prometheus.yaml" 
+            01_form_asd_cluster:
+              command:  /opt/aerospike/cft_scripts/aerospike_cluster
+              cwd: /opt/aerospike/cft_scripts
     Properties:
       AssociatePublicIpAddress: true
       PlacementTenancy: !Ref BastionTenancy
@@ -815,15 +858,6 @@ Resources:
               echo "$e" >> /root/.bashrc
             done
             export PATH=$PATH:/usr/local/bin
-
-            pip install awscli
-            export AWS_REGION=${AWS::Region}
-            aws s3 cp s3://${S3Bucket}/${QSS3KeyPrefix}scripts/prometheus_configure.sh .
-            chmod +x prometheus_configure.sh
-            $(which bash) -xe ./prometheus_configure.sh > /home/ec2-user/monitoring_stack/prometheus-2.30.3.linux-amd64/prometheus1.yaml
-            /usr/local/bin/cfn-signal -e $? --region ${!AWS_REGION}
-
-
             #cfn signaling functions
             yum install git -y || apt-get install -y git || zypper -n install git
 
@@ -865,7 +899,74 @@ Resources:
               - 4BastionCondition
               - !Ref EIP4
               - 'Null'
-            S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+  LaunchConfig:
+    Type: 'AWS::AutoScaling::LaunchConfiguration'
+    Metadata:
+      'AWS::CloudFormation::Init':
+        config:
+          files:
+            /opt/aerospike/cft_scripts/aerospike_cluster:
+              content: !Sub
+                - |
+                  #!/bin/bash
+                  echo ClusterInstancesScriptStart > /var/log/awsuserdatascript
+                  PRIVATE_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
+                  CONF=/etc/aerospike/aerospike.conf
+                  sed -i "s/port 3000/port 3000\n\t\taccess-address $PRIVATE_IP virtual\n/g" $CONF
+                  ###Point to all instances using the mesh-address config option
+                  sleep 60 # wait for AWS to provision
+                  FILTER=Name=tag-key,Values=StackID
+                  PRIVATEIP=$(aws ec2 describe-instances --filter $FILTER  Name=tag-value,Values=${AWS::StackId} --output=text --region=${REGION} | grep PRIVATEIPADDRESSES | awk '{print $4}')
+                  echo $PRIVATEIP >> /var/log/awsuserdatascript
+                  sed -i '/.*mesh-seed-address-port/d' $CONF
+                  for i in $PRIVATEIP; do
+                      sed -i "/interval/i \\\t\tmesh-seed-address-port $i 3002\n" $CONF
+                  done
+                  
+                  echo OtherInstancesScriptFinish >> /var/log/awsuserdatascript
+                
+                - REGION: !Sub "${AWS::Region}" 
+                  S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+              mode: '000744'
+              owner: root
+              group: root
+          commands:
+            02_aerospike_start:
+              command: /opt/aerospike/cft_scripts/aerospike_start
+              cwd: /opt/aerospike/cft_scripts
+    Properties:
+      InstanceType: !Ref BastionInstanceType
+      KeyName: !Ref KeyPairName
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: !Ref RootVolumeSize
+            VolumeType: gp2
+            Encrypted: true
+            DeleteOnTermination: true
+      IamInstanceProfile: !Ref BastionHostProfile
+      ImageId: !If
+        - UseOSImageOverride
+        - !Ref OSImageOverride
+        - !FindInMap
+          - AWSAMIRegionMap
+          - !Ref 'AWS::Region'
+          - !FindInMap
+            - LinuxAMINameMap
+            - !Ref BastionAMIOS
+            - Code
+      AssociatePublicIpAddress: true
+      SecurityGroups:
+        - !Ref BastionSecurityGroup
+      UserData:
+        Fn::Base64: !Sub
+          - |
+            #!/bin/bash -xe
+            yum update -y aws-cfn-bootstrap
+            yum install -y jq
+            /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource LaunchConfig --region ${Region}
+            /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource BastionAutoScalingGroup --region ${Region}
+          - Region: !Sub "${AWS::Region}"
   BastionSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -899,6 +1000,29 @@ Outputs:
     Value: !Ref EIP1
     Export:
       Name: !Sub '${AWS::StackName}-EIP1'
+  EIP2:
+    Condition: 2BastionCondition
+    Description: Elastic IP 2 for bastion.
+    Value: !Ref EIP2
+    Export:
+      Name: !Sub '${AWS::StackName}-EIP2'
+  EIP3:
+    Condition: 3BastionCondition
+    Description: Elastic IP 3 for bastion.
+    Value: !Ref EIP3
+    Export:
+      Name: !Sub '${AWS::StackName}-EIP3'
+  EIP4:
+    Condition: 4BastionCondition
+    Description: Elastic IP 4 for bastion.
+    Value: !Ref EIP4
+    Export:
+      Name: !Sub '${AWS::StackName}-EIP4'
+  CloudWatchLogs:
+    Description: CloudWatch Logs GroupName. Your SSH logs will be stored here.
+    Value: !Ref BastionMainLogGroup
+    Export:
+      Name: !Sub '${AWS::StackName}-CloudWatchLogs'
   BastionSecurityGroupID:
     Description: Bastion security group ID.
     Value: !Ref BastionSecurityGroup

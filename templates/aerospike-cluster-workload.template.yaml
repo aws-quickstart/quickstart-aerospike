@@ -445,6 +445,21 @@ Resources:
                   - 'ec2:DescribeInstances'
                   - 'ec2:DescribeVpcAttribute'
                 Resource: '*'
+        - PolicyName: root
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+            - Effect: Allow
+              Resource:
+                - '*'
+              Action:
+                - autoscaling:Describe*
+            # TODO: Restrict to only our AutoScaling group
+            - Effect: Allow
+              Resource:
+                - '*'
+              Action:
+                - autoscaling:DescribeAutoScalingGroups
         - PolicyName: AerospikeCloudWatchPolicy
           PolicyDocument:
             Version: 2012-10-17
@@ -546,57 +561,27 @@ Resources:
             /opt/aerospike/cft_scripts/aerospike_cluster:
               content: !Sub
                 - |
-                  #!/bin/bash -x
-                  
-                  # Install git
-                  apt-get update
-                  apt-get install -y git jq zip curl
-                  until git clone https://github.com/aws-quickstart/quickstart-linux-utilities.git ; do echo "Retrying"; done
-                  cd /quickstart-linux-utilities && source quickstart-cfn-tools.source
-
-                  # Prep operating systems
-                  qs_update-os || qs_err
-                  qs_bootstrap_pip || qs_err
-                  qs_aws-cfn-bootstrap || qs_err
-
-                  echo ClusterInstancesScriptStart > /tmp/log/awsuserdatascript
-                  echo TestScript > /tmp/log/aws_version
-                  echo aerospike_instance_private_ip > /tmp/log/aerospike_instance_private_ip
-
+                  #!/bin/bash
+                  echo ClusterInstancesScriptStart > /var/log/awsuserdatascript
                   PRIVATE_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
                   CONF=/etc/aerospike/aerospike.conf
                   sed -i "s/port 3000/port 3000\n\t\taccess-address $PRIVATE_IP virtual\n/g" $CONF
-
-
                   ###Point to all instances using the mesh-address config option
                   sleep 60 # wait for AWS to provision
                   FILTER=Name=tag-key,Values=StackID
                   PRIVATEIP=$(aws ec2 describe-instances --filter $FILTER  Name=tag-value,Values=${AWS::StackId} --output=text --region=${REGION} | grep PRIVATEIPADDRESSES | awk '{print $4}')
-                  echo $PRIVATEIP >> /tmp/log/awsuserdatascript
-                  
-                  ## test command 
-                  aerospike_instance_private_ip=$(aws --output text --query "Reservations[*].Instances[*].PrivateIpAddress" ec2 describe-instances --instance-ids `aws --output text --query "AutoScalingGroups[0].Instances[*].InstanceId" autoscaling describe-auto-scaling-groups --auto-scaling-group-names "AerospikeCluster" --region "${REGION}"`)
-                  echo $aerospike_instance_private_ip >> /tmp/log/aerospike_instance_private_ip
-
-                  echo $(aws --version) >> /tmp/log/aws_version
-                  ## end test command 
-
-                  # Delete all lines containing mesh-seed-address-port
+                  echo $PRIVATEIP >> /var/log/awsuserdatascript
                   sed -i '/.*mesh-seed-address-port/d' $CONF
-
-                  # Iterate over private IP and find the line containing 'internal' and add IPs with mesh-seed-address-port
                   for i in $PRIVATEIP; do
                       sed -i "/interval/i \\\t\tmesh-seed-address-port $i 3002\n" $CONF
                   done
-
                   # Check if namespace file in input
                   CODE=$(curl -Is ${NamespaceFile} | head -n 1 | cut -d$' ' -f2)
-                  if [ "$CODE" != "200" ]; then echo 'Namespace File not found' >> /tmp/log/awsuserdatascript
+                  if [ "$CODE" != "200" ]; then echo 'Namespace File not found' >> /var/log/awsuserdatascript
                   else sed -i '/namespace test/,$d' $CONF
                   curl -s ${NamespaceFile} >> $CONF; fi
                   systemctl restart aerospike
-
-                  echo OtherInstancesScriptFinish >> /tmp/log/awsuserdatascript
+                  echo OtherInstancesScriptFinish >> /var/log/awsuserdatascript
                   (crontab -l 2>/dev/null; echo '*/5 * * * * /opt/aerospike/poll_sqs') | crontab -
                   if [[ ${EnableCloudWatch} == "yes" ]]; then
                   (crontab -l 2>/dev/null; echo '*/5 * * * * /opt/aerospike/cloudwatch') | crontab -
