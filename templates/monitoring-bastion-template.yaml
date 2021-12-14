@@ -762,7 +762,7 @@ Resources:
               mode: '000744'
               owner: root
               group: root
-            /opt/aerospike/cft_scripts/aerospike_cluster:
+            /tmp/aerospike_cluster.sh:
               content: !Sub
                 - |
                   #!/bin/bash
@@ -820,9 +820,9 @@ Resources:
               env:
                 REGION: !Sub ${AWS::Region}
               command: "./create_sample_prometheus_config.sh"
-            01_form_asd_cluster:
-              command:  /opt/aerospike/cft_scripts/aerospike_cluster
-              cwd: /opt/aerospike/cft_scripts
+            e-aerospike_cluster:
+              cwd: '/tmp/'
+              command: "./aerospike_cluster.sh"
     Properties:
       AssociatePublicIpAddress: true
       PlacementTenancy: !Ref BastionTenancy
@@ -905,7 +905,7 @@ Resources:
       'AWS::CloudFormation::Init':
         config:
           files:
-            /opt/aerospike/cft_scripts/aerospike_cluster:
+            /tmp/aerospike_cluster1.sh:
               content: !Sub
                 - |
                   #!/bin/bash
@@ -924,16 +924,15 @@ Resources:
                   done
                   
                   echo OtherInstancesScriptFinish >> /var/log/awsuserdatascript
-                
                 - REGION: !Sub "${AWS::Region}" 
                   S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
               mode: '000744'
               owner: root
               group: root
           commands:
-            02_aerospike_start:
-              command: /opt/aerospike/cft_scripts/aerospike_start
-              cwd: /opt/aerospike/cft_scripts
+            a-aerospike_cluster1:
+              cwd: '/tmp/'
+              command: "./aerospike_cluster1.sh."
     Properties:
       InstanceType: !Ref BastionInstanceType
       KeyName: !Ref KeyPairName
