@@ -513,31 +513,22 @@ Resources:
               - 'sts:AssumeRole'
       Path: /
       Policies:
-        - PolicyName: AerospikeClusterPolicy
+        - PolicyName: MonitoringStackClusterPolicy
           PolicyDocument:
             Version: 2012-10-17
             Statement:
               - Effect: Allow
                 Action:
-                  - 'ec2:*'
+                  - 'ec2:DescribeInstances'
+                  - 'ec2:DescribeVpcAttribute'
                 Resource: '*'
-        - PolicyName: AerospikeCloudWatchPolicy
+        - PolicyName: MonitoringStackCloudWatchPolicy
           PolicyDocument:
             Version: 2012-10-17
             Statement:
               - Effect: Allow
                 Action: 'cloudwatch:PutMetricData'
                 Resource: '*'
-        - PolicyName: AerospikeAutoScalingPolicy
-          PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Action:
-                  - autoscaling:*
-                Resource: !Sub
-                  - 'arn:${AWS::Partition}:autoscaling:${AWS::Region}:${AWS::AccountId}:autoScalingGroup:*:autoScalingGroupName/${AutoScalingGroupName}'
-                  - AutoScalingGroupName: !Sub 'AerospikeCluster'
         - PolicyName: root
           PolicyDocument:
             Version: '2012-10-17'
@@ -561,6 +552,26 @@ Resources:
                 - '*'
               Action:
                 - autoscaling:DescribeAutoScalingGroups
+            - Effect: Allow
+              Resource:
+                - '*'
+              Action:
+                - autoscaling:Describe*
+        - PolicyName: MonitoringStackAutoScalingPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - autoscaling:CompleteLifecycleAction
+                  - autoscaling:DescribeAutoScalingGroups
+                  - autoscaling:RecordLifecycleActionHeartbeat
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                - ec2:DescribeInstances
+                - ec2:DescribeVpcAttribute
+                Resource: "*"
   BastionHostPolicy:
     Type: 'AWS::IAM::Policy'
     Properties:
@@ -766,27 +777,16 @@ Resources:
               content: !Sub
                 - |
                   #!/bin/bash
-                  echo ClusterInstancesScriptStart > /var/log/awsuserdatascript
+                  echo MonitoringBastionStackScriptStart > /tmp/awsuserdatascript
                   PRIVATE_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
-                  CONF=/etc/aerospike/aerospike.conf
-                  sed -i "s/port 3000/port 3000\n\t\taccess-address $PRIVATE_IP virtual\n/g" $CONF
-                  ###Point to all instances using the mesh-address config option
-                  sleep 60 # wait for AWS to provision
+
                   FILTER=Name=tag-key,Values=StackID
-                  # export AWS_REGION = 
-                  # export AWS_ACCESS_KEY=
-                  PRIVATEIP=$(aws ec2 describe-instances --filter $FILTER  Name=tag-value,Values=${AWS::StackId} --output=text --region=${REGION} | grep PRIVATEIPADDRESSES | awk '{print $4}')
-                  echo $PRIVATEIP >> /var/log/awsuserdatascript
-                  sed -i '/.*mesh-seed-address-port/d' $CONF
-                  for i in $PRIVATEIP; do
-                      sed -i "/interval/i \\\t\tmesh-seed-address-port $i 3002\n" $CONF
-                  done
+                  aws ec2 describe-instances --filter $FILTER  Name=tag-value,Values=${AWS::StackId} --output=text --region=${REGION} | grep PRIVATEIPADDRESSES | awk '{print $4}' |& tee /tmp/awsuserdatascript >/dev/null
                   
-                  echo OtherInstancesScriptFinish >> /var/log/awsuserdatascript
-              
+                  echo MonitoringBastionStackScriptFinish >> /tmp/awsuserdatascript              
                 - REGION: !Sub "${AWS::Region}" 
                   S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
-              mode: '000744'
+              mode: '000755'
               owner: root
               group: root
           commands:
