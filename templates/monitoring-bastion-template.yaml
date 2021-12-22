@@ -720,6 +720,64 @@ Resources:
               owner: root
               group: root
               authentication: S3AccessCreds
+            /tmp/create_sample_prometheus_config.sh:
+              content: |
+                  #!/bin/bash
+                  # sample prometheus configuration, note aerospike_targets will be replaced by aerospike node IP:port
+                  # PROMETHUS_CONFIG_LOCATION=/home/ec2-user/monitoring_stack/prometheus-2.30.3.linux-amd64/prometheus.yml
+                  PROMETHUS_CONFIG_TEMP_LOCATION=/tmp/prometheus.yml
+                  PROMETHUS_CONFIG="
+                  global:
+                    scrape_interval: 15s
+                    evaluation_interval: 15s
+
+                  scrape_configs:
+                    - job_name: prometheus
+                      static_configs:
+                        - targets: ["localhost:9090"]
+
+                    - job_name: aerospike
+                      static_configs:
+                        - targets: aerospike_targets
+                  "
+                  echo -e "$PROMETHUS_CONFIG" > $PROMETHUS_CONFIG_TEMP_LOCATION
+              mode: '000744'
+              owner: root
+              group: root
+            /tmp/form_prometheus_config.sh:
+              content: !Sub
+                - |
+                  #!/bin/bash
+                  export AWS_REGION=${AWS::Region}
+                  PROMETHUS_CONFIG_LOCATION=/tmp/prometheus.yml
+                  sleep 60 # wait for instance to come up
+                  
+                  # aws --output text --query "Reservations[*].Instances[*].PrivateIpAddress" ec2 describe-instances --region "${REGION}" --instance-ids `aws --output text --query "AutoScalingGroups[0].Instances[*].InstanceId" autoscaling describe-auto-scaling-groups --auto-scaling-group-names "AerospikeCluster" --region "${REGION}"` |& tee /tmp/awsuserdatascript >/dev/null
+                  aerospike_private_ips=$(aws --output text --query "Reservations[*].Instances[*].PrivateIpAddress" ec2 describe-instances --region "us-east-1" --instance-ids `aws --output text --query "AutoScalingGroups[0].Instances[*].InstanceId" autoscaling describe-auto-scaling-groups --auto-scaling-group-names "AerospikeCluster" --region "us-east-1"`)
+                  
+                  ips=""
+                  for i in ${aerospike_private_ips[@]}
+                  do
+                    ips+=\'${i}:9145\',
+                  done
+                  ips=${ips%?}
+                  prometheus_target=`echo [$ips]`
+
+                  sed -e "s/aerospike_targets/$prometheus_target/g" $PROMETHUS_CONFIG_LOCATION
+                - REGION: !Sub "${AWS::Region}" 
+                  S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+              mode: '000755'
+              owner: root
+              group: 
+            /tmp/save_prometheus_config.sh:
+              content:
+                - |
+                  #!/bin/bash
+                  PROMETHUS_CONFIG_LOCATION=/home/ec2-user/monitoring_stack/prometheus-2.30.3.linux-amd64/prometheus.yml
+                  /tmp/form_prometheus_config.sh > $PROMETHUS_CONFIG_LOCATION
+              mode: '000755'
+              owner: root
+              group: root
             /tmp/aerospike_monitoring_stack_asbench_install.sh:
               content: | 
                   #!/bin/bash
@@ -750,45 +808,6 @@ Resources:
               mode: '000744'
               owner: root
               group: root
-            /tmp/create_sample_prometheus_config.sh:
-              content: |
-                  #!/bin/bash
-                  # sample prometheus configuration, note aerospike_targets will be replaced by aerospike node IP:port
-                  PROMETHUS_CONFIG_LOCATION=/home/ec2-user/monitoring_stack/prometheus-2.30.3.linux-amd64/prometheus.yml
-                  PROMETHUS_CONFIG="
-                  global:
-                    scrape_interval: 15s
-                    evaluation_interval: 15s
-
-                  scrape_configs:
-                    - job_name: prometheus
-                      static_configs:
-                        - targets: ["localhost:9090"]
-
-                    - job_name: aerospike
-                      static_configs:
-                        - targets: aerospike_targets
-                  "
-                  echo -e "$PROMETHUS_CONFIG" > $PROMETHUS_CONFIG_LOCATION
-              mode: '000744'
-              owner: root
-              group: root
-            /tmp/aerospike_cluster.sh:
-              content: !Sub
-                - |
-                  #!/bin/bash
-                  echo MonitoringBastionStackScriptStart > /tmp/awsuserdatascript
-                  PRIVATE_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
-
-                  FILTER=Name=tag-key,Values=StackID
-                  aws ec2 describe-instances --filter $FILTER  Name=tag-value,Values=${AWS::StackId} --output=text --region=${REGION} | grep PRIVATEIPADDRESSES | awk '{print $4}' |& tee /tmp/awsuserdatascript >/dev/null
-                  
-                  echo MonitoringBastionStackScriptFinish >> /tmp/awsuserdatascript              
-                - REGION: !Sub "${AWS::Region}" 
-                  S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
-              mode: '000755'
-              owner: root
-              group: root
           commands:
             a-add_auditd_rules:
               cwd: '/tmp/'
@@ -812,17 +831,20 @@ Resources:
                     - s3://${S3Bucket}/${QSS3KeyPrefix}scripts/banner_message.txt
                     - S3Bucket: !If [ UsingDefaultBucket, !Sub 'aws-quickstart-${AWS::Region}', !Ref 'QSS3BucketName' ]
                   - !Ref BastionBanner
-            c-aerospike_monitoring:
-              cwd: '/tmp/'
-              command: "./aerospike_monitoring_stack_asbench_install.sh"
-            d-prometheus_config:
+            c-prometheus_config:
               cwd: '/tmp/'
               env:
                 REGION: !Sub ${AWS::Region}
               command: "./create_sample_prometheus_config.sh"
-            e-aerospike_cluster:
+            d-form_prometheus_config:
               cwd: '/tmp/'
-              command: "./aerospike_cluster.sh"
+              command: "./form_prometheus_config.sh"
+            e-save_prometheus_config:
+              cwd: '/tmp/'
+              command: "./save_prometheus_config.sh"
+            f-aerospike_monitoring:
+              cwd: '/tmp/'
+              command: "./aerospike_monitoring_stack_asbench_install.sh"
     Properties:
       AssociatePublicIpAddress: true
       PlacementTenancy: !Ref BastionTenancy
@@ -899,73 +921,6 @@ Resources:
               - 4BastionCondition
               - !Ref EIP4
               - 'Null'
-  LaunchConfig:
-    Type: 'AWS::AutoScaling::LaunchConfiguration'
-    Metadata:
-      'AWS::CloudFormation::Init':
-        config:
-          files:
-            /tmp/aerospike_cluster1.sh:
-              content: !Sub
-                - |
-                  #!/bin/bash
-                  echo ClusterInstancesScriptStart > /var/log/awsuserdatascript
-                  PRIVATE_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
-                  CONF=/etc/aerospike/aerospike.conf
-                  sed -i "s/port 3000/port 3000\n\t\taccess-address $PRIVATE_IP virtual\n/g" $CONF
-                  ###Point to all instances using the mesh-address config option
-                  sleep 60 # wait for AWS to provision
-                  FILTER=Name=tag-key,Values=StackID
-                  PRIVATEIP=$(aws ec2 describe-instances --filter $FILTER  Name=tag-value,Values=${AWS::StackId} --output=text --region=${REGION} | grep PRIVATEIPADDRESSES | awk '{print $4}')
-                  echo $PRIVATEIP >> /var/log/awsuserdatascript
-                  sed -i '/.*mesh-seed-address-port/d' $CONF
-                  for i in $PRIVATEIP; do
-                      sed -i "/interval/i \\\t\tmesh-seed-address-port $i 3002\n" $CONF
-                  done
-                  
-                  echo OtherInstancesScriptFinish >> /var/log/awsuserdatascript
-                - REGION: !Sub "${AWS::Region}" 
-                  S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
-              mode: '000744'
-              owner: root
-              group: root
-          commands:
-            a-aerospike_cluster1:
-              cwd: '/tmp/'
-              command: "./aerospike_cluster1.sh."
-    Properties:
-      InstanceType: !Ref BastionInstanceType
-      KeyName: !Ref KeyPairName
-      BlockDeviceMappings:
-        - DeviceName: /dev/xvda
-          Ebs:
-            VolumeSize: !Ref RootVolumeSize
-            VolumeType: gp2
-            Encrypted: true
-            DeleteOnTermination: true
-      IamInstanceProfile: !Ref BastionHostProfile
-      ImageId: !If
-        - UseOSImageOverride
-        - !Ref OSImageOverride
-        - !FindInMap
-          - AWSAMIRegionMap
-          - !Ref 'AWS::Region'
-          - !FindInMap
-            - LinuxAMINameMap
-            - !Ref BastionAMIOS
-            - Code
-      AssociatePublicIpAddress: true
-      SecurityGroups:
-        - !Ref BastionSecurityGroup
-      UserData:
-        Fn::Base64: !Sub
-          - |
-            #!/bin/bash -xe
-            yum update -y aws-cfn-bootstrap
-            yum install -y jq
-            /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource LaunchConfig --region ${Region}
-            /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource BastionAutoScalingGroup --region ${Region}
-          - Region: !Sub "${AWS::Region}"
   BastionSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
