@@ -71,6 +71,18 @@ Metadata:
         default: CIDR for the VPC
       Tenancy:
         default: Tenancy
+      AccessCIDR:
+        default: Access CIDR
+      PublicSubnet1ID:
+        default: Public subnet 1 ID
+      PublicSubnet2ID:
+        default: Public subnet 2 ID
+      PrivateSubnet1ID:
+        default: Private subnet 1 ID
+      PrivateSubnet2ID:
+        default: Private subnet 2 ID
+      PrivateSubnet3ID:
+        default: Private subnet 3 ID
       NumberOfInstances:
         default: Number of instances
       EnableCloudWatch:
