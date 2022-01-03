@@ -497,7 +497,6 @@ Resources:
                 - ec2:DescribeVpcAttribute
                 Resource: "*"
 
-
   ClusterInstanceProfile:
     Type: 'AWS::IAM::InstanceProfile'
     Properties:
@@ -522,7 +521,7 @@ Resources:
   ClusterGroup:
     Type: 'AWS::AutoScaling::AutoScalingGroup'
     Properties:
-      AutoScalingGroupName: !Sub 'AerospikeCluster'
+      AutoScalingGroupName: !Sub 'AerospikeCluster-${PsuedoRandom.GroupId}'
       LaunchConfigurationName: !Ref LaunchConfig
       DesiredCapacity: !Ref NumberOfInstances
       MinSize: '1'
@@ -848,6 +847,7 @@ Resources:
         QSS3BucketRegion: !Ref QSS3BucketRegion
         RemoteAccessCIDR: !Ref AccessCIDR
         VPCID: !Ref VPCID
+        AerospikeClusterAutoscalingGroup: !Ref ClusterGroup
   
 Outputs:
   BastionHostIP:

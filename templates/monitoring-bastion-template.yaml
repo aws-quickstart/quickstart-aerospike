@@ -263,6 +263,10 @@ Parameters:
     Description: Will be attached to all created IAM Roles to satisfy security requirements
     Type: String
     Default: ''
+  AerospikeClusterAutoscalingGroup:
+    Default: ""
+    Description: Name of aerospike autoscaling group.
+    Type: String
 Rules:
   SubnetsInVPC:
     Assertions:
@@ -295,7 +299,6 @@ Mappings:
       AMZNLINUX2ARM: ami-01d326fa7db123542
       US2004HVM: ami-022666956ad401a16
       CENTOS7HVM: ami-0a2be7731769e6cc1
-#      SLES15HVM: ami-EXAMPLE
     ap-northeast-1:
       AMZNLINUX2: ami-0ca38c7440de1749a
       AMZNLINUX2ARM: ami-005322a6d5cecfe58
@@ -787,6 +790,7 @@ Resources:
                 - |
                   #!/bin/bash
                   export AWS_REGION=${AWS::Region}
+                  export ASG_NAME=${AerospikeClusterAutoscalingGroup}
                   aws s3 cp s3://${S3Bucket}/quickstart-aerospike/scripts/prometheus_configure.sh .
                   chmod +x prometheus_configure.sh
                   #todo: get autoscaling name and pass as parameter
