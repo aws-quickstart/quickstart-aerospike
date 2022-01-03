@@ -557,6 +557,17 @@ Resources:
                 - '*'
               Action:
                 - autoscaling:Describe*
+            - Effect: Allow
+              Action:
+              - s3:*
+              Resource: "*"
+            - Effect: Allow
+              Action:
+              - ec2:DescribeInstances
+              - iam:GetInstanceProfile
+              - iam:GetUser
+              - iam:GetRole
+              Resource: "*"
         - PolicyName: MonitoringStackAutoScalingPolicy
           PolicyDocument:
             Version: 2012-10-17
@@ -720,12 +731,39 @@ Resources:
               owner: root
               group: root
               authentication: S3AccessCreds
+            /tmp/aerospike_monitoring_stack_asbench_install.sh:
+              content: | 
+                  #!/bin/bash
+                  
+                  # folder to store monitoring stack binaries 
+                  mkdir -p /home/ec2-user/monitoring_stack
+                  cd /home/ec2-user/monitoring_stack
+
+                  # Prometheus installation
+                  wget https://github.com/prometheus/prometheus/releases/download/v2.30.3/prometheus-2.30.3.linux-amd64.tar.gz
+                  tar xvfz prometheus-*.tar.gz
+
+                  # Grafana installation 
+                  wget https://dl.grafana.com/oss/release/grafana-8.2.1-1.x86_64.rpm
+                  sudo yum install -y grafana-8.2.1-1.x86_64.rpm
+                  sudo systemctl daemon-reload
+                  sudo systemctl start grafana-server
+                  sudo systemctl status grafana-serve
+
+                  # asbench installation 
+                  sudo yum install -y wget tar python3 gzip shadow-utils.x86_64
+                  sudo wget -O aerospike-amazon_linux.tgz 'https://download.aerospike.com/download/tools/6.1.2/artifact/el7'
+                  sudo tar -xvzf aerospike-amazon_linux.tgz
+                  cd aerospike-tools*
+                  sudo ./asinstall > /dev/null 2>&1 & 
+              mode: '000744'
+              owner: root
+              group: root
             /tmp/create_sample_prometheus_config.sh:
               content: |
                   #!/bin/bash
                   # sample prometheus configuration, note aerospike_targets will be replaced by aerospike node IP:port
-                  # PROMETHUS_CONFIG_LOCATION=/home/ec2-user/monitoring_stack/prometheus-2.30.3.linux-amd64/prometheus.yml
-                  PROMETHUS_CONFIG_TEMP_LOCATION=/tmp/prometheus.yml
+                  PROMETHUS_CONFIG_TEMP_LOCATION=/home/ec2-user/monitoring_stack/prometheus-2.30.3.linux-amd64/prometheus.yml
                   PROMETHUS_CONFIG="
                   global:
                     scrape_interval: 15s
@@ -744,68 +782,30 @@ Resources:
               mode: '000744'
               owner: root
               group: root
-            /tmp/form_prometheus_config.sh:
+            /tmp/update_prometheus_configure.sh:
               content: !Sub
                 - |
                   #!/bin/bash
                   export AWS_REGION=${AWS::Region}
-                  PROMETHUS_CONFIG_LOCATION=/tmp/prometheus.yml
-                  sleep 60 # wait for instance to come up
-                  
-                  # aws --output text --query "Reservations[*].Instances[*].PrivateIpAddress" ec2 describe-instances --region "${REGION}" --instance-ids `aws --output text --query "AutoScalingGroups[0].Instances[*].InstanceId" autoscaling describe-auto-scaling-groups --auto-scaling-group-names "AerospikeCluster" --region "${REGION}"` |& tee /tmp/awsuserdatascript >/dev/null
-                  aerospike_private_ips=$(aws --output text --query "Reservations[*].Instances[*].PrivateIpAddress" ec2 describe-instances --region "us-east-1" --instance-ids `aws --output text --query "AutoScalingGroups[0].Instances[*].InstanceId" autoscaling describe-auto-scaling-groups --auto-scaling-group-names "AerospikeCluster" --region "us-east-1"`)
-                  
-                  ips=""
-                  for i in ${aerospike_private_ips[@]}
-                  do
-                    ips+=\'${i}:9145\',
-                  done
-                  ips=${ips%?}
-                  prometheus_target=`echo [$ips]`
-
-                  sed -e "s/aerospike_targets/$prometheus_target/g" $PROMETHUS_CONFIG_LOCATION
+                  aws s3 cp s3://${S3Bucket}/quickstart-aerospike/scripts/prometheus_configure.sh .
+                  chmod +x prometheus_configure.sh
+                  #todo: get autoscaling name and pass as parameter
+                  ./prometheus_configure.sh
                 - REGION: !Sub "${AWS::Region}" 
                   S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
               mode: '000755'
               owner: root
-              group: 
-            /tmp/save_prometheus_config.sh:
-              content:
+              group: root
+            /tmp/grafana_configure.sh:
+              content: !Sub
                 - |
                   #!/bin/bash
-                  PROMETHUS_CONFIG_LOCATION=/home/ec2-user/monitoring_stack/prometheus-2.30.3.linux-amd64/prometheus.yml
-                  /tmp/form_prometheus_config.sh > $PROMETHUS_CONFIG_LOCATION
+                  aws s3 cp s3://${S3Bucket}/quickstart-aerospike/scripts/grafana_configure.sh .
+                  chmod +x grafana_configure.sh
+                  ./grafana_configure.sh
+                - REGION: !Sub "${AWS::Region}" 
+                  S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
               mode: '000755'
-              owner: root
-              group: root
-            /tmp/aerospike_monitoring_stack_asbench_install.sh:
-              content: | 
-                  #!/bin/bash
-                  
-                  # folder to store monitoring stack binaries 
-                  mkdir -p /home/ec2-user/monitoring_stack
-                  cd /home/ec2-user/monitoring_stack
-
-                  # Prometheus installation
-                  wget https://github.com/prometheus/prometheus/releases/download/v2.30.3/prometheus-2.30.3.linux-amd64.tar.gz
-                  tar xvfz prometheus-*.tar.gz
-                  cd prometheus-*
-                  ./prometheus --config.file=prometheus.yml > /dev/null 2>&1 & 
-
-                  # Grafana installation 
-                  wget https://dl.grafana.com/oss/release/grafana-8.2.1-1.x86_64.rpm
-                  sudo yum install -y grafana-8.2.1-1.x86_64.rpm
-                  sudo systemctl daemon-reload
-                  sudo systemctl start grafana-server
-                  sudo systemctl status grafana-serve
-
-                  # asbench installation 
-                  sudo yum install -y wget tar python3 gzip shadow-utils.x86_64
-                  sudo wget -O aerospike-amazon_linux.tgz 'https://download.aerospike.com/download/tools/6.1.2/artifact/el7'
-                  sudo tar -xvzf aerospike-amazon_linux.tgz
-                  cd aerospike-tools*
-                  sudo ./asinstall > /dev/null 2>&1 & 
-              mode: '000744'
               owner: root
               group: root
           commands:
@@ -831,20 +831,20 @@ Resources:
                     - s3://${S3Bucket}/${QSS3KeyPrefix}scripts/banner_message.txt
                     - S3Bucket: !If [ UsingDefaultBucket, !Sub 'aws-quickstart-${AWS::Region}', !Ref 'QSS3BucketName' ]
                   - !Ref BastionBanner
-            c-prometheus_config:
+            c-aerospike_monitoring:
+              cwd: '/tmp/'
+              command: "./aerospike_monitoring_stack_asbench_install.sh"
+            d-create-prometheus_config:
               cwd: '/tmp/'
               env:
                 REGION: !Sub ${AWS::Region}
               command: "./create_sample_prometheus_config.sh"
-            d-form_prometheus_config:
+            e-update_prometheus_cluster:
               cwd: '/tmp/'
-              command: "./form_prometheus_config.sh"
-            e-save_prometheus_config:
+              command: "./update_prometheus_configure.sh"
+            f-grafana_configure:
               cwd: '/tmp/'
-              command: "./save_prometheus_config.sh"
-            f-aerospike_monitoring:
-              cwd: '/tmp/'
-              command: "./aerospike_monitoring_stack_asbench_install.sh"
+              command: "./grafana_configure.sh"
     Properties:
       AssociatePublicIpAddress: true
       PlacementTenancy: !Ref BastionTenancy
@@ -942,6 +942,10 @@ Resources:
         - IpProtocol: tcp
           FromPort: 3000
           ToPort: 3000
+          CidrIp: !Ref RemoteAccessCIDR
+        - IpProtocol: tcp
+          FromPort: 3100
+          ToPort: 3100
           CidrIp: !Ref RemoteAccessCIDR
 Outputs:
   BastionAutoScalingGroup:

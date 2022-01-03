@@ -728,6 +728,15 @@ Resources:
               mode: '000744'
               owner: root
               group: root
+            /opt/aerospike/cft_scripts/prometheus_exporter:
+              content: |
+                  #!/bin/bash
+                  wget https://www.aerospike.com/download/monitoring/aerospike-prometheus-exporter/latest/artifact/tgz -O aerospike-prometheus-exporter.tgz
+                  tar -xvzf aerospike-prometheus-exporter.tgz
+                  ./usr/bin/aerospike-prometheus-exporter --config ./etc/aerospike-prometheus-exporter/ape.toml > /dev/null 2>&1 &
+              mode: '000744'
+              owner: root
+              group: root
           commands:
             00_aerospike_init:
               command: /opt/aerospike/cft_scripts/aerospike_init
@@ -737,6 +746,9 @@ Resources:
               cwd: /opt/aerospike/cft_scripts
             02_aerospike_start:
               command: /opt/aerospike/cft_scripts/aerospike_start
+              cwd: /opt/aerospike/cft_scripts
+            03_prometheus_exporter:
+              command: /opt/aerospike/cft_scripts/prometheus_exporter
               cwd: /opt/aerospike/cft_scripts
     Properties:
       InstanceType: !Ref InstanceType
