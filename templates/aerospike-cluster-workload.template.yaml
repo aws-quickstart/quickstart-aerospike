@@ -453,7 +453,9 @@ Resources:
               Resource:
                 - '*'
               Action:
-                - autoscaling:Describe*
+                - autoscaling:DescribeAutoScalingGroups
+                - autoscaling:DescribeAutoScalingInstances
+                - autoscaling:DescribeLaunchConfigurations
             # TODO: Restrict to only our AutoScaling group
             - Effect: Allow
               Resource:
@@ -490,7 +492,9 @@ Resources:
                   - autoscaling:CompleteLifecycleAction
                   - autoscaling:DescribeAutoScalingGroups
                   - autoscaling:RecordLifecycleActionHeartbeat
-                Resource: '*'
+                Resource: !Sub
+                  - 'arn:${AWS::Partition}:autoscaling:${AWS::Region}:${AWS::AccountId}:autoScalingGroup:*:autoScalingGroupName/${AutoScalingGroupName}'
+                  - AutoScalingGroupName: !Sub 'AerospikeCluster-${PsuedoRandom.GroupId}'
               - Effect: Allow
                 Action:
                 - ec2:DescribeInstances
