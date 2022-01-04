@@ -559,7 +559,9 @@ Resources:
               Resource:
                 - '*'
               Action:
-                - autoscaling:Describe*
+                - autoscaling:DescribeAutoScalingGroups
+                - autoscaling:DescribeAutoScalingInstances
+                - autoscaling:DescribeLaunchConfigurations
             - Effect: Allow
               Action:
               - s3:*
