@@ -548,7 +548,11 @@ Resources:
               Resource:
                 - '*'
               Action:
-                - ssm:*
+                - ssm:TerminateSession
+                - ssm:ResumeSession
+                - ssm:DescribeSessions
+                - ssm:GetConnectionStatus
+                - ssm:DescribeInstanceInformation
             # TODO: Restrict to only our AutoScaling group
             - Effect: Allow
               Resource:
@@ -564,7 +568,11 @@ Resources:
                 - autoscaling:DescribeLaunchConfigurations
             - Effect: Allow
               Action:
-              - s3:*
+              - s3:PutObject
+              - s3:DeleteObject
+              - s3:GetObject
+              - s3:ListBucket
+              - s3:RestoreObject
               Resource: "*"
             - Effect: Allow
               Action:
@@ -795,7 +803,6 @@ Resources:
                   export ASG_NAME=${AerospikeClusterAutoscalingGroup}
                   aws s3 cp s3://${S3Bucket}/quickstart-aerospike/scripts/prometheus_configure.sh .
                   chmod +x prometheus_configure.sh
-                  #todo: get autoscaling name and pass as parameter
                   ./prometheus_configure.sh
                 - REGION: !Sub "${AWS::Region}" 
                   S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
