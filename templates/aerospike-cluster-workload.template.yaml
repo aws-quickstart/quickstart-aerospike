@@ -456,12 +456,6 @@ Resources:
                 - autoscaling:DescribeAutoScalingGroups
                 - autoscaling:DescribeAutoScalingInstances
                 - autoscaling:DescribeLaunchConfigurations
-            # TODO: Restrict to only our AutoScaling group
-            - Effect: Allow
-              Resource:
-                - '*'
-              Action:
-                - autoscaling:DescribeAutoScalingGroups
         - PolicyName: AerospikeCloudWatchPolicy
           PolicyDocument:
             Version: 2012-10-17
