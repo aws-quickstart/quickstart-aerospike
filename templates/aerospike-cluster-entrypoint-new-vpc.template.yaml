@@ -59,7 +59,7 @@ Metadata:
         - QSS3BucketRegion
     - Label:
         default: Enable Monitoring stack
-        Parameters:
+      Parameters:
           - MonitoringStack
     ParameterLabels:
       AvailabilityZones:
