@@ -57,6 +57,10 @@ Metadata:
         - QSS3BucketName
         - QSS3KeyPrefix
         - QSS3BucketRegion
+    - Label:
+        default: Enable Monitoring stack
+        Parameters:
+          - MonitoringStack
     ParameterLabels:
       AvailabilityZones:
         default: Availability Zones
@@ -106,6 +110,8 @@ Metadata:
         default: Allowed bastion external access CIDR
       VPCCIDR:
         default: VPC CIDR
+      MonitoringStack:
+        default: Enable Monitoring stack
 Parameters:
   AvailabilityZones:
     Description: "Availability Zones to use for the VPC subnets. At least two Availability Zones are required."
@@ -367,10 +373,16 @@ Parameters:
     Description: Base64 encoding of the feature key file. This is the Aerospike key to use for this deployment. Keeping this blank works only for a single node cluster.
     Type: String
     Default: ""
+  MonitoringStack:
+    Type: String
+    AllowedValues: [ "Prometheus + Grafana + asbench", "None" ]
+    Default: Prometheus + Grafana + asbench
+    Description: "Enable monitoring stack (prometheus and grafana) and asbench."
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
   3AZDeployment: !Equals [!Ref NumberOfAZs, "3"]
   TrialLicense: !Equals [!Ref FeatureKeyFile, '']
+  MonitoringStackEnabled: !Equals [!Ref MonitoringStack, 'Prometheus + Grafana + asbench']
 Resources:
   VPCStack:
     Type: AWS::CloudFormation::Stack

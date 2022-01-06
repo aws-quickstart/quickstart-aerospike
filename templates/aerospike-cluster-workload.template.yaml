@@ -62,6 +62,10 @@ Metadata:
           - QSS3BucketName
           - QSS3KeyPrefix
           - QSS3BucketRegion
+      - Label:
+          default: Enable Monitoring stack
+        Parameters:
+          - MonitoringStack
     ParameterLabels:
       KeyPairName:
         default: EC2 key pair
@@ -95,6 +99,8 @@ Metadata:
         default: Quick Start S3 key prefix
       QSS3BucketRegion:
         default: Quick Start S3 bucket Region
+      MonitoringStack:
+        default: Enable Monitoring stack
 Parameters:
   BastionInstanceType:
     Default: t3.micro
@@ -342,6 +348,11 @@ Parameters:
       a forward slash. See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html 
       and https://aws-quickstart.github.io/option1.html.
     Type: String
+  MonitoringStack:
+    Type: String
+    AllowedValues: [ "Prometheus + Grafana + asbench", "None" ]
+    Default: Prometheus + Grafana + asbench
+    Description: "Enable monitoring stack (prometheus and grafana) and asbench."
 
 Mappings:
   AWSAMIRegionMap:
@@ -392,6 +403,7 @@ Conditions:
   2AZDeployment: !Or
     - !Not [!Equals [!Ref PrivateSubnet2ID, ""]]
     - !Not [!Equals [!Ref PrivateSubnet3ID, ""]]
+  MonitoringStackEnabled: !Equals [!Ref MonitoringStack, 'Prometheus + Grafana + asbench']
 
 Resources:
   BastionStack:
@@ -825,6 +837,7 @@ Resources:
 
   MonitoringBastionStack:
     Metadata: { cfn-lint: { config: { ignore_checks: [ W9901 ] } } }
+    Condition: MonitoringStackEnabled
     Type: 'AWS::CloudFormation::Stack'
     Properties:
       TemplateURL: !Sub 

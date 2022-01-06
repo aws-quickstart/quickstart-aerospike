@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Adding grafana dashboard in monitoring bastion host. Ref : https://docs.aerospike.com/docs/tools/monitorstack/configure/configure-grafana.html
 echo "[DEBUG] adding aerospike grafana dashboard"
 
 sed -i 's/;provisioning/provisioning/' /etc/grafana/grafana.ini
