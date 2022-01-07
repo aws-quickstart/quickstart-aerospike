@@ -565,7 +565,7 @@ Resources:
             - Effect: Allow
               Action:
               - s3:GetObject
-              Resource: "*"
+              Resource: !Sub "arn:aws:s3:::${QSS3BucketName}/*"
             - Effect: Allow
               Action:
               - ec2:DescribeInstances
