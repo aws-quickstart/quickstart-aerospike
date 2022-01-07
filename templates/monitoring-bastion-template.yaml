@@ -569,9 +569,6 @@ Resources:
             - Effect: Allow
               Action:
               - ec2:DescribeInstances
-              - iam:GetInstanceProfile
-              - iam:GetUser
-              - iam:GetRole
               Resource: "*"
         - PolicyName: MonitoringStackAutoScalingPolicy
           PolicyDocument:
