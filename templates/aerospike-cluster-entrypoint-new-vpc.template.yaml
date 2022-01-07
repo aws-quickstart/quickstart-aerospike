@@ -403,7 +403,6 @@ Resources:
         PublicSubnet2CIDR: !Ref 'PublicSubnet2CIDR'
         PublicSubnet3CIDR: !Ref 'PublicSubnet3CIDR'
         VPCCIDR: !Ref 'VPCCIDR'
-
   AerospikeServerStack:
     Type: 'AWS::CloudFormation::Stack'
     Properties:

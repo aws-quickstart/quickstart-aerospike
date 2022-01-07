@@ -506,7 +506,6 @@ Resources:
                 - ec2:DescribeInstances
                 - ec2:DescribeVpcAttribute
                 Resource: "*"
-
   ClusterInstanceProfile:
     Type: 'AWS::IAM::InstanceProfile'
     Properties:
@@ -834,7 +833,6 @@ Resources:
       SourceSecurityGroupId: !GetAtt 
         - InstanceSecurityGroup
         - GroupId
-
   MonitoringBastionStack:
     Metadata: { cfn-lint: { config: { ignore_checks: [ W9901 ] } } }
     Condition: MonitoringStackEnabled
