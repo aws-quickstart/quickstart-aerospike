@@ -62,6 +62,10 @@ Metadata:
           - QSS3BucketName
           - QSS3KeyPrefix
           - QSS3BucketRegion
+      - Label:
+          default: Enable Monitoring stack
+        Parameters:
+          - MonitoringStack
     ParameterLabels:
       KeyPairName:
         default: EC2 key pair
@@ -95,6 +99,8 @@ Metadata:
         default: Quick Start S3 key prefix
       QSS3BucketRegion:
         default: Quick Start S3 bucket Region
+      MonitoringStack:
+        default: Enable Monitoring stack
 Parameters:
   BastionInstanceType:
     Default: t3.micro
@@ -320,6 +326,11 @@ Parameters:
       a forward slash. See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html 
       and https://aws-quickstart.github.io/option1.html.
     Type: String
+  MonitoringStack:
+    Type: String
+    AllowedValues: [ "Prometheus + Grafana + asbench", "None" ]
+    Default: Prometheus + Grafana + asbench
+    Description: "Enable monitoring stack (prometheus and grafana) and asbench."
 
 Mappings:
   AWSAMIRegionMap:
@@ -370,6 +381,7 @@ Conditions:
   2AZDeployment: !Or
     - !Not [!Equals [!Ref PrivateSubnet2ID, ""]]
     - !Not [!Equals [!Ref PrivateSubnet3ID, ""]]
+  MonitoringStackEnabled: !Equals [!Ref MonitoringStack, 'Prometheus + Grafana + asbench']
 
 Resources:
   BastionStack:
@@ -383,6 +395,7 @@ Resources:
       Parameters:
         BastionInstanceType: !Ref BastionInstanceType
         NumBastionHosts: !Ref NumBastionHosts
+        BastionHostName: 'Bastion host'
         BastionAMIOS: !Ref BastionAMIOS
         EnableTCPForwarding: 'true'
         KeyPairName: !Ref KeyPairName
@@ -393,7 +406,7 @@ Resources:
         QSS3BucketRegion: !Ref QSS3BucketRegion
         RemoteAccessCIDR: !Ref AccessCIDR
         VPCID: !Ref VPCID
-
+  
   PsuedoRandom:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -422,6 +435,17 @@ Resources:
                   - 'ec2:DescribeInstances'
                   - 'ec2:DescribeVpcAttribute'
                 Resource: '*'
+        - PolicyName: root
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+            - Effect: Allow
+              Resource:
+                - '*'
+              Action:
+                - autoscaling:DescribeAutoScalingGroups
+                - autoscaling:DescribeAutoScalingInstances
+                - autoscaling:DescribeLaunchConfigurations
         - PolicyName: AerospikeCloudWatchPolicy
           PolicyDocument:
             Version: 2012-10-17
@@ -450,11 +474,16 @@ Resources:
               - Effect: Allow
                 Action:
                   - autoscaling:CompleteLifecycleAction
+                  - autoscaling:DescribeAutoScalingGroups
                   - autoscaling:RecordLifecycleActionHeartbeat
                 Resource: !Sub
                   - 'arn:${AWS::Partition}:autoscaling:${AWS::Region}:${AWS::AccountId}:autoScalingGroup:*:autoScalingGroupName/${AutoScalingGroupName}'
                   - AutoScalingGroupName: !Sub 'AerospikeCluster-${PsuedoRandom.GroupId}'
-
+              - Effect: Allow
+                Action:
+                - ec2:DescribeInstances
+                - ec2:DescribeVpcAttribute
+                Resource: "*"
   ClusterInstanceProfile:
     Type: 'AWS::IAM::InstanceProfile'
     Properties:
@@ -523,8 +552,6 @@ Resources:
                   PRIVATE_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
                   CONF=/etc/aerospike/aerospike.conf
                   sed -i "s/port 3000/port 3000\n\t\taccess-address $PRIVATE_IP virtual\n/g" $CONF
-
-
                   ###Point to all instances using the mesh-address config option
                   sleep 60 # wait for AWS to provision
                   FILTER=Name=tag-key,Values=StackID
@@ -534,14 +561,12 @@ Resources:
                   for i in $PRIVATEIP; do
                       sed -i "/interval/i \\\t\tmesh-seed-address-port $i 3002\n" $CONF
                   done
-
                   # Check if namespace file in input
                   CODE=$(curl -Is ${NamespaceFile} | head -n 1 | cut -d$' ' -f2)
                   if [ "$CODE" != "200" ]; then echo 'Namespace File not found' >> /var/log/awsuserdatascript
                   else sed -i '/namespace test/,$d' $CONF
                   curl -s ${NamespaceFile} >> $CONF; fi
                   systemctl restart aerospike
-
                   echo OtherInstancesScriptFinish >> /var/log/awsuserdatascript
                   (crontab -l 2>/dev/null; echo '*/5 * * * * /opt/aerospike/poll_sqs') | crontab -
                   if [[ ${EnableCloudWatch} == "yes" ]]; then
@@ -689,6 +714,15 @@ Resources:
               mode: '000744'
               owner: root
               group: root
+            /opt/aerospike/cft_scripts/prometheus_exporter:
+              content: |
+                  #!/bin/bash
+                  wget https://www.aerospike.com/download/monitoring/aerospike-prometheus-exporter/latest/artifact/tgz -O aerospike-prometheus-exporter.tgz
+                  tar -xvzf aerospike-prometheus-exporter.tgz
+                  ./usr/bin/aerospike-prometheus-exporter --config ./etc/aerospike-prometheus-exporter/ape.toml > /dev/null 2>&1 &
+              mode: '000744'
+              owner: root
+              group: root
           commands:
             00_aerospike_init:
               command: /opt/aerospike/cft_scripts/aerospike_init
@@ -698,6 +732,9 @@ Resources:
               cwd: /opt/aerospike/cft_scripts
             02_aerospike_start:
               command: /opt/aerospike/cft_scripts/aerospike_start
+              cwd: /opt/aerospike/cft_scripts
+            03_prometheus_exporter:
+              command: /opt/aerospike/cft_scripts/prometheus_exporter
               cwd: /opt/aerospike/cft_scripts
     Properties:
       InstanceType: !Ref InstanceType
@@ -755,6 +792,10 @@ Resources:
           FromPort: -1
           ToPort: -1
           CidrIp: !Ref VPCCIDR
+        - IpProtocol: tcp
+          FromPort: 9145
+          ToPort: 9145
+          CidrIp: !Ref VPCCIDR
       Tags:
         - Key: StackID
           Value: !Ref 'AWS::StackId'
@@ -770,10 +811,38 @@ Resources:
       SourceSecurityGroupId: !GetAtt 
         - InstanceSecurityGroup
         - GroupId
+  MonitoringBastionStack:
+    Metadata: { cfn-lint: { config: { ignore_checks: [ W9901 ] } } }
+    Condition: MonitoringStackEnabled
+    Type: 'AWS::CloudFormation::Stack'
+    Properties:
+      TemplateURL: !Sub 
+        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/monitoring-bastion-template.yaml'
+        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+      Parameters:
+        BastionInstanceType: !Ref BastionInstanceType
+        NumBastionHosts: !Ref NumBastionHosts
+        BastionHostName: 'Monitoring Bastion host'
+        BastionAMIOS: !Ref BastionAMIOS
+        EnableTCPForwarding: 'true'
+        KeyPairName: !Ref KeyPairName
+        PublicSubnet1ID: !Ref PublicSubnet1ID
+        PublicSubnet2ID: !If [2AZDeployment, !Ref PublicSubnet2ID, !Ref "AWS::NoValue"]
+        QSS3BucketName: !Ref QSS3BucketName
+        QSS3KeyPrefix: !Sub '${QSS3KeyPrefix}submodules/quickstart-linux-bastion/'
+        QSS3BucketRegion: !Ref QSS3BucketRegion
+        RemoteAccessCIDR: !Ref AccessCIDR
+        VPCID: !Ref VPCID
+        AerospikeClusterAutoscalingGroup: !Ref ClusterGroup
+  
 Outputs:
   BastionHostIP:
     Description: IP for bastion host.
     Value: !GetAtt "BastionStack.Outputs.EIP1"
+  MonitoringBastionHostIP:
+    Description: IP for monitoring bastion host.
+    Value: !GetAtt "MonitoringBastionStack.Outputs.EIP1"
   AutoscalingID:
     Description: The Autoscaling Group ID that is used to deploy your cluster
     Value: !Ref ClusterGroup
