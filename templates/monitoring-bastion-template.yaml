@@ -788,11 +788,12 @@ Resources:
                   #!/bin/bash
                   export AWS_REGION=${AWS::Region}
                   export ASG_NAME=${AerospikeClusterAutoscalingGroup}
-                  aws s3 cp s3://${S3Bucket}/${QSS3KeyPrefix}scripts/prometheus_configure.sh .
+                  aws s3 cp s3://${S3Bucket}/${S3Prefix}/scripts/prometheus_configure.sh .
                   chmod +x prometheus_configure.sh
                   ./prometheus_configure.sh
                 - REGION: !Sub "${AWS::Region}" 
                   S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+                  S3Prefix: quickstart-aerospike
               mode: '000755'
               owner: root
               group: root
@@ -800,11 +801,12 @@ Resources:
               content: !Sub
                 - |
                   #!/bin/bash
-                  aws s3 cp s3://${S3Bucket}/${QSS3KeyPrefix}scripts/grafana_configure.sh .
+                  aws s3 cp s3://${S3Bucket}/${S3Prefix}/scripts/grafana_configure.sh .
                   chmod +x grafana_configure.sh
                   ./grafana_configure.sh
                 - REGION: !Sub "${AWS::Region}" 
                   S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+                  S3Prefix: quickstart-aerospike
               mode: '000755'
               owner: root
               group: root
