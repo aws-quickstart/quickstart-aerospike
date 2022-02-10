@@ -828,7 +828,7 @@ Resources:
                 - BannerUrl: !If
                   - DefaultBanner
                   - !Sub
-                    - s3://${S3Bucket}/${QSS3KeyPrefix}submodules/quickstart-linux-bastion/scripts/banner_message.txt
+                    - s3://${S3Bucket}/${QSS3KeyPrefix}scripts/monitoring_banner.txt
                     - S3Bucket: !If [ UsingDefaultBucket, !Sub 'aws-quickstart-${AWS::Region}', !Ref 'QSS3BucketName' ]
                   - !Ref BastionBanner
             c-aerospike_monitoring:

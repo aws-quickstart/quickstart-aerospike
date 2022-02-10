@@ -12,6 +12,7 @@ Metadata:
     - sdg
     - aerospike
     - namespace
+    - Namespace
     - configuration
     - .conf
     - Location
@@ -46,7 +47,7 @@ Metadata:
       - NamespaceFile
       - FeatureKeyFile
     - Label:
-        default: Enable Monitoring stack
+        default: Enable monitoring stack
       Parameters:
         - MonitoringStack
     - Label:

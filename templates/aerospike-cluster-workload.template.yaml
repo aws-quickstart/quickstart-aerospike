@@ -14,6 +14,7 @@ Metadata:
     - Linux
     - Security Group
     - namespace
+    - Namespace
     - keypair
     - sdg
     - Location
@@ -51,7 +52,7 @@ Metadata:
            - InstanceType
            - EBS
       - Label:
-          default: Enable Monitoring stack
+          default: Enable monitoring stack
         Parameters:
             - MonitoringStack
       - Label:
@@ -100,7 +101,7 @@ Metadata:
       QSS3BucketRegion:
         default: Quick Start S3 bucket Region
       MonitoringStack:
-        default: Enable Monitoring stack
+        default: Enable monitoring stack
 Parameters:
   BastionInstanceType:
     Default: t3.micro
@@ -158,23 +159,23 @@ Parameters:
   PublicSubnet1ID:
     Type: String
     Default: ""
-    Description: "ID of public subnet 1"
+    Description: "ID of public subnet 1."
   PublicSubnet2ID:
     Type: String
     Default: ""
-    Description: "ID of public subnet 2"
+    Description: "ID of public subnet 2."
   PrivateSubnet1ID:
     Type: String
     Default: ""
-    Description: "ID of private subnet 1"
+    Description: "ID of private subnet 1."
   PrivateSubnet2ID:
     Type: String
     Default: ""
-    Description: "ID of private subnet 2"
+    Description: "ID of private subnet 2."
   PrivateSubnet3ID:
     Type: String
     Default: ""
-    Description: "(Optional) ID of private subnet 3"
+    Description: "(Optional) ID of private subnet 3."
   Tenancy:
     Description: Tenancy of the Aerospike instances. Choose "dedicated" to change the host from shared (default).
     Type: String
