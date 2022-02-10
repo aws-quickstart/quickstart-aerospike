@@ -414,6 +414,15 @@ Resources:
         MonitoringStack: !Ref MonitoringStack
 
 Outputs:
+  BastionHostIP:
+    Description: IP for bastion host.
+    Value: !GetAtt "AerospikeServerStack.Outputs.BastionHostIP"
+  MonitoringBastionHostIP:
+    Description: IP for monitoring bastion host.
+    Value: !GetAtt "AerospikeServerStack.Outputs.MonitoringBastionHostIP"
+  AutoscalingID:
+    Description: The Autoscaling Group ID that is used to deploy your cluster
+    Value: !GetAtt "AerospikeServerStack.Outputs.AutoscalingID"
   Postdeployment:
     Description: To test your deployment, see the procedure in the deployment guide.
     Value: https://fwd.aws/Pa8Yw?
