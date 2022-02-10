@@ -329,7 +329,7 @@ Parameters:
   MonitoringStack:
     Type: String
     AllowedValues: [ "Prometheus + Grafana + asbench", "None" ]
-    Default: Prometheus + Grafana + asbench
+    Default: "Prometheus + Grafana + asbench"
     Description: "Enable monitoring stack (prometheus and grafana) and asbench."
 
 Mappings:
@@ -381,7 +381,7 @@ Conditions:
   2AZDeployment: !Or
     - !Not [!Equals [!Ref PrivateSubnet2ID, ""]]
     - !Not [!Equals [!Ref PrivateSubnet3ID, ""]]
-  MonitoringStackEnabled: !Equals [!Ref MonitoringStack, 'Prometheus + Grafana + asbench']
+  MonitoringStackEnabled: !Equals [!Ref MonitoringStack, "Prometheus + Grafana + asbench"]
 
 Resources:
   BastionStack:

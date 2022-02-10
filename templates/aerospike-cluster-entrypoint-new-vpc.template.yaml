@@ -355,13 +355,13 @@ Parameters:
   MonitoringStack:
     Type: String
     AllowedValues: [ "Prometheus + Grafana + asbench", "None" ]
-    Default: Prometheus + Grafana + asbench
+    Default: "Prometheus + Grafana + asbench"
     Description: "Enable monitoring stack (prometheus and grafana) and asbench."
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
   3AZDeployment: !Equals [!Ref NumberOfAZs, "3"]
   TrialLicense: !Equals [!Ref FeatureKeyFile, '']
-  MonitoringStackEnabled: !Equals [!Ref MonitoringStack, 'Prometheus + Grafana + asbench']
+  MonitoringStackEnabled: !Equals [!Ref MonitoringStack, "Prometheus + Grafana + asbench"]
 Resources:
   VPCStack:
     Type: AWS::CloudFormation::Stack
