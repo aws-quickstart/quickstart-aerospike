@@ -51,6 +51,10 @@ Metadata:
            - InstanceType
            - EBS
       - Label:
+          default: Enable Monitoring stack
+        Parameters:
+            - MonitoringStack
+      - Label:
           default: Linux bastion configuration
         Parameters:
           - BastionAMIOS
@@ -62,10 +66,6 @@ Metadata:
           - QSS3BucketName
           - QSS3KeyPrefix
           - QSS3BucketRegion
-      - Label:
-          default: Enable Monitoring stack
-        Parameters:
-          - MonitoringStack
     ParameterLabels:
       KeyPairName:
         default: EC2 key pair
@@ -830,7 +830,7 @@ Resources:
         PublicSubnet1ID: !Ref PublicSubnet1ID
         PublicSubnet2ID: !If [2AZDeployment, !Ref PublicSubnet2ID, !Ref "AWS::NoValue"]
         QSS3BucketName: !Ref QSS3BucketName
-        QSS3KeyPrefix: !Sub '${QSS3KeyPrefix}submodules/quickstart-linux-bastion/'
+        QSS3KeyPrefix: !Ref QSS3KeyPrefix
         QSS3BucketRegion: !Ref QSS3BucketRegion
         RemoteAccessCIDR: !Ref AccessCIDR
         VPCID: !Ref VPCID
