@@ -14,6 +14,7 @@ Metadata:
     - Linux
     - Security Group
     - namespace
+    - Namespace
     - keypair
     - sdg
     - Location
@@ -51,6 +52,10 @@ Metadata:
            - InstanceType
            - EBS
       - Label:
+          default: Enable monitoring stack
+        Parameters:
+            - MonitoringStack
+      - Label:
           default: Linux bastion configuration
         Parameters:
           - BastionAMIOS
@@ -62,10 +67,6 @@ Metadata:
           - QSS3BucketName
           - QSS3KeyPrefix
           - QSS3BucketRegion
-      - Label:
-          default: Enable Monitoring stack
-        Parameters:
-          - MonitoringStack
     ParameterLabels:
       KeyPairName:
         default: EC2 key pair
@@ -100,7 +101,7 @@ Metadata:
       QSS3BucketRegion:
         default: Quick Start S3 bucket Region
       MonitoringStack:
-        default: Enable Monitoring stack
+        default: Enable monitoring stack
 Parameters:
   BastionInstanceType:
     Default: t3.micro
@@ -158,23 +159,23 @@ Parameters:
   PublicSubnet1ID:
     Type: String
     Default: ""
-    Description: "ID of public subnet 1"
+    Description: "ID of public subnet 1."
   PublicSubnet2ID:
     Type: String
     Default: ""
-    Description: "ID of public subnet 2"
+    Description: "ID of public subnet 2."
   PrivateSubnet1ID:
     Type: String
     Default: ""
-    Description: "ID of private subnet 1"
+    Description: "ID of private subnet 1."
   PrivateSubnet2ID:
     Type: String
     Default: ""
-    Description: "ID of private subnet 2"
+    Description: "ID of private subnet 2."
   PrivateSubnet3ID:
     Type: String
     Default: ""
-    Description: "(Optional) ID of private subnet 3"
+    Description: "(Optional) ID of private subnet 3."
   Tenancy:
     Description: Tenancy of the Aerospike instances. Choose "dedicated" to change the host from shared (default).
     Type: String
@@ -329,7 +330,7 @@ Parameters:
   MonitoringStack:
     Type: String
     AllowedValues: [ "Prometheus + Grafana + asbench", "None" ]
-    Default: Prometheus + Grafana + asbench
+    Default: "Prometheus + Grafana + asbench"
     Description: "Enable monitoring stack (prometheus and grafana) and asbench."
 
 Mappings:
@@ -381,7 +382,7 @@ Conditions:
   2AZDeployment: !Or
     - !Not [!Equals [!Ref PrivateSubnet2ID, ""]]
     - !Not [!Equals [!Ref PrivateSubnet3ID, ""]]
-  MonitoringStackEnabled: !Equals [!Ref MonitoringStack, 'Prometheus + Grafana + asbench']
+  MonitoringStackEnabled: !Equals [!Ref MonitoringStack, "Prometheus + Grafana + asbench"]
 
 Resources:
   BastionStack:
@@ -830,7 +831,7 @@ Resources:
         PublicSubnet1ID: !Ref PublicSubnet1ID
         PublicSubnet2ID: !If [2AZDeployment, !Ref PublicSubnet2ID, !Ref "AWS::NoValue"]
         QSS3BucketName: !Ref QSS3BucketName
-        QSS3KeyPrefix: !Sub '${QSS3KeyPrefix}submodules/quickstart-linux-bastion/'
+        QSS3KeyPrefix: !Ref QSS3KeyPrefix
         QSS3BucketRegion: !Ref QSS3BucketRegion
         RemoteAccessCIDR: !Ref AccessCIDR
         VPCID: !Ref VPCID
@@ -842,7 +843,7 @@ Outputs:
     Value: !GetAtt "BastionStack.Outputs.EIP1"
   MonitoringBastionHostIP:
     Description: IP for monitoring bastion host.
-    Value: !GetAtt "MonitoringBastionStack.Outputs.EIP1"
+    Value: !If [ MonitoringStackEnabled,!GetAtt "MonitoringBastionStack.Outputs.EIP1", "No monitoring bastion" ]
   AutoscalingID:
     Description: The Autoscaling Group ID that is used to deploy your cluster
     Value: !Ref ClusterGroup

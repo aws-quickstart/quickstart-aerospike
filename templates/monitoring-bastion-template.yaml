@@ -213,7 +213,7 @@ Parameters:
     AllowedPattern: ^([0-9a-zA-Z-.]+/)*$
     ConstraintDescription: The Quick Start S3 key prefix can include numbers, lowercase letters,
       uppercase letters, hyphens (-), and forward slashes (/).
-    Default: quickstart-linux-bastion/
+    Default: quickstart-aerospike/
     Description: S3 key prefix that is used to simulate a directory for your copy of the 
       Quick Start assets. Keep the default prefix unless you are customizing 
       the template. Changing this prefix updates code references to point to 
@@ -700,7 +700,7 @@ Resources:
                 -a exit,always -F arch=b32 -S execve
             /tmp/auditing_configure.sh:
               source: !Sub
-                - https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}scripts/auditing_configure.sh
+                - https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-linux-bastion/scripts/auditing_configure.sh
                 - S3Bucket: !If
                     - UsingDefaultBucket
                     - !Sub 'aws-quickstart-${AWS::Region}'
@@ -718,7 +718,7 @@ Resources:
                 - UseAlternativeInitialization
                 - !Ref AlternativeInitializationScript
                 - !Sub
-                  - https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}scripts/bastion_bootstrap.sh
+                  - https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-linux-bastion/scripts/bastion_bootstrap.sh
                   - S3Bucket: !If
                       - UsingDefaultBucket
                       - !Sub 'aws-quickstart-${AWS::Region}'
@@ -788,7 +788,7 @@ Resources:
                   #!/bin/bash
                   export AWS_REGION=${AWS::Region}
                   export ASG_NAME=${AerospikeClusterAutoscalingGroup}
-                  aws s3 cp s3://${S3Bucket}/quickstart-aerospike/scripts/prometheus_configure.sh .
+                  aws s3 cp s3://${S3Bucket}/${QSS3KeyPrefix}scripts/prometheus_configure.sh .
                   chmod +x prometheus_configure.sh
                   ./prometheus_configure.sh
                 - REGION: !Sub "${AWS::Region}" 
@@ -800,7 +800,7 @@ Resources:
               content: !Sub
                 - |
                   #!/bin/bash
-                  aws s3 cp s3://${S3Bucket}/quickstart-aerospike/scripts/grafana_configure.sh .
+                  aws s3 cp s3://${S3Bucket}/${QSS3KeyPrefix}scripts/grafana_configure.sh .
                   chmod +x grafana_configure.sh
                   ./grafana_configure.sh
                 - REGION: !Sub "${AWS::Region}" 
@@ -828,7 +828,7 @@ Resources:
                 - BannerUrl: !If
                   - DefaultBanner
                   - !Sub
-                    - s3://${S3Bucket}/${QSS3KeyPrefix}scripts/banner_message.txt
+                    - s3://${S3Bucket}/${QSS3KeyPrefix}scripts/monitoring_banner.txt
                     - S3Bucket: !If [ UsingDefaultBucket, !Sub 'aws-quickstart-${AWS::Region}', !Ref 'QSS3BucketName' ]
                   - !Ref BastionBanner
             c-aerospike_monitoring:
