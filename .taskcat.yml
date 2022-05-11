@@ -7,7 +7,8 @@ project:
   lambda_zip_path: functions/packages
   regions:
   - us-east-1
-  template: templates/aerospike-cluster-entrypoint-new-vpc.template.yaml
+  #template: templates/aerospike-cluster-entrypoint-new-vpc.template.yaml
+  template: templates/aerospike-cluster-workload.template.yaml
   parameters:
     AvailabilityZones: $[taskcat_genaz_2]
     NumberOfAZs: 2
