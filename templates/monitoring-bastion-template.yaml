@@ -195,14 +195,14 @@ Parameters:
   QSS3BucketName:
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
     ConstraintDescription: The Quick Start bucket name can include numbers, lowercase
-      letters, uppercase letters, and hyphens (-). It cannot start or end with a 
+      letters, uppercase letters, and hyphens (-). It cannot start or end with a
       hyphen (-).
     Default: aws-quickstart
-    Description: Name of the S3 bucket for your copy of the Quick Start assets. 
-      Keep the default name unless you are customizing the template. 
-      Changing the name updates code references to point to a new Quick 
-      Start location. This name can include numbers, lowercase letters, 
-      uppercase letters, and hyphens, but do not start or end with a hyphen (-). 
+    Description: Name of the S3 bucket for your copy of the Quick Start assets.
+      Keep the default name unless you are customizing the template.
+      Changing the name updates code references to point to a new Quick
+      Start location. This name can include numbers, lowercase letters,
+      uppercase letters, and hyphens, but do not start or end with a hyphen (-).
       See https://aws-quickstart.github.io/option1.html.
     Type: String
   QSS3BucketRegion:
@@ -214,12 +214,12 @@ Parameters:
     ConstraintDescription: The Quick Start S3 key prefix can include numbers, lowercase letters,
       uppercase letters, hyphens (-), and forward slashes (/).
     Default: quickstart-aerospike/
-    Description: S3 key prefix that is used to simulate a directory for your copy of the 
-      Quick Start assets. Keep the default prefix unless you are customizing 
-      the template. Changing this prefix updates code references to point to 
-      a new Quick Start location. This prefix can include numbers, lowercase 
-      letters, uppercase letters, hyphens (-), and forward slashes (/). End with a forward slash. 
-      See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html 
+    Description: S3 key prefix that is used to simulate a directory for your copy of the
+      Quick Start assets. Keep the default prefix unless you are customizing
+      the template. Changing this prefix updates code references to point to
+      a new Quick Start location. This prefix can include numbers, lowercase
+      letters, uppercase letters, hyphens (-), and forward slashes (/). End with a forward slash.
+      See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html
       and https://aws-quickstart.github.io/option1.html.
     Type: String
   RemoteAccessCIDR:
@@ -229,7 +229,7 @@ Parameters:
     Type: String
   VPCID:
     Description: ID of the VPC (e.g., vpc-0343606e).
-    Type: 'AWS::EC2::VPC::Id'
+    Type: String
   AlternativeInitializationScript:
     AllowedPattern: ^https.*|^$
     ConstraintDescription: URL must begin with https.
@@ -542,7 +542,7 @@ Resources:
               Action:
                 - logs:CreateLogGroup
                 - logs:CreateLogStream
-                - logs:PutLogEvents  
+                - logs:PutLogEvents
             - Effect: Allow
               Resource:
                 - '*'
@@ -732,10 +732,10 @@ Resources:
               group: root
               authentication: S3AccessCreds
             /tmp/aerospike_monitoring_stack_asbench_install.sh:
-              content: | 
+              content: |
                   #!/bin/bash
-                  
-                  # folder to store monitoring stack binaries 
+
+                  # folder to store monitoring stack binaries
                   mkdir -p /home/ec2-user/monitoring_stack
                   cd /home/ec2-user/monitoring_stack
 
@@ -743,19 +743,19 @@ Resources:
                   wget https://github.com/prometheus/prometheus/releases/download/v2.30.3/prometheus-2.30.3.linux-amd64.tar.gz
                   tar xvfz prometheus-*.tar.gz
 
-                  # Grafana installation 
+                  # Grafana installation
                   wget https://dl.grafana.com/oss/release/grafana-8.2.1-1.x86_64.rpm
                   sudo yum install -y grafana-8.2.1-1.x86_64.rpm
                   sudo systemctl daemon-reload
                   sudo systemctl start grafana-server
                   sudo systemctl status grafana-serve
 
-                  # asbench installation 
+                  # asbench installation
                   sudo yum install -y wget tar python3 gzip shadow-utils.x86_64
                   sudo wget -O aerospike-amazon_linux.tgz 'https://download.aerospike.com/download/tools/6.1.2/artifact/el7'
                   sudo tar -xvzf aerospike-amazon_linux.tgz
                   cd aerospike-tools*
-                  sudo ./asinstall > /dev/null 2>&1 & 
+                  sudo ./asinstall > /dev/null 2>&1 &
               mode: '000744'
               owner: root
               group: root
@@ -791,7 +791,7 @@ Resources:
                   aws s3 cp s3://${S3Bucket}/${QSS3KeyPrefix}scripts/prometheus_configure.sh .
                   chmod +x prometheus_configure.sh
                   ./prometheus_configure.sh
-                - REGION: !Sub "${AWS::Region}" 
+                - REGION: !Sub "${AWS::Region}"
                   S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
               mode: '000755'
               owner: root
@@ -803,7 +803,7 @@ Resources:
                   aws s3 cp s3://${S3Bucket}/${QSS3KeyPrefix}scripts/grafana_configure.sh .
                   chmod +x grafana_configure.sh
                   ./grafana_configure.sh
-                - REGION: !Sub "${AWS::Region}" 
+                - REGION: !Sub "${AWS::Region}"
                   S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
               mode: '000755'
               owner: root

@@ -151,11 +151,11 @@ Parameters:
     Type: String
   KeyPairName:
     Description: Name of the key pair to be used to connect to your EC2 instances by using SSH.
-    Type: 'AWS::EC2::KeyPair::KeyName'
+    Type: String
     ConstraintDescription: Specify the name of the key pair that you use to log in.
   VPCID:
     Description: ID of the VPC that you're deploying this cluster into.
-    Type: 'AWS::EC2::VPC::Id'
+    Type: String
   VPCCIDR:
     Description: VPC CIDR block in the format x.x.0.0/16.
     Type: String
