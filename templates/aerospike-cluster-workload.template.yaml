@@ -151,11 +151,11 @@ Parameters:
     Type: String
   KeyPairName:
     Description: Name of the key pair to be used to connect to your EC2 instances by using SSH.
-    Type: 'AWS::EC2::KeyPair::KeyName'
+    Type: String
     ConstraintDescription: Specify the name of the key pair that you use to log in.
   VPCID:
     Description: ID of the VPC that you're deploying this cluster into.
-    Type: 'AWS::EC2::VPC::Id'
+    Type: String
   VPCCIDR:
     Description: VPC CIDR block in the format x.x.0.0/16.
     Type: String
@@ -307,22 +307,22 @@ Parameters:
   QSS3BucketName:
     AllowedPattern: "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$"
     ConstraintDescription: The Quick Start bucket name can include numbers, lowercase
-      letters, uppercase letters, and hyphens (-). It cannot start or end with a 
+      letters, uppercase letters, and hyphens (-). It cannot start or end with a
       hyphen (-).
     Default: aws-quickstart
-    Description: Name of the S3 bucket for your copy of the Quick Start assets. 
-      Keep the default name unless you are customizing the template. 
-      Changing the name updates code references to point to a new Quick 
-      Start location. This name can include numbers, lowercase letters, 
-      uppercase letters, and hyphens, but do not start or end with a hyphen (-). 
+    Description: Name of the S3 bucket for your copy of the Quick Start assets.
+      Keep the default name unless you are customizing the template.
+      Changing the name updates code references to point to a new Quick
+      Start location. This name can include numbers, lowercase letters,
+      uppercase letters, and hyphens, but do not start or end with a hyphen (-).
       See https://aws-quickstart.github.io/option1.html.
     Type: String
   QSS3BucketRegion:
     Default: 'us-east-1'
-    Description: 'AWS Region where the Quick Start S3 bucket (QSS3BucketName) is 
-    hosted. Keep the default Region unless you are customizing the template. 
-    Changing this Region updates code references to point to a new Quick Start location. 
-    When using your own bucket, specify the Region. 
+    Description: 'AWS Region where the Quick Start S3 bucket (QSS3BucketName) is
+    hosted. Keep the default Region unless you are customizing the template.
+    Changing this Region updates code references to point to a new Quick Start location.
+    When using your own bucket, specify the Region.
     See https://aws-quickstart.github.io/option1.html.'
     Type: String
   QSS3KeyPrefix:
@@ -331,12 +331,12 @@ Parameters:
       uppercase letters, hyphens (-), and forward slashes (/). The prefix should
       end with a forward slash (/).
     Default: quickstart-aerospike/
-    Description: S3 key prefix that is used to simulate a directory for your copy of the 
-      Quick Start assets. Keep the default prefix unless you are customizing 
-      the template. Changing this prefix updates code references to point to 
-      a new Quick Start location. This prefix can include numbers, lowercase 
-      letters, uppercase letters, hyphens (-), and forward slashes (/). End with 
-      a forward slash. See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html 
+    Description: S3 key prefix that is used to simulate a directory for your copy of the
+      Quick Start assets. Keep the default prefix unless you are customizing
+      the template. Changing this prefix updates code references to point to
+      a new Quick Start location. This prefix can include numbers, lowercase
+      letters, uppercase letters, hyphens (-), and forward slashes (/). End with
+      a forward slash. See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html
       and https://aws-quickstart.github.io/option1.html.
     Type: String
   MonitoringStack:
@@ -345,49 +345,10 @@ Parameters:
     Default: "Prometheus + Grafana + asbench"
     Description: "Enable monitoring stack (prometheus and grafana) and asbench."
 
-Mappings:
-  AWSAMIRegionMap:
-    AMI:
-      AEROSPIKEAMI: aerospike-amzn2-64bit-4.20
-    us-east-1:
-      AEROSPIKEAMI: ami-021f94397f9b7296a
-    us-east-2:
-      AEROSPIKEAMI: ami-02b844f525f5971a8
-    us-west-1:
-      AEROSPIKEAMI: ami-004f25c2206966ccd
-    us-west-2:
-      AEROSPIKEAMI: ami-0d3dcdb7921e8feb5
-    ca-central-1:
-      AEROSPIKEAMI: ami-0b1eebf04428a7e99
-    eu-west-1:
-      AEROSPIKEAMI: ami-0cad3556b41666b15
-    eu-west-2:
-      AEROSPIKEAMI: ami-096dd4649893821c3
-    eu-west-3:
-      AEROSPIKEAMI: ami-0b2772f04f405a268
-    eu-north-1:
-      AEROSPIKEAMI: ami-0b085d6c3fcd83ab0
-    eu-central-1:
-      AEROSPIKEAMI: ami-0338bbdaf13c1b19a
-    ap-southeast-1:
-      AEROSPIKEAMI: ami-05cc28c7586ac8c42
-    ap-southeast-2:
-      AEROSPIKEAMI: ami-055c43fc07977e985
-    ap-south-1:
-      AEROSPIKEAMI: ami-03b87dd9fbd719b1b
-    ap-northeast-1:
-      AEROSPIKEAMI: ami-06d8224eddf40a5c8
-    ap-northeast-2:
-      AEROSPIKEAMI: ami-04e3ac4a5020a26b6
-    ap-northeast-3:
-      AEROSPIKEAMI: ami-02103891990bb871b
-    sa-east-1:
-      AEROSPIKEAMI: ami-0dd8bf4fc926fbddb
-
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
   TrialLicense: !Equals [!Ref FeatureKeyFile, '']
-  NotUsingEBS: !Equals 
+  NotUsingEBS: !Equals
     - !Ref EBS
     - 0
   3AZDeployment: !Not [!Equals [!Ref PrivateSubnet3ID, ""]]
@@ -396,12 +357,51 @@ Conditions:
     - !Not [!Equals [!Ref PrivateSubnet3ID, ""]]
   MonitoringStackEnabled: !Equals [!Ref MonitoringStack, "Prometheus + Grafana + asbench"]
 
+Mappings:
+  AWSAMIRegionMap:
+    AMI:
+      AEROSPIKEAMI: aerospike-amazonlinux2-20220508100353
+    us-east-1:
+      AEROSPIKEAMI: ami-05f5709c7c092d892
+    us-east-2:
+      AEROSPIKEAMI: ami-0ded916282885082d
+    us-west-1:
+      AEROSPIKEAMI: ami-0d3b55865039748fd
+    us-west-2:
+      AEROSPIKEAMI: ami-07a9aaaf28175bbef
+    ca-central-1:
+      AEROSPIKEAMI: ami-05251da23e7307086
+    eu-west-1:
+      AEROSPIKEAMI: ami-05cfcd1145303a472
+    eu-west-2:
+      AEROSPIKEAMI: ami-0ee5f72a638057fdd
+    eu-west-3:
+      AEROSPIKEAMI: ami-0fd069c2b52922e34
+    eu-north-1:
+      AEROSPIKEAMI: ami-0b5663b8bbccd2de7
+    eu-central-1:
+      AEROSPIKEAMI: ami-0a73b33b34f77b5a3
+    ap-southeast-1:
+      AEROSPIKEAMI: ami-0d2589a63abcac68d
+    ap-southeast-2:
+      AEROSPIKEAMI: ami-0524a4c7c0b9c3940
+    ap-south-1:
+      AEROSPIKEAMI: ami-06705fdd006924ad6
+    ap-northeast-1:
+      AEROSPIKEAMI: ami-02c8c5857559980fe
+    ap-northeast-2:
+      AEROSPIKEAMI: ami-0a528e959d8a686f5
+    ap-northeast-3:
+      AEROSPIKEAMI: ami-0c88f98d79afe460a
+    sa-east-1:
+      AEROSPIKEAMI: ami-0279ec5b44c36973b
+
 Resources:
   BastionStack:
     Metadata: { cfn-lint: { config: { ignore_checks: [ W9901 ] } } }
     Type: 'AWS::CloudFormation::Stack'
     Properties:
-      TemplateURL: !Sub 
+      TemplateURL: !Sub
         - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-linux-bastion/templates/linux-bastion.template'
         - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
           S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
@@ -419,7 +419,7 @@ Resources:
         QSS3BucketRegion: !Ref QSS3BucketRegion
         RemoteAccessCIDR: !Ref AccessCIDR
         VPCID: !Ref VPCID
-  
+
   PsuedoRandom:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -471,13 +471,13 @@ Resources:
             Version: 2012-10-17
             Statement:
               - Effect: Allow
-                Action: 
+                Action:
                   - sqs:GetQueueAttributes
                   - sqs:SendMessageBatch
                   - sqs:SendMessage
                   - sqs:SendMessageBatch
                   - sqs:GetQueueUrl
-                Resource: !GetAtt 
+                Resource: !GetAtt
                   - MigrationSQS
                   - Arn
         - PolicyName: AerospikeAutoScalingPolicy
@@ -512,10 +512,10 @@ Resources:
     Properties:
       AutoScalingGroupName: !Ref ClusterGroup
       LifecycleTransition: 'autoscaling:EC2_INSTANCE_TERMINATING'
-      NotificationTargetARN: !GetAtt 
+      NotificationTargetARN: !GetAtt
         - MigrationSQS
         - Arn
-      RoleARN: !GetAtt 
+      RoleARN: !GetAtt
         - ClusterRole
         - Arn
   ClusterGroup:
@@ -585,7 +585,7 @@ Resources:
                   if [[ ${EnableCloudWatch} == "yes" ]]; then
                   (crontab -l 2>/dev/null; echo '*/5 * * * * /opt/aerospike/cloudwatch') | crontab -
                   fi
-                - REGION: !Sub "${AWS::Region}" 
+                - REGION: !Sub "${AWS::Region}"
                   S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
               mode: '000744'
               owner: root
@@ -768,7 +768,7 @@ Resources:
     Properties:
       InstanceType: !Ref InstanceType
       KeyName: !Ref KeyPairName
-      BlockDeviceMappings: !If 
+      BlockDeviceMappings: !If
         - NotUsingEBS
         - !Ref 'AWS::NoValue'
         - - DeviceName: /dev/sdg
@@ -776,14 +776,14 @@ Resources:
               VolumeSize: !Ref EBS
               VolumeType: gp2
       IamInstanceProfile: !Ref ClusterInstanceProfile
-      ImageId: !FindInMap 
+      ImageId: !FindInMap
         - AWSAMIRegionMap
         - !Ref 'AWS::Region'
         - AEROSPIKEAMI
       AssociatePublicIpAddress: true
       PlacementTenancy: !Ref Tenancy
       SecurityGroups:
-        - !GetAtt 
+        - !GetAtt
           - InstanceSecurityGroup
           - GroupId
       UserData:
@@ -831,13 +831,13 @@ Resources:
   InstanceSecurityGroupIngress:
     Type: 'AWS::EC2::SecurityGroupIngress'
     Properties:
-      GroupId: !GetAtt 
+      GroupId: !GetAtt
         - InstanceSecurityGroup
         - GroupId
       IpProtocol: tcp
       FromPort: 3001
       ToPort: 3004
-      SourceSecurityGroupId: !GetAtt 
+      SourceSecurityGroupId: !GetAtt
         - InstanceSecurityGroup
         - GroupId
   MonitoringBastionStack:
@@ -845,7 +845,7 @@ Resources:
     Condition: MonitoringStackEnabled
     Type: 'AWS::CloudFormation::Stack'
     Properties:
-      TemplateURL: !Sub 
+      TemplateURL: !Sub
         - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/monitoring-bastion-template.yaml'
         - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
           S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
@@ -864,7 +864,7 @@ Resources:
         RemoteAccessCIDR: !Ref AccessCIDR
         VPCID: !Ref VPCID
         AerospikeClusterAutoscalingGroup: !Ref ClusterGroup
-  
+
 Outputs:
   BastionHostIP:
     Description: IP for bastion host.
