@@ -76,7 +76,7 @@ aql> select * from test.foo
 OK
 ----
 
-For more information on testing, see https://docs.aerospike.com/docs/client/java/benchmarks.html[Benchmarks^]. With the benchmark application, you can exercise and demo load on the new Aerospike cluster. 
+For more information on testing, see https://docs.aerospike.com/docs/client/java/benchmarks.html[Benchmarks^]. With the benchmark application, you can exercise and demo load on the new Aerospike cluster.
 
 == Best practices for using {partner-product-short-name} on AWS
 // Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
@@ -93,7 +93,7 @@ When you run {partner-product-short-name} in production, review and ensure that 
 == Other useful information
 //Provide any other information of interest to users, especially focusing on areas where AWS or cloud usage differs from on-premises usage.
 
-After your deployment is up and ready, read and understand the following sections of the Aerospike documentation. Use the navigation panel to open each subsection within these main sections. 
+After your deployment is up and ready, read and understand the following sections of the Aerospike documentation. Use the navigation panel to open each subsection within these main sections.
 
 * https://docs.aerospike.com/docs/operations/configure/index.html[Configure Aerospike Database^]
 * https://docs.aerospike.com/docs/operations/manage/index.html[Manage^]
@@ -106,6 +106,8 @@ For information on the architecture and system, see the Aerospike https://docs.a
 
 For information on monitoring your stack, see https://docs.aerospike.com/docs/tools/monitorstack/index.html[Overview to the Aerospike Monitoring Stack^].
 
-For information on querying your database, see https://docs.aerospike.com/docs/guide/query.html[Query^]. 
+For information on querying your database, see https://docs.aerospike.com/docs/guide/query.html[Query^].
 
 For information on setting up and using connectors to stream data into your new cluster, see https://docs.aerospike.com/docs/connect/index.html[Overview of Aerospike Connect^].
+
+
