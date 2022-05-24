@@ -229,7 +229,7 @@ Parameters:
     Type: String
   VPCID:
     Description: ID of the VPC (e.g., vpc-0343606e).
-    Type: String
+    Type: 'AWS::EC2::VPC::Id'
   AlternativeInitializationScript:
     AllowedPattern: ^https.*|^$
     ConstraintDescription: URL must begin with https.
