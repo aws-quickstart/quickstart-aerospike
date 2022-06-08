@@ -732,15 +732,16 @@ Resources:
               group: root
               authentication: S3AccessCreds
             /tmp/aerospike_monitoring_stack_asbench_install.sh:
-              content: |
+              content: !Sub
+                - |
                   #!/bin/bash
 
-                  # folder to store monitoring stack binaries
+                  # download monitoring stack binaries
                   mkdir -p /home/ec2-user/monitoring_stack
                   cd /home/ec2-user/monitoring_stack
 
                   # Prometheus installation
-                  wget https://github.com/prometheus/prometheus/releases/download/v2.30.3/prometheus-2.30.3.linux-amd64.tar.gz
+                  aws s3 cp s3://${S3Bucket}/${QSS3KeyPrefix}scripts/prometheus-2.30.3.linux-amd64.tar.gz .
                   tar xvfz prometheus-*.tar.gz
 
                   # Grafana installation
@@ -748,7 +749,7 @@ Resources:
                   sudo yum install -y grafana-8.2.1-1.x86_64.rpm
                   sudo systemctl daemon-reload
                   sudo systemctl start grafana-server
-                  sudo systemctl status grafana-serve
+                  sudo systemctl status grafana-server
 
                   # asbench installation
                   sudo yum install -y wget tar python3 gzip shadow-utils.x86_64
@@ -756,6 +757,8 @@ Resources:
                   sudo tar -xvzf aerospike-amazon_linux.tgz
                   cd aerospike-tools*
                   sudo ./asinstall > /dev/null 2>&1 &
+                - REGION: !Sub "${AWS::Region}"
+                  S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
               mode: '000744'
               owner: root
               group: root
