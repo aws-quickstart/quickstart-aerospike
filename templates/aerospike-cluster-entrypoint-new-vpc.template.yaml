@@ -12,6 +12,7 @@ Metadata:
     - sdg
     - aerospike
     - namespace
+    - Namespace
     - configuration
     - .conf
     - Location
@@ -46,6 +47,10 @@ Metadata:
       - NamespaceFile
       - FeatureKeyFile
     - Label:
+        default: Enable monitoring stack
+      Parameters:
+        - MonitoringStack
+    - Label:
         default: Linux bastion configuration
       Parameters:
       - BastionAMIOS
@@ -57,6 +62,7 @@ Metadata:
         - QSS3BucketName
         - QSS3KeyPrefix
         - QSS3BucketRegion
+
     ParameterLabels:
       AvailabilityZones:
         default: Availability Zones
@@ -106,6 +112,8 @@ Metadata:
         default: Allowed bastion external access CIDR
       VPCCIDR:
         default: VPC CIDR
+      MonitoringStack:
+        default: Enable Monitoring stack
 Parameters:
   AvailabilityZones:
     Description: "Availability Zones to use for the VPC subnets. At least two Availability Zones are required."
@@ -265,22 +273,14 @@ Parameters:
       - t3.large
       - t3.xlarge
       - t3.2xlarge
-      - m3.medium
-      - m3.large
-      - m3.xlarge
-      - m3.2xlarge
-      - m4.large
-      - m4.xlarge
-      - m4.2xlarge
-      - m4.4xlarge
-      - m4.10xlarge
-      - m4.16xlarge
       - m5.large
       - m5.xlarge
       - m5.2xlarge
       - m5.4xlarge
+      - m5.8xlarge
       - m5.12xlarge
       - m5.24xlarge
+      - m5.metal
       - m5d.large
       - m5d.xlarge
       - m5d.2xlarge
@@ -290,39 +290,29 @@ Parameters:
       - m5d.16xlarge
       - m5d.24xlarge
       - m5d.metal
-      - c3.large
-      - c3.xlarge
-      - c3.2xlarge
-      - c3.4xlarge
-      - c3.8xlarge
-      - c4.large
-      - c4.xlarge
-      - c4.2xlarge
-      - c4.4xlarge
-      - c4.8xlarge
       - c5.large
       - c5.xlarge
       - c5.2xlarge
       - c5.4xlarge
       - c5.9xlarge
       - c5.18xlarge
-      - r3.large
-      - r3.xlarge
-      - r3.2xlarge
-      - r3.4xlarge
-      - r3.8xlarge
-      - r4.large
-      - r4.xlarge
-      - r4.2xlarge
-      - r4.4xlarge
-      - r4.8xlarge
-      - r4.16xlarge
+      - c5.24xlarge
+      - c5.metal
+      - c5d.large
+      - c5d.xlarge
+      - c5d.2xlarge
+      - c5d.4xlarge
+      - c5d.9xlarge
+      - c5d.18xlarge
       - r5.large
       - r5.xlarge
       - r5.2xlarge
       - r5.4xlarge
+      - r5.8xlarge
       - r5.12xlarge
+      - r5.16xlarge
       - r5.24xlarge
+      - r5.metal
       - r5d.large
       - r5d.xlarge
       - r5d.2xlarge
@@ -332,10 +322,6 @@ Parameters:
       - r5d.16xlarge
       - r5d.24xlarge
       - r5d.metal
-      - i2.xlarge
-      - i2.2xlarge
-      - i2.4xlarge
-      - i2.8xlarge
       - i3.large
       - i3.xlarge
       - i3.2xlarge
@@ -346,9 +332,9 @@ Parameters:
       - i3en.large
       - i3en.xlarge
       - i3en.2xlarge
-      - i3en.4xlarge
-      - i3en.8xlarge
-      - i3en.16xlarge
+      - i3en.3xlarge
+      - i3en.6xlarge
+      - i3en.12xlarge
       - i3en.24xlarge
       - i3en.metal
   EBS:
@@ -367,10 +353,16 @@ Parameters:
     Description: Base64 encoding of the feature key file. This is the Aerospike key to use for this deployment. Keeping this blank works only for a single node cluster.
     Type: String
     Default: ""
+  MonitoringStack:
+    Type: String
+    AllowedValues: [ "Prometheus + Grafana + asbench", "None" ]
+    Default: "Prometheus + Grafana + asbench"
+    Description: "Enable monitoring stack (prometheus and grafana) and asbench."
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
   3AZDeployment: !Equals [!Ref NumberOfAZs, "3"]
   TrialLicense: !Equals [!Ref FeatureKeyFile, '']
+  MonitoringStackEnabled: !Equals [!Ref MonitoringStack, "Prometheus + Grafana + asbench"]
 Resources:
   VPCStack:
     Type: AWS::CloudFormation::Stack
@@ -391,7 +383,6 @@ Resources:
         PublicSubnet2CIDR: !Ref 'PublicSubnet2CIDR'
         PublicSubnet3CIDR: !Ref 'PublicSubnet3CIDR'
         VPCCIDR: !Ref 'VPCCIDR'
-
   AerospikeServerStack:
     Type: 'AWS::CloudFormation::Stack'
     Properties:
@@ -421,8 +412,18 @@ Resources:
         BastionInstanceType: !Ref BastionInstanceType
         NumBastionHosts: !Ref NumBastionHosts
         BastionAMIOS: !Ref BastionAMIOS
+        MonitoringStack: !Ref MonitoringStack
 
 Outputs:
+  BastionHostIP:
+    Description: IP for bastion host.
+    Value: !GetAtt "AerospikeServerStack.Outputs.BastionHostIP"
+  MonitoringBastionHostIP:
+    Description: IP for monitoring bastion host.
+    Value: !GetAtt "AerospikeServerStack.Outputs.MonitoringBastionHostIP"
+  AutoscalingID:
+    Description: The Autoscaling Group ID that is used to deploy your cluster
+    Value: !GetAtt "AerospikeServerStack.Outputs.AutoscalingID"
   Postdeployment:
     Description: To test your deployment, see the procedure in the deployment guide.
     Value: https://fwd.aws/Pa8Yw?
