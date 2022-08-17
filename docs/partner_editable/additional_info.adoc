@@ -110,6 +110,8 @@ For information on querying your database, see https://docs.aerospike.com/docs/g
 
 For information on setting up and using connectors to stream data into your new cluster, see https://docs.aerospike.com/docs/connect/index.html[Overview of Aerospike Connect^].
 
+For information on using asbench and monitoring stack with quickstart, see https://aerospike.com/blog/enhancements-for-aerospikes-aws-quickstart/[Enhancements for Aerospike’s AWS Quickstart^].
+
 For more General AeroSpike information see the following:
 
 * https://mail.aerospike.com/MjI5LVhVRS0zMTgAAAGD5oqOW5en94RSRSUHpcNa0RVjvgJH5xmYH5qoP3Ifm5u8UZZWX30li7POvAGGeWL3WzGc-vY=[Explainer Videos] in our https://mail.aerospike.com/MjI5LVhVRS0zMTgAAAGD5oqOW3runmin-ooa9N7ri12tYltrQx73KPA3_rmfCTN0dcwqrjTjnoO2raQLouHz7pc5PeY=[Developer Hub]
