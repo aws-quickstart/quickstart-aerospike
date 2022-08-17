@@ -77,7 +77,8 @@ OK
 ----
 
 
-For more information on testing, see https://docs.aerospike.com/docs/client/java/benchmarks.html[Benchmarks^]. With the benchmark application, you can exercise and demo load on the new Aerospike cluster. 
+For more information on testing, see https://docs.aerospike.com/docs/client/java/benchmarks.html[Benchmarks^]. With the benchmark application, you can exercise and demo load on the new Aerospike cluster.
+
 
 
 == Best practices for using {partner-product-short-name} on AWS
@@ -96,7 +97,8 @@ When you run {partner-product-short-name} in production, review and ensure that 
 //Provide any other information of interest to users, especially focusing on areas where AWS or cloud usage differs from on-premises usage.
 
 
-After your deployment is up and ready, read and understand the following sections of the Aerospike documentation. Use the navigation panel to open each subsection within these main sections. 
+After your deployment is up and ready, read and understand the following sections of the Aerospike documentation. Use the navigation panel to open each subsection within these main sections.
+
 
 
 * https://docs.aerospike.com/docs/operations/configure/index.html[Configure Aerospike Database^]
@@ -110,15 +112,17 @@ For information on the architecture and system, see the Aerospike https://docs.a
 
 For information on monitoring your stack, see https://docs.aerospike.com/docs/tools/monitorstack/index.html[Overview to the Aerospike Monitoring Stack^].
 
-
 For information on querying your database, see https://docs.aerospike.com/docs/guide/query.html[Query^].
 
 For information on setting up and using connectors to stream data into your new cluster, see https://docs.aerospike.com/docs/connect/index.html[Overview of Aerospike Connect^].
+
+
+For information on using asbench and monitoring stack with quickstart, see https://aerospike.com/blog/enhancements-for-aerospikes-aws-quickstart/[Enhancements for Aerospike’s AWS Quickstart^].
+
 
 For more General AeroSpike information see the following:
 
 * https://mail.aerospike.com/MjI5LVhVRS0zMTgAAAGD5oqOW5en94RSRSUHpcNa0RVjvgJH5xmYH5qoP3Ifm5u8UZZWX30li7POvAGGeWL3WzGc-vY=[Explainer Videos] in our https://mail.aerospike.com/MjI5LVhVRS0zMTgAAAGD5oqOW3runmin-ooa9N7ri12tYltrQx73KPA3_rmfCTN0dcwqrjTjnoO2raQLouHz7pc5PeY=[Developer Hub]
 * https://mail.aerospike.com/MjI5LVhVRS0zMTgAAAGD5oqOW3saJgCVsQdyFnYI0GSz6nqz_D7-BufCdMbSjh36DuvSsomSx3Oj5taAQKXqU_PZGKo=[Tutorials] and https://mail.aerospike.com/MjI5LVhVRS0zMTgAAAGD5oqOWxHrCpA9NQT28m1R8e-V8Qh-TBl_EjOz9LihgFhqRG_pMyJEYUIhmyEYNB2AL_WtEis=[Blog Posts]
 * The https://mail.aerospike.com/MjI5LVhVRS0zMTgAAAGD5oqOW0paT257slUHY6ok0ju0AYA9Ru3wXuruedk1Ef3WHxoFFkRl9ZTQtk6l0ldAunc_sS4=[Community Forum] is where you’ll find a large and enthusiastic community of users with excellent knowledge of the platform and the desire to help others.
-
 
