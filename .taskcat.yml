@@ -11,8 +11,8 @@ project:
   parameters:
     AvailabilityZones: $[taskcat_genaz_2]
     NumberOfAZs: 2
-    AccessCIDR: --overridden--
-    KeyPairName: --overridden--
+    AccessCIDR: 0.0.0.0/0
+    KeyPairName: default
     QSS3BucketName: $[taskcat_autobucket]
     QSS3BucketRegion: $[taskcat_current_region]
     QSS3KeyPrefix: quickstart-aerospike/
