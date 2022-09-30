@@ -11,6 +11,43 @@ phases:
       - pip install --upgrade pip
       - pip3 install taskcat
       - pip3 install --upgrade taskcat
+  pre_build:
+    commands:
+      - echo "Entered the pre_build phase..."
+      - echo "Current directory is $CODEBUILD_SRC_DIR"
+      - ls -lA
+      - dirname=${!PWD##*/}
+      - echo "Directory name $dirname"
+      - cd ..
+      - mv $dirname $PROJECT_NAME
+      - ls -lA
+      - cd $PROJECT_NAME
+      - echo "Temporarily adding git credential store..."
+      - echo "https://$GITHUB_USERNAME:$GITHUB_TOKEN@github.com" > ~/.git-credentials
+       - git config --global credential.helper store
+                - git config --global url."https://github.com/".insteadOf "git@github.com:"
+                - git config --global init.defaultBranch ${ReleaseBranch}
+                - git init
+                - git remote add origin https://github.com/$PROJECT_OWNER/$PROJECT_NAME.git
+                - git fetch
+                - git checkout --force --track origin/$SOURCE_BRANCH
+                - |
+                  git config -f .gitmodules --get-regexp '^submodule\..*\.path$' |
+                    while read path_key path
+                    do
+                        url_key=$(echo $path_key | sed 's/\.path/.url/')
+                        url=$(git config -f .gitmodules --get "$url_key")
+                        git submodule add $url $path
+                    done
+                - git submodule init
+                - git submodule update --init --recursive
+                - echo "Creating TaskCat overrides file..."
+                - echo $TASKCAT_OVERRIDES | yq -y > ./.taskcat_overrides.yml
+                - ls -lA
+                - echo "Verifying TaskCat installation..."
+                - taskcat
+                - echo "Removing git credential store..."
+                - rm -f ~/.git-credentials
   build:
     commands:
       - echo Build phase started on `date`
