@@ -8,7 +8,7 @@ venv
 functions/packages
 output
 __pycache__
-docs/generated/
+docs-bak/generated/
 .python-version
 .idea
 taskcat_outputs

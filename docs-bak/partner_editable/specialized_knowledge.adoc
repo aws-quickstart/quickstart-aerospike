@@ -1,6 +1,0 @@
-// Replace the content in <>
-// For example: “familiarity with basic concepts in networking, database operations, and data encryption” or “familiarity with <software>.”
-// Include links if helpful. 
-// You don't need to list AWS services or point to general info about AWS; the boilerplate already covers this.
-
-There are many considerations for a production-grade Aerospike deployment. This Quick Start was designed for general-purpose use and is not intended as a high-performance configuration. To learn more about high-performance and fully resilient configurations, see Aerospike best practices for AWS instance types with locally attached SSDs as documented here: https://docs.aerospike.com/docs/deploy_guides/aws/recommendations/index.html[Aerospike on Amazon EC2 - Recommendations^].
