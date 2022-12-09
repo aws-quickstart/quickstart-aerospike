@@ -1,6 +1,0 @@
-
-=== Parameters for deploying into an existing VPC
-include::aerospike-cluster-workload.template.adoc[]
-
-=== Parameters for deploying into a new VPC
-include::aerospike-cluster-entrypoint-new-vpc.template.adoc[]
