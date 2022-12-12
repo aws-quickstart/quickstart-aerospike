@@ -8,7 +8,7 @@ After the AWS CloudFormation stack is complete, test the deployment by checking 
 
 To validate the system and verify the system configuration, follow these steps:
 
-. From the bastion host, use SSH to log in to one of the Aerospike instances created by Quick Start template. Use SSH key forwarding for security purposes. For more info on SSH key forwarding, see https://docs.github.com/en/developers/overview/using-ssh-agent-forwarding[Using SSH agent forwarding^].
+. From the bastion host, use SSH to log in to one of the Aerospike instances created by Partner Solution template. Use SSH key forwarding for security purposes. For more info on SSH key forwarding, see https://docs.github.com/en/developers/overview/using-ssh-agent-forwarding[Using SSH agent forwarding^].
 +
 ----
 $ ssh ec2-user@<aerospike-instance>
