@@ -4,7 +4,7 @@ For troubleshooting common Partner Solution issues, refer to the https://fwd.aws
 
 * If you created a cluster of three machines, but they don't seem to be clustering.
 
-** Most likely you did not get a production license. You can rerun the Quick Start ensuring that you apply your production license. If you don't have a license, you can obtain one on the https://aerospike.com/lp/try-now/[Get started with Aerospike^] page.
+** Most likely you did not get a production license. You can rerun the Partner Solution ensuring that you apply your production license. If you don't have a license, you can obtain one on the https://aerospike.com/lp/try-now/[Get started with Aerospike^] page.
 
 // == Resources
 // Uncomment section and add links to any external resources that are specified by the partner.
