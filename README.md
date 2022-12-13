@@ -1,4 +1,4 @@
-## Aerospike Database Enterprise Edition on the AWS Cloud—Quick Start
+## Aerospike Database Enterprise Edition on the AWS Cloud—Partner Solution
 
 For architectural details, step-by-step instructions, and customization options, see the [deployment guide](https://fwd.aws/Pa8Yw?).
 
